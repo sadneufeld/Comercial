@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>(function(){try{var t=localStorage.getItem('nf-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();</script>
-    <title>Neufeld Data Hub · Dashboard de Ventas</title>
+    <title>Neufeld · Comercial</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -1895,12 +1895,12 @@
                 <img src="Logo Pasteleria Neufeld.png" alt="Pastelería Neufeld" class="home-logo">
             </div>
             <div class="home-period-picker">
-                <div class="home-period-picker-title"><span>🗓️</span><span>Periodo a consultar</span></div>
+                <div class="home-period-picker-title"><span>🗓️</span><span>Periodo de consulta</span></div>
                 <div class="home-period-grid">
                     <div><label for="homeYearSelector" class="filter-label">Año</label><select id="homeYearSelector" class="entry-select compact-select"><option value="2026">2026</option><option value="2025">2025</option><option value="2027">2027</option><option value="2028">2028</option></select></div>
                     <div><label for="homeMonthSelector" class="filter-label">Mes</label><select id="homeMonthSelector" class="entry-select compact-select"><option value="Enero">Enero</option><option value="Febrero">Febrero</option><option value="Marzo">Marzo</option><option value="Abril">Abril</option><option value="Mayo">Mayo</option><option value="Junio">Junio</option><option value="Julio">Julio</option><option value="Agosto">Agosto</option><option value="Septiembre">Septiembre</option><option value="Octubre">Octubre</option><option value="Noviembre">Noviembre</option><option value="Diciembre">Diciembre</option></select></div>
                 </div>
-                <p class="text-xs mt-2" style="color:#94a3b8;font-size:11px;margin-top:8px;">Elige el mes antes de entrar a un módulo; se cargará directamente.</p>
+                <p class="text-xs mt-2" style="color:#94a3b8;font-size:11px;margin-top:8px;">Elige el mes antes de entrar a un módulo.</p>
             </div>
             <nav class="home-menu" aria-label="Módulos">
                 <button type="button" class="module-button" data-module="meta"><span class="module-icon">🎯</span><span><strong>Avance de meta</strong><small>Cumplimiento diario por sucursal</small></span><span class="module-arrow">›</span></button>
@@ -1964,7 +1964,7 @@
             
             <div class="space-y-5">
                 <div class="period-filter-block">
-                    <div class="period-filter-title"><span>🗓️</span><div><strong>Periodo de análisis</strong><small>Elige año y mes para cargar la información desde Turso.</small></div></div>
+                    <div class="period-filter-title"><span>🗓️</span><div><strong>Periodo de análisis</strong><small>Elige año y mes para cargar la información.</small></div></div>
                     <div class="grid grid-cols-2 gap-3">
                         <div><label for="yearSelector" class="filter-label">Año</label><select id="yearSelector" class="entry-select compact-select"><option value="2026" selected>2026</option><option value="2025">2025</option><option value="2027">2027</option><option value="2028">2028</option></select></div>
                         <div><label for="monthSelector" class="filter-label">Mes</label><select id="monthSelector" class="entry-select compact-select"><option value="Enero">Enero</option><option value="Febrero">Febrero</option><option value="Marzo">Marzo</option><option value="Abril">Abril</option><option value="Mayo">Mayo</option><option value="Junio">Junio</option><option value="Julio">Julio</option><option value="Agosto">Agosto</option><option value="Septiembre" selected>Septiembre</option><option value="Octubre">Octubre</option><option value="Noviembre">Noviembre</option><option value="Diciembre">Diciembre</option></select></div>
@@ -2461,7 +2461,7 @@
                 <summary><span><span class="filter-summary-icon" aria-hidden="true">🗓️</span><span>Periodo de análisis</span></span><span class="accordion-chevron">⌄</span></summary>
                 <div class="sidebar-filter-group-body">
                     <div class="period-filter-block">
-                        <div class="period-filter-title"><span>🗓️</span><div><strong>Periodo de análisis</strong><small>Elige año y mes para cargar la información desde Turso.</small></div></div>
+                        <div class="period-filter-title"><span>🗓️</span><div><strong>Periodo de análisis</strong><small>Elige año y mes para cargar la información.</small></div></div>
                         <div class="grid grid-cols-2 gap-3">
                             <div><label for="metaYearSelector" class="filter-label">Año</label><select id="metaYearSelector" class="entry-select compact-select"><option value="2026">2026</option><option value="2025">2025</option><option value="2027">2027</option><option value="2028">2028</option></select></div>
                             <div><label for="metaMonthSelector" class="filter-label">Mes</label><select id="metaMonthSelector" class="entry-select compact-select"><option value="Enero">Enero</option><option value="Febrero">Febrero</option><option value="Marzo">Marzo</option><option value="Abril">Abril</option><option value="Mayo">Mayo</option><option value="Junio">Junio</option><option value="Julio">Julio</option><option value="Agosto">Agosto</option><option value="Septiembre">Septiembre</option><option value="Octubre">Octubre</option><option value="Noviembre">Noviembre</option><option value="Diciembre">Diciembre</option></select></div>
@@ -2672,17 +2672,17 @@ const TURSO_DEFAULT_URL = 'libsql://comercial-sistemaneufeld.aws-us-east-1.turso
 const TURSO_READONLY_TOKEN = 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicm8iLCJpYXQiOjE3ODk4Njk2MDEsImlkIjoiMDFhMGJjMzYtMWMwMS03ODk4LTk2ZTYtZGYyYzAwNjc4ZDJhIiwia2lkIjoiSlAycEMyM3RLUV8talJMbWQ0NTZHTDdkWlg5c0NXQjk2QlVmS3ZJUml0ayIsInJpZCI6ImI4NjU0OTg4LTc1YjAtNDM1ZC04YzE1LWFmZDY1NGRmNjJkZCJ9._z1YBLZ3Gj-BFOQO_eTWLiqlLsIe5rTcZeUvrq7iucBAVH3He6YeZ9JnVL4zUpIZa7n6h0Xq-HdQvfc-luyODQ';
 
 const sucursalesCatalogo = [
-    { mesa: "ATHZIRI", supervisor: "CITLA", cod: "016ACA", nom: "ACA", sucursal: "ACA AVILA CAMACHO" },
-    { mesa: "ATHZIRI", supervisor: "CITLA", cod: "013RCE", nom: "RCE", sucursal: "RCE REAL CENTER" },
-    { mesa: "ATHZIRI", supervisor: "CITLA", cod: "006SIS", nom: "SIS", sucursal: "SIS SAN ISIDRO" },
-    { mesa: "ATHZIRI", supervisor: "CITLA", cod: "022AME", nom: "AME", sucursal: "AME AMERICAS" },
-    { mesa: "ATHZIRI", supervisor: "CITLA", cod: "041CHA", nom: "CHA", sucursal: "CHA CHAPULTEPEC" },
-    { mesa: "ATHZIRI", supervisor: "CITLA", cod: "036FED", nom: "FED", sucursal: "FED FEDERALTA" },
-    { mesa: "ATHZIRI", supervisor: "CITLA", cod: "001LPA", nom: "LPA", sucursal: "LPA LA PAZ" },
-    { mesa: "ATHZIRI", supervisor: "CITLA", cod: "024OBL", nom: "OBL", sucursal: "OBL OBLATOS" },
-    { mesa: "ATHZIRI", supervisor: "CITLA", cod: "009POR", nom: "POR", sucursal: "POR PUNTO ORIENTE" },
-    { mesa: "ATHZIRI", supervisor: "CITLA", cod: "031REV", nom: "REV", sucursal: "REV REVOLUCION" },
-    { mesa: "ATHZIRI", supervisor: "CITLA", cod: "018TEC", nom: "TEC", sucursal: "TEC TECHNOLOGY" },
+    { mesa: "ATHZIRI", supervisor: "Altaira", cod: "016ACA", nom: "ACA", sucursal: "ACA AVILA CAMACHO" },
+    { mesa: "ATHZIRI", supervisor: "Altaira", cod: "013RCE", nom: "RCE", sucursal: "RCE REAL CENTER" },
+    { mesa: "ATHZIRI", supervisor: "Altaira", cod: "006SIS", nom: "SIS", sucursal: "SIS SAN ISIDRO" },
+    { mesa: "ATHZIRI", supervisor: "Altaira", cod: "022AME", nom: "AME", sucursal: "AME AMERICAS" },
+    { mesa: "ATHZIRI", supervisor: "Altaira", cod: "041CHA", nom: "CHA", sucursal: "CHA CHAPULTEPEC" },
+    { mesa: "ATHZIRI", supervisor: "Altaira", cod: "036FED", nom: "FED", sucursal: "FED FEDERALTA" },
+    { mesa: "ATHZIRI", supervisor: "Altaira", cod: "001LPA", nom: "LPA", sucursal: "LPA LA PAZ" },
+    { mesa: "ATHZIRI", supervisor: "Altaira", cod: "024OBL", nom: "OBL", sucursal: "OBL OBLATOS" },
+    { mesa: "ATHZIRI", supervisor: "Altaira", cod: "009POR", nom: "POR", sucursal: "POR PUNTO ORIENTE" },
+    { mesa: "ATHZIRI", supervisor: "Altaira", cod: "031REV", nom: "REV", sucursal: "REV REVOLUCION" },
+    { mesa: "ATHZIRI", supervisor: "Altaira", cod: "018TEC", nom: "TEC", sucursal: "TEC TECHNOLOGY" },
     { mesa: "ANGEL", supervisor: "ADRIANA", cod: "003SLU", nom: "ASL", sucursal: "AMORIPAX SANTA LUCIA" },
     { mesa: "ANGEL", supervisor: "ADRIANA", cod: "017TES", nom: "TES", sucursal: "TES TESISTAN" },
     { mesa: "ANGEL", supervisor: "ADRIANA", cod: "045SLU", nom: "SLU", sucursal: "SLU SANTA LUCIA" },
@@ -2979,7 +2979,7 @@ async function tursoPipeline(requests){
   try{
     res=await fetch(url,{method:'POST',headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify(payload)});
   }catch(e){
-    throw new Error(`No se pudo conectar con Turso: ${e.message||e}`);
+    throw new Error(`No se pudo conectar con la base de datos: ${e.message||e}`);
   }
   const text=await res.text();
   let data;
@@ -3071,7 +3071,7 @@ async function cargarDesdeTurso(opts){
     let maestroRows=[], pagosRows=[], metasRows=null;
     let datos=await buscarEnCache(year,monthNum);
     if(!datos){
-      setStage(`Consultando MAESTRO · ${month} ${year}...`);
+      setStage(`Consultando Base de Datos · ${month} ${year}...`);
       maestroRows=await consultarMaestro(year,monthNum);
       if(!maestroRows.length){
         // Una sola consulta (con índice, una sola lectura) para hallar el periodo anterior más reciente con datos.
@@ -3098,7 +3098,7 @@ async function cargarDesdeTurso(opts){
       maestroRows=datos.maestroRows; pagosRows=datos.pagosRows; metasRows=datos.metasRows||null;
       setStage(`Usando datos guardados (hace ${edadCache(Date.now()-datos.ts)}) · ${maestroRows.length.toLocaleString('es-MX')} renglones...`);
     }else{
-      setStage(`Encontrados ${maestroRows.length.toLocaleString('es-MX')} renglones. Consultando PAGOS...`);
+      setStage(`Encontrados ${maestroRows.length.toLocaleString('es-MX')} renglones. Consultando Formas de pago...`);
       const monthWhere=sqlMonthClauseLiteral(monthNum,year);
       const pagosSql=`SELECT p.ticket,p.forma_pago,p.cobrado,p.id FROM pagos p WHERE p.ticket IN (SELECT folio FROM maestro WHERE ${monthWhere}) ORDER BY p.ticket,p.id`;
       pagosRows=rowsToObjects(resultOf(await tursoPipeline([{type:'execute',stmt:{sql:pagosSql}}])));
@@ -3119,9 +3119,9 @@ async function cargarDesdeTurso(opts){
     metasData=(metasRows||[]).map(r=>({codigo:repairText(String(r.nomenclatura??'').trim()),fecha:normalizarFecha(r.fecha),meta:(r.meta===null||r.meta===undefined||r.meta==='')?null:num(r.meta)}));
     prepararAvanceDeMeta();
     if(pendingModuleAfterLoad==='meta'){ activateMetaModule(); } else { prepareDashboardForRendering(); showDashboardAfterLoad(); }
-    statusMsg.innerText=datos?`Datos desde caché (hace ${edadCache(Date.now()-datos.ts)}). Pulsa «Actualizar periodo» de nuevo para consultar Turso.`:'¡Datos cargados con éxito!';
+    statusMsg.innerText=datos?`Datos desde caché (hace ${edadCache(Date.now()-datos.ts)}). Pulsa «Actualizar periodo» de nuevo para consultar la base de datos.`:'¡Datos cargados con éxito!';
     setTimeout(()=>statusMsg.classList.add('hidden'),datos?6000:3000);
-  }catch(err){returnToEntryScreen(); alert('Error al consultar Turso: '+err.message);}
+  }catch(err){returnToEntryScreen(); alert('Error al consultar base de datos: '+err.message);}
   finally{clearInterval(timer);$('loadingSpinner').classList.add('hidden');btn.disabled=false;stopDataLoadingExperience();}
 }
 function normalizarDatos(maestroRows,pagosRows){
