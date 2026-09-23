@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>(function(){try{var t=localStorage.getItem('nf-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();</script>
-    <title>Neufeld · Comercial</title>
+    <title>Neufeld Data Hub · Dashboard de Ventas</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -3859,7 +3859,30 @@ function resetAllFilters(){
   document.querySelectorAll('#sidebarMount details[open]').forEach(d=>d.open=false);
   renderDashboard(obtenerDatosFiltrados());
 }
+/* ===== Easter egg: 5 clics seguidos sobre el logo de la pantalla de inicio ===== */
+function setupEasterEgg(){
+  const logo=$('homeLogo')||document.querySelector('.home-logo'), overlay=$('easterEggOverlay'), closeBtn=$('closeEasterEgg');
+  if(!logo||!overlay)return;
+  let clics=0, temporizador=null;
+  const reiniciar=()=>{clics=0;clearTimeout(temporizador);};
+  logo.style.cursor='pointer';
+  logo.addEventListener('click',()=>{
+    clics++;
+    clearTimeout(temporizador);
+    temporizador=setTimeout(reiniciar,1200);
+    if(clics>=5){
+      reiniciar();
+      overlay.classList.add('show');
+      overlay.setAttribute('aria-hidden','false');
+    }
+  });
+  const cerrar=()=>{overlay.classList.remove('show');overlay.setAttribute('aria-hidden','true');};
+  closeBtn?.addEventListener('click',cerrar);
+  overlay.addEventListener('click',e=>{if(e.target===overlay)cerrar();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&overlay.classList.contains('show'))cerrar();});
+}
 function setupListeners(){
+  setupEasterEgg();
   btn?.addEventListener('click',()=>{pendingModuleAfterLoad='analysis';cargarDesdeTurso();}); $('changeMonthBtn')?.addEventListener('click',openAnalysisSidebar);
   fechaInicio?.addEventListener('change',aplicarFiltroFechas);fechaFin?.addEventListener('change',aplicarFiltroFechas);horaInicioFiltro?.addEventListener('change',aplicarFiltroHorario);horaFinFiltro?.addEventListener('change',aplicarFiltroHorario);
   btnTodoElMes?.addEventListener('click',()=>{configurarRangoFechas();renderDashboard(obtenerDatosFiltrados())});btnTodoElDia?.addEventListener('click',()=>{selectedHourFrom='';selectedHourTo='';horaInicioFiltro.value='';horaFinFiltro.value='';actualizarEstadoFiltroHorario();renderDashboard(obtenerDatosFiltrados())});
