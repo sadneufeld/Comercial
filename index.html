@@ -652,6 +652,46 @@
       font-size:13px;
       letter-spacing:.02em;
     }
+    .home-period-picker {
+      margin:0 0 20px;
+      padding:14px 16px 16px;
+      border:1px solid #e4e7ec;
+      border-radius:16px;
+      background:#f8fafc;
+    }
+    .home-period-picker-title {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-size:11px;
+      font-weight:800;
+      color:#64748b;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      margin-bottom:10px;
+    }
+    .home-period-grid {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    .home-period-picker .filter-label {
+      display:block;
+      font-size:11px;
+      font-weight:600;
+      color:#64748b;
+      margin-bottom:4px;
+    }
+    .home-period-picker .entry-select {
+      height:44px;
+      font-size:13px;
+      padding:0 34px 0 12px;
+      border-radius:11px;
+    }
+    [data-theme="dark"] .home-period-picker { background:#161a23!important; border-color:#262c38!important; }
+    [data-theme="dark"] .home-period-picker-title { color:#9aa5b8!important; }
+    [data-theme="dark"] .home-period-picker .filter-label { color:#9aa5b8!important; }
+    [data-theme="dark"] .home-period-picker .entry-select { background:#262e3d!important; border-color:#485368!important; color:#e7ebf2!important; }
     .home-menu {
       display:grid;
       gap:13px;
@@ -1853,6 +1893,14 @@
             </button>
             <div class="home-brand">
                 <img src="Logo Pasteleria Neufeld.png" alt="Pastelería Neufeld" class="home-logo">
+            </div>
+            <div class="home-period-picker">
+                <div class="home-period-picker-title"><span>🗓️</span><span>Periodo a consultar</span></div>
+                <div class="home-period-grid">
+                    <div><label for="homeYearSelector" class="filter-label">Año</label><select id="homeYearSelector" class="entry-select compact-select"><option value="2026">2026</option><option value="2025">2025</option><option value="2027">2027</option><option value="2028">2028</option></select></div>
+                    <div><label for="homeMonthSelector" class="filter-label">Mes</label><select id="homeMonthSelector" class="entry-select compact-select"><option value="Enero">Enero</option><option value="Febrero">Febrero</option><option value="Marzo">Marzo</option><option value="Abril">Abril</option><option value="Mayo">Mayo</option><option value="Junio">Junio</option><option value="Julio">Julio</option><option value="Agosto">Agosto</option><option value="Septiembre">Septiembre</option><option value="Octubre">Octubre</option><option value="Noviembre">Noviembre</option><option value="Diciembre">Diciembre</option></select></div>
+                </div>
+                <p class="text-xs mt-2" style="color:#94a3b8;font-size:11px;margin-top:8px;">Elige el mes antes de entrar a un módulo; se cargará directamente.</p>
             </div>
             <nav class="home-menu" aria-label="Módulos">
                 <button type="button" class="module-button" data-module="meta"><span class="module-icon">🎯</span><span><strong>Avance de meta</strong><small>Cumplimiento diario por sucursal</small></span><span class="module-arrow">›</span></button>
@@ -3475,7 +3523,7 @@ function showMetaProgress(){
   syncFloatingFilterVisibility();
   window.scrollTo({top:0,left:0,behavior:'auto'});
   if($('metaPeriodLabel'))$('metaPeriodLabel').textContent=loadedMonth?`${loadedMonth} ${loadedYear}`:'Selecciona un periodo desde Filtros';
-  if(!mainData.length){pendingModuleAfterLoad='meta';setTimeout(()=>cargarDesdeTurso(),80);}else{renderMetaProgress();}
+  const coincideMeta=mainData.length>0&&String(loadedYear)===String($('yearSelector').value)&&loadedMonth===selectMes.value; if(!coincideMeta){pendingModuleAfterLoad='meta';setTimeout(()=>cargarDesdeTurso(),80);}else{renderMetaProgress();}
 }
 /* ============ FIN AVANCE DE META ============ */
 function limpiarSucursales(){selectedBranches.clear();selectedSupervisors.clear();actualizarBotonesSupervisores();actualizarBotonesSucursales();if(mainData.length)renderDashboard(obtenerDatosFiltrados());}
@@ -3641,7 +3689,7 @@ function setupSidebar(){
   $('metaBtnTodosMetodosPago')?.addEventListener('click',metaSeleccionarTodosMetodosPago);
   $('metaBtnLimpiarMetodosPago')?.addEventListener('click',metaLimpiarMetodosPago);
   $('themeToggleBtn')?.addEventListener('click',()=>{const isDark=document.documentElement.getAttribute('data-theme')==='dark';aplicarTema(!isDark);});
-  document.querySelectorAll('.module-button').forEach(b=>b.addEventListener('click',()=>{const m=b.dataset.module;if(m==='analysis')openAnalysis();else if(m==='meta')showMetaProgress();else showPlaceholder('Devoluciones','Este módulo quedará disponible próximamente.');}));ensureUniversalDownloadButtons();
+  document.querySelectorAll('.module-button').forEach(b=>b.addEventListener('click',()=>irAModulo(b.dataset.module)));ensureUniversalDownloadButtons();
 }
 function makeSidebarGroup(title,icon,content,open=false){
   const detail=document.createElement('details'); detail.className='sidebar-filter-group'; if(open) detail.open=true;
@@ -3769,9 +3817,28 @@ function closeMetaSidebar(){
   syncFloatingFilterVisibility();
   refreshDashboardLayout();
 }
+/* ===== Selector de periodo en la pantalla principal =====
+   Permite elegir año/mes antes de entrar a un módulo; al elegirlo, ese módulo
+   carga directamente ese periodo (sin pasar primero por el sidebar de filtros). */
+function sincronizarSelectoresDesdeHome(){
+  const hy=$('homeYearSelector')?.value, hm=$('homeMonthSelector')?.value;
+  if(hy){if($('yearSelector'))$('yearSelector').value=hy; if($('metaYearSelector'))$('metaYearSelector').value=hy;}
+  if(hm){if(selectMes)selectMes.value=hm; if($('metaMonthSelector'))$('metaMonthSelector').value=hm;}
+}
+function sincronizarHomeDesdeSelectorPrincipal(){
+  const y=$('yearSelector')?.value, m=selectMes?.value;
+  if(y&&$('homeYearSelector'))$('homeYearSelector').value=y;
+  if(m&&$('homeMonthSelector'))$('homeMonthSelector').value=m;
+}
+function irAModulo(modulo){
+  if(modulo==='returns'){showPlaceholder('Devoluciones','Este módulo quedará disponible próximamente.');return;}
+  sincronizarSelectoresDesdeHome();
+  if(modulo==='analysis')openAnalysis();
+  else if(modulo==='meta')showMetaProgress();
+}
 function showPlaceholder(title,text){closeAnalysisSidebar();closeMetaSidebar();document.body.classList.remove('home-mode');document.body.classList.add('analysis-mode');$('homeScreen')?.classList.add('dashboard-shell-hidden');$('dashboardApp')?.classList.add('dashboard-shell-hidden');$('metaProgressPage')?.classList.add('dashboard-shell-hidden');$('placeholderPage')?.classList.remove('dashboard-shell-hidden');$('placeholderTitle').textContent=title;$('placeholderText').textContent=text;syncFloatingFilterVisibility();}
-function goHome(){closeAnalysisSidebar();closeMetaSidebar();document.body.classList.add('home-mode');document.body.classList.remove('analysis-mode');document.body.style.overflow='hidden';$('dashboardApp')?.classList.add('dashboard-shell-hidden');$('placeholderPage')?.classList.add('dashboard-shell-hidden');$('metaProgressPage')?.classList.add('dashboard-shell-hidden');$('homeScreen')?.classList.remove('dashboard-shell-hidden');syncFloatingFilterVisibility();window.scrollTo({top:0,left:0,behavior:'auto'});}
-function openAnalysis(){closeAnalysisSidebar();closeMetaSidebar();document.body.classList.remove('home-mode');document.body.classList.add('analysis-mode');document.body.style.overflowY='auto';document.body.style.overflowX='hidden';$('homeScreen')?.classList.add('dashboard-shell-hidden');$('placeholderPage')?.classList.add('dashboard-shell-hidden');$('metaProgressPage')?.classList.add('dashboard-shell-hidden');$('dashboardApp')?.classList.remove('dashboard-shell-hidden');syncFloatingFilterVisibility(); const loaded=mainData.length>0; if(!loaded){pendingModuleAfterLoad='analysis';setTimeout(()=>cargarDesdeTurso(),80);}}
+function goHome(){closeAnalysisSidebar();closeMetaSidebar();document.body.classList.add('home-mode');document.body.classList.remove('analysis-mode');document.body.style.overflow='hidden';$('dashboardApp')?.classList.add('dashboard-shell-hidden');$('placeholderPage')?.classList.add('dashboard-shell-hidden');$('metaProgressPage')?.classList.add('dashboard-shell-hidden');$('homeScreen')?.classList.remove('dashboard-shell-hidden');syncFloatingFilterVisibility();sincronizarHomeDesdeSelectorPrincipal();window.scrollTo({top:0,left:0,behavior:'auto'});}
+function openAnalysis(){closeAnalysisSidebar();closeMetaSidebar();document.body.classList.remove('home-mode');document.body.classList.add('analysis-mode');document.body.style.overflowY='auto';document.body.style.overflowX='hidden';$('homeScreen')?.classList.add('dashboard-shell-hidden');$('placeholderPage')?.classList.add('dashboard-shell-hidden');$('metaProgressPage')?.classList.add('dashboard-shell-hidden');$('dashboardApp')?.classList.remove('dashboard-shell-hidden');syncFloatingFilterVisibility(); const loaded=mainData.length>0&&String(loadedYear)===String($('yearSelector').value)&&loadedMonth===selectMes.value; if(!loaded){pendingModuleAfterLoad='analysis';setTimeout(()=>cargarDesdeTurso(),80);}}
 function resetAllFilters(){
   selectedBranches=new Set([...new Set(mainData.map(d=>String(d.sucursalNom||'').trim()).filter(Boolean))]);
   selectedSupervisors=new Set();
