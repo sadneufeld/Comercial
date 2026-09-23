@@ -3198,7 +3198,8 @@ function seleccionarTodasSucursales(render=true){selectedBranches=new Set([...ne
 function diasEnMes(mes,anio){return new Date(Number(anio),Number(mes),0).getDate();}
 function isoFecha(anio,mes,dia){return `${anio}-${String(mes).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;}
 function calcularUltimaFechaConDatos(){let max='';mainData.forEach(d=>{const f=normalizarFecha(d.fecha);if(f>max)max=f;});return max;}
-const METAS_MERGE_BRANCHES = { EIG: 'ING' };
+/* EIG (Expendio Inglaterra) ya no se fusiona con ING (Inglaterra): cada una aparece por separado en Avance de Meta. */
+const METAS_MERGE_BRANCHES = {};
 function metaBranchCode(cod){ return METAS_MERGE_BRANCHES[cod] || cod; }
 function construirMetasPorSucursalFecha(){
   const map=new Map();
