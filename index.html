@@ -20,35 +20,9 @@
     }
     .chart-container.tall { height: 400px; }
     .chart-container.family-chart { height: 300px; }
-    .branch-select { min-height: 120px; }
 
     /* Filtros compactos */
-    .filter-scroll {
-      max-height: none;
-      overflow: visible;
-      scrollbar-width: auto;
-    }
-    .family-button-row { position: relative; }
-    .family-info-popover {
-      position: fixed;
-      z-index: 80;
-      width: min(380px, calc(100vw - 24px));
-      max-height: 360px;
-      overflow: hidden;
-      background: #ffffff;
-      border: 1px solid #cbd5e1;
-      border-radius: 14px;
-      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.16);
-    }
-    .family-info-popover .products-list {
-      max-height: 250px;
-      overflow-y: auto;
-    }
     .filter-card { background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); }
-    .filter-section {
-      border-top: 1px solid #e2e8f0;
-      padding-top: 12px;
-    }
     .filter-status {
       font-size: 11px;
       color: #64748b;
@@ -79,19 +53,6 @@
     .advanced-filter-content > .advanced-filter-inner {
       overflow: hidden;
       min-height: 0;
-    }
-    .advanced-filter-content.open {
-      grid-template-rows: 1fr;
-      opacity: 1;
-      transform: translateY(0);
-    }
-    #advancedFiltersToggle .advanced-chevron {
-      transition: transform .35s cubic-bezier(.22,1,.36,1);
-    }
-    #advancedFiltersToggle[aria-expanded="true"] .advanced-chevron { transform: rotate(180deg); }
-    #advancedFiltersToggle .advanced-settings-icon { transition: transform .45s ease; }
-    #advancedFiltersToggle[aria-expanded="true"] .advanced-settings-icon {
-      transform: rotate(45deg);
     }
     .data-loading-overlay {
       position: fixed;
@@ -239,52 +200,6 @@
     }
 
     /* ===== Refinamiento visual del dashboard ===== */
-    .advanced-filter-shell {
-      position:relative;
-      border:1px solid #c7d2fe;
-      background:linear-gradient(135deg,#fff 0%,#f8faff 58%,#eef2ff 100%);
-      box-shadow:0 4px 18px rgba(79,70,229,.07);
-      transition:border-color .25s ease,box-shadow .25s ease,transform .25s ease;
-    }
-    .advanced-filter-shell:hover, .advanced-filter-shell.is-open {
-      border-color:#a5b4fc;
-      box-shadow:0 9px 26px rgba(79,70,229,.10);
-    }
-    .advanced-filter-toggle { min-height:72px; }
-    .advanced-filter-badge {
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      padding:5px 10px;
-      border-radius:999px;
-      background:#eef2ff;
-      color:#4338ca;
-      border:1px solid #c7d2fe;
-      font-size:11px;
-      font-weight:700;
-      letter-spacing:.02em;
-    }
-    .advanced-filter-badge.active {
-      background:#e0e7ff;
-      color:#3730a3;
-      border-color:#a5b4fc;
-    }
-    .advanced-filter-action {
-      display:inline-flex;
-      align-items:center;
-      gap:7px;
-      padding:8px 12px;
-      border-radius:10px;
-      background:#4f46e5;
-      color:#fff;
-      box-shadow:0 4px 10px rgba(79,70,229,.18);
-      transition:background .2s ease,transform .2s ease,box-shadow .2s ease;
-    }
-    .advanced-filter-action:hover {
-      background:#4338ca;
-      transform:translateY(-1px);
-      box-shadow:0 7px 14px rgba(79,70,229,.22);
-    }
     .dashboard-section-kicker {
       display:flex;
       align-items:center;
@@ -356,58 +271,7 @@
       box-shadow:0 1px 8px rgba(79,70,229,.22);
       transition:width .08s linear;
     }
-    .back-to-filters {
-      position:fixed;
-      right:22px;
-      bottom:22px;
-      z-index:450;
-      display:flex;
-      align-items:center;
-      gap:8px;
-      padding:10px 14px;
-      border:1px solid #c7d2fe;
-      border-radius:999px;
-      background:rgba(255,255,255,.94);
-      color:#4338ca;
-      font-size:12px;
-      font-weight:800;
-      letter-spacing:.01em;
-      box-shadow:0 10px 28px rgba(15,23,42,.12);
-      backdrop-filter:blur(10px);
-      opacity:0;
-      pointer-events:none;
-      transform:translateY(10px) scale(.96);
-      transition:opacity .22s ease,transform .22s ease,box-shadow .22s ease,background .22s ease;
-    }
-    .back-to-filters.show {
-      opacity:1;
-      pointer-events:auto;
-      transform:translateY(0) scale(1);
-    }
-    .back-to-filters:hover {
-      background:#eef2ff;
-      box-shadow:0 14px 32px rgba(79,70,229,.18);
-      transform:translateY(-1px) scale(1.01);
-    }
-    .back-to-filters span:first-child {
-      display:grid;
-      place-items:center;
-      width:22px;
-      height:22px;
-      border-radius:50%;
-      background:#eef2ff;
-      font-size:15px;
-      line-height:1;
-    }
 
-    @media (max-width:640px) {
-      .back-to-filters {
-        right:14px;
-        bottom:14px;
-        padding:9px 12px;
-      }
-      .back-to-filters span:last-child { display:none; }
-    }
     .header-status {
       display:inline-flex;
       align-items:center;
@@ -432,63 +296,8 @@
       box-shadow:0 0 0 4px rgba(16,185,129,.12);
     }
 
-    @media (max-width:640px) {
-      .advanced-filter-toggle { min-height:66px; }
-      .advanced-filter-action { padding:7px 10px; }
-    }
 
     /* ===== Pantalla inicial de selección de mes ===== */
-    .entry-screen {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 28px 18px;
-      background:
-                radial-gradient(circle at 18% 18%, rgba(99,102,241,.13), transparent 32%),
-                radial-gradient(circle at 82% 78%, rgba(16,185,129,.10), transparent 30%),
-                linear-gradient(145deg, #f8fafc 0%, #eef2ff 50%, #f8fafc 100%);
-    }
-    .entry-card {
-      width: min(460px, 100%);
-      position: relative;
-      overflow: hidden;
-      border: 1px solid rgba(203,213,225,.86);
-      border-radius: 28px;
-      background: rgba(255,255,255,.92);
-      box-shadow: 0 30px 80px rgba(15,23,42,.12);
-      backdrop-filter: blur(16px);
-      padding: 34px;
-    }
-    .entry-card::before {
-      content: "";
-      position: absolute;
-      inset: 0 0 auto 0;
-      height: 4px;
-      background: linear-gradient(90deg,#4f46e5,#8b5cf6,#10b981);
-    }
-    .entry-icon {
-      width: 62px;
-      height: 62px;
-      margin: 0 auto 18px;
-      display: grid;
-      place-items: center;
-      border-radius: 20px;
-      background: linear-gradient(135deg,#eef2ff,#f5f3ff);
-      box-shadow: inset 0 0 0 1px rgba(199,210,254,.8);
-      font-size: 29px;
-    }
-    .entry-select-wrap { position: relative; }
-    .entry-select-wrap::after {
-      content: "⌄";
-      position: absolute;
-      right: 16px;
-      top: 50%;
-      transform: translateY(-52%);
-      color: #64748b;
-      pointer-events: none;
-      font-size: 18px;
-    }
     .entry-select {
       appearance: none;
       width: 100%;
@@ -525,17 +334,9 @@
       opacity: .72;
       cursor: wait;
     }
-    .dashboard-shell-hidden { display: none !important; }
     .dashboard-shell-visible { animation: dashboardEnter .48s cubic-bezier(.22,1,.36,1); }
     @keyframes dashboardEnter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-    @media (max-width:640px) {
-      .entry-card {
-        padding:28px 22px;
-        border-radius:22px;
-      }
-      .entry-screen { padding:20px 14px; }
-    }
 
     @media (prefers-reduced-motion: reduce) {
       *,
@@ -631,26 +432,6 @@
       object-fit:contain;
       margin:0 auto 18px;
       display:block;
-    }
-    .home-brand-line {
-      width:72px;
-      height:2px;
-      margin:0 auto 18px;
-      background:linear-gradient(90deg,var(--nf-indigo),var(--nf-cyan));
-      border-radius:99px;
-    }
-    .home-brand h1 {
-      margin:0;
-      color:#111827;
-      font-size:clamp(28px,5vw,38px);
-      font-weight:900;
-      letter-spacing:-.03em;
-    }
-    .home-brand p {
-      margin:8px 0 30px;
-      color:var(--nf-muted);
-      font-size:13px;
-      letter-spacing:.02em;
     }
     .home-period-picker {
       margin:0 0 20px;
@@ -753,16 +534,6 @@
       transform:translateX(4px);
       opacity:.7;
     }
-    .home-footer {
-      display:flex;
-      justify-content:center;
-      gap:8px;
-      margin-top:24px;
-      color:#9ca3af;
-      font-size:9px;
-      letter-spacing:.18em;
-      font-weight:800;
-    }
     .placeholder-screen {
       height:100vh;
       min-height:100vh;
@@ -786,13 +557,6 @@
       max-height:100px;
       object-fit:contain;
       margin:0 auto 20px;
-    }
-    .placeholder-kicker {
-      font-size:10px;
-      font-weight:900;
-      letter-spacing:.2em;
-      color:var(--nf-indigo);
-      margin-bottom:9px;
     }
     .placeholder-card h2 {
       font-size:30px;
@@ -854,13 +618,6 @@
       min-width:0;
       text-align:center;
     }
-    .toolbar-logo-wrap, .toolbar-logo { display:none; }
-    .toolbar-kicker {
-      font-size:10px;
-      font-weight:900;
-      letter-spacing:.20em;
-      color:var(--nf-indigo);
-    }
     .analysis-toolbar h1 {
       margin:0;
       color:#101828;
@@ -917,11 +674,6 @@
       box-shadow:0 14px 28px rgba(79,70,229,.18);
     }
     .toolbar-button:hover .toolbar-button-icon { transform:scale(1.1) rotate(-4deg); }
-    .toolbar-button.primary {
-      background:#eef2ff;
-      border-color:#c7d2fe;
-      color:#3730a3;
-    }
     .analysis-sidebar {
       position:fixed;
       left:0;
@@ -986,7 +738,6 @@
       background:transparent;
       box-shadow:none;
     }
-    .analysis-sidebar-scroll #advancedFilters>.advanced-filter-toggle { display:none; }
     .analysis-sidebar-scroll #advancedFiltersContent {
       display:block!important;
       grid-template-rows:1fr;
@@ -1157,9 +908,6 @@
       color:#475467!important;
     }
     .sidebar-close:hover { transform:translateX(-3px)!important; }
-    .analysis-sidebar-scroll .filter-card>div:first-child>div:first-child {
-      display:none!important;
-    }
     .analysis-sidebar-scroll #advancedFilters { display:block!important; }
     .sidebar-filter-group, .filter-accordion {
       border-radius:14px!important;
@@ -1373,12 +1121,6 @@
       display:flex;
       flex-direction:column;
     }
-    .branch-subfilter-header {
-      align-items:baseline;
-      justify-content:space-between;
-      gap:10px;
-      color:#344054;
-    }
     .branch-filter-combined #supervisorButtons {
       display:flex!important;
       flex-wrap:wrap;
@@ -1489,10 +1231,6 @@
     @media(max-width:1100px) { :root{--nf-sidebar:360px}#dashboardApp, #metaProgressPage{padding-left:44px!important;padding-right:44px!important} }
     @media(max-width:900px) { body.sidebar-open #dashboardApp, body.sidebar-open #metaProgressPage{margin-left:0!important;width:100%!important;transform:none!important}.analysis-sidebar{width:min(410px,88vw)!important;min-width:0!important}#dashboardApp, #metaProgressPage{padding-left:28px!important;padding-right:28px!important} }
     @media(max-width:640px) { #dashboardApp, #metaProgressPage{padding:24px 20px 64px!important}.analysis-sidebar{width:92vw!important}.floating-filters{left:12px!important;top:12px!important}.analysis-toolbar{padding-left:52px!important;padding-right:18px!important} }
-    .analysis-sidebar-scroll #advancedFilters::before,
-    .advanced-filter-shell::before {
-      display:none!important;
-    }
     .analysis-sidebar-scroll .filter-accordion summary,
     .analysis-sidebar-scroll .sidebar-filter-group summary {
       min-height:48px!important;
@@ -1611,7 +1349,6 @@
       padding:0 32px 0 12px!important;
       border-radius:10px!important;
     }
-    .analysis-sidebar-scroll .entry-select-wrap::after { font-size:13px!important; right:12px!important; }
     .analysis-sidebar-scroll .entry-button.sidebar-load-btn {
       min-height:38px!important;
       font-size:12px!important;
@@ -1643,28 +1380,6 @@
     .branch-filter-combined {
       gap:13px!important;
       padding-top:2px;
-    }
-    .branch-subfilter-header {
-      display:block!important;
-      padding:0!important;
-      margin:0 0 2px!important;
-    }
-    .branch-subfilter-header span {
-      display:block!important;
-      font-size:12px!important;
-      font-weight:900!important;
-      line-height:1.25!important;
-      color:#344054!important;
-      text-transform:none!important;
-      letter-spacing:0!important;
-    }
-    .branch-subfilter-header small {
-      display:block!important;
-      margin-top:4px!important;
-      font-size:10px!important;
-      line-height:1.35!important;
-      color:#98a2b3!important;
-      font-weight:600!important;
     }
     .branch-filter-combined #supervisorButtons {
       gap:7px!important;
@@ -1717,27 +1432,6 @@
       z-index:3;
       background:linear-gradient(#fff,#fff 82%,rgba(255,255,255,0));
     }
-    .sidebar-reset-button {
-      width:100%;
-      min-height:42px;
-      border:1px solid #dbe1ea;
-      border-radius:12px;
-      background:linear-gradient(135deg,#f8fafc,#fff);
-      color:#344054;
-      font-size:11px;
-      font-weight:900;
-      letter-spacing:.01em;
-      box-shadow:0 6px 16px rgba(15,23,42,.05);
-      transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease,color .2s ease,background .2s ease;
-    }
-    .sidebar-reset-button:hover {
-      transform:translateY(-2px);
-      border-color:#c7d2fe;
-      color:#4338ca;
-      background:#f8faff;
-      box-shadow:0 10px 22px rgba(79,70,229,.11);
-    }
-    .sidebar-reset-button:active { transform:translateY(0); }
     .sidebar-reset-button-inline {
       flex:0 0 auto;
       min-height:30px;
@@ -1835,8 +1529,7 @@
     [data-theme="dark"] .analysis-sidebar-head h2,
     [data-theme="dark"] .filter-accordion summary,
     [data-theme="dark"] .sidebar-filter-group summary,
-    [data-theme="dark"] .period-filter-title strong,
-    [data-theme="dark"] .branch-subfilter-header span { color:#f1f4f9!important; }
+    [data-theme="dark"] .period-filter-title strong { color:#f1f4f9!important; }
     [data-theme="dark"] .analysis-sidebar-head { background:linear-gradient(135deg,#161a23,#12151d)!important; border-color:#262c38!important; }
     [data-theme="dark"] .sidebar-close { background:#1a1f29!important; border-color:#2a303c!important; color:#dfe4ec!important; }
     [data-theme="dark"] .period-filter-title small,
@@ -1954,11 +1647,6 @@
         <!-- Encabezado y Conexión -->
         <div class="filter-card bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-5 mb-5">
             <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
-                <div>
-                    <div class="text-[10px] font-extrabold uppercase tracking-[0.18em] text-indigo-600 mb-1">Análisis comercial</div>
-                    <h1 class="text-xl sm:text-2xl font-bold text-slate-900 mb-1">Análisis de Ventas</h1>
-                    <p class="text-xs sm:text-sm text-slate-500">Usa los filtros para enfocar el análisis.</p>
-                </div>
                 <span id="dashboardStatus" class="header-status"><span class="dot"></span><span>Esperando datos</span></span>
             </div>
             
@@ -1995,29 +1683,12 @@
                     <div id="branchButtons" class="filter-scroll flex flex-wrap content-start gap-1.5 p-2 border border-slate-200 rounded-lg bg-slate-50 min-h-[48px]">
                         <span class="text-xs text-slate-400 p-2">Carga los datos para ver las sucursales.</span>
                     </div>
-                    <p id="branchFilterStatus" class="hidden"> </p>
                 </div>
             </div>
         </div>
 
         <!-- Filtros secundarios colapsables -->
         <section id="advancedFilters" class="advanced-filter-shell rounded-xl mb-5 overflow-hidden">
-            <button type="button" id="advancedFiltersToggle" aria-expanded="false" aria-controls="advancedFiltersContent"
-                    class="advanced-filter-toggle w-full cursor-pointer px-4 sm:px-5 py-3 flex items-center justify-between gap-4 hover:bg-white/40 transition-colors text-left">
-                <div class="flex items-center gap-3 min-w-0">
-                    <span class="advanced-settings-icon w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-base shrink-0">⚙️</span>
-                    <div class="min-w-0">
-                        <div class="flex flex-wrap items-center gap-2">
-                            <h2 class="text-sm font-bold text-slate-900">Filtros avanzados</h2>
-                        </div>
-                        <p class="text-xs text-slate-500 mt-0.5">Fechas · familias · productos · métodos de pago · lógica MAESTRO/PAGOS</p>
-                    </div>
-                </div>
-                <span class="advanced-filter-action shrink-0 text-xs font-bold">
-                    <span id="advancedFiltersLabel">Mostrar filtros</span>
-                    <span class="advanced-chevron text-base leading-none">⌄</span>
-                </span>
-            </button>
             <div id="advancedFiltersContent" class="advanced-filter-content" aria-hidden="true">
                 <div class="advanced-filter-inner p-3 sm:p-4 bg-slate-50/50 space-y-3">
                     <!-- Filtro de rango de fechas -->
@@ -2466,8 +2137,7 @@
                             <div><label for="metaYearSelector" class="filter-label">Año</label><select id="metaYearSelector" class="entry-select compact-select"><option value="2026">2026</option><option value="2025">2025</option><option value="2027">2027</option><option value="2028">2028</option></select></div>
                             <div><label for="metaMonthSelector" class="filter-label">Mes</label><select id="metaMonthSelector" class="entry-select compact-select"><option value="Enero">Enero</option><option value="Febrero">Febrero</option><option value="Marzo">Marzo</option><option value="Abril">Abril</option><option value="Mayo">Mayo</option><option value="Junio">Junio</option><option value="Julio">Julio</option><option value="Agosto">Agosto</option><option value="Septiembre">Septiembre</option><option value="Octubre">Octubre</option><option value="Noviembre">Noviembre</option><option value="Diciembre">Diciembre</option></select></div>
                         </div>
-                        <button id="metaFetchBtn" type="button" class="entry-button sidebar-load-btn flex items-center justify-center gap-2 px-5 mt-3"><span>Actualizar periodo</span><div id="metaLoadingSpinner" class="spinner hidden" style="width:20px;height:20px;border-width:2px;border-left-color:#fff;"></div></button>
-                        <span id="metaStatusMessage" class="hidden block text-center text-xs font-semibold text-slate-500 mt-2">Obteniendo datos...</span>
+                        <button id="metaFetchBtn" type="button" class="entry-button sidebar-load-btn flex items-center justify-center gap-2 px-5 mt-3"><span>Actualizar periodo</span></button>
                     </div>
                 </div>
             </details>
@@ -2765,7 +2435,7 @@ const dashboardApp = $('dashboardApp');
 const paymentButtons = $('paymentButtons'), familyButtons = $('familyButtons'), branchButtons = $('branchButtons'), supervisorButtons = $('supervisorButtons');
 const productSearch = $('productSearch'), productSuggestions = $('productSuggestions'), selectedProductChips = $('selectedProductChips');
 const productFilterStatus = $('productFilterStatus'), familyFilterStatus = $('familyFilterStatus'), paymentFilterStatus = $('paymentFilterStatus');
-const selectedMonthLabel = $('loadedMonthLabel'), dashboardStatus = $('dashboardStatus');
+const dashboardStatus = $('dashboardStatus');
 const ticketsExcluirPromedioInput = $('ticketsExcluirPromedio');
 const btnTodasFamilias = $('btnTodasFamilias'), btnLimpiarFamilias = $('btnLimpiarFamilias');
 const btnClearProductSearch = $('btnClearProductSearch'), btnClearSelectedProducts = $('btnClearSelectedProducts');
@@ -2826,10 +2496,6 @@ const PALABRAS_CON_ACENTO = (
   'dónde quién cuál cuáles dólar dólares'
 ).split(/\s+/).filter(Boolean);
 
-const ACENTO_A_BASE = {
-  'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u', 'ü': 'u', 'ñ': 'n',
-  'Á': 'A', 'É': 'E', 'Í': 'I', 'Ó': 'O', 'Ú': 'U', 'Ü': 'U', 'Ñ': 'N'
-};
 const ES_ACENTUADA = /[áéíóúüñÁÉÍÓÚÜÑ]/;
 
 /* "Descripción" -> "descripci?n" : la forma exacta en que llega desde la base. */
@@ -2970,7 +2636,6 @@ function rowsToObjects(result){
   const cols=(result?.cols||[]).map(c=>c?.name||'');
   return (result?.rows||[]).map(row=>Object.fromEntries(cols.map((c,i)=>[c,unwrap(row?.[i])] )));
 }
-function sqlArgText(v){return {type:'text',value:String(v)}}
 async function tursoPipeline(requests){
   const url=normalizeTursoUrl(TURSO_DEFAULT_URL);
   const token=TURSO_READONLY_TOKEN;
@@ -3115,7 +2780,7 @@ async function cargarDesdeTurso(opts){
     }
     setStage(`Preparando ${pagosRows.length.toLocaleString('es-MX')} movimientos de pago...`);
     normalizarDatos(maestroRows,pagosRows);
-    loadedMonth=month; loadedYear=String(year); loadedMonthNum=monthNum; if(selectedMonthLabel) selectedMonthLabel.textContent=`${month} ${year}`;
+    loadedMonth=month; loadedYear=String(year); loadedMonthNum=monthNum;
     metasData=(metasRows||[]).map(r=>({codigo:repairText(String(r.nomenclatura??'').trim()),fecha:normalizarFecha(r.fecha),meta:(r.meta===null||r.meta===undefined||r.meta==='')?null:num(r.meta)}));
     prepararAvanceDeMeta();
     if(pendingModuleAfterLoad==='meta'){ activateMetaModule(); } else { prepareDashboardForRendering(); showDashboardAfterLoad(); }
@@ -3184,9 +2849,7 @@ function obtenerDatosFiltrados(){
   }
   return out;
 }
-function obtenerTicketsUnicos(data){return [...new Set(data.map(d=>d.folio))];}
 function totalCobradoDeData(data){return data.reduce((s,d)=>s+num(d._cobradoAsignado),0);}
-function fullTicketRevenue(data){const tickets=obtenerTicketsUnicos(data); let total=0; tickets.forEach(f=>total+=getTicketInfo(f).selected); return total;}
 function cargarFiltroSupervisores(){if(!supervisorButtons)return; const sups=[...new Set(sucursalesCatalogo.map(x=>x.supervisor).filter(x=>x&&x!=='NA'))].sort((a,b)=>a.localeCompare(b,'es')); supervisorButtons.innerHTML=''; sups.forEach(s=>{const b=document.createElement('button');b.type='button';b.dataset.supervisor=s;b.className='compact-filter-btn rounded-lg border bg-white border-slate-300 text-slate-700';b.textContent=s;b.onclick=()=>alternarSupervisor(s);supervisorButtons.appendChild(b);}); selectedSupervisors=new Set(sups); actualizarBotonesSupervisores();}
 function alternarSupervisor(s){if(selectedSupervisors.has(s))selectedSupervisors.delete(s);else selectedSupervisors.add(s); const allowed=new Set(selectedSupervisors.size? sucursalesCatalogo.filter(x=>selectedSupervisors.has(x.supervisor)).map(x=>x.nom):sucursalesCatalogo.map(x=>x.nom)); selectedBranches=selectedSupervisors.size?allowed:new Set(sucursalesCatalogo.map(x=>x.nom)); cargarFiltroSucursales(false); actualizarBotonesSupervisores(); renderDashboard(obtenerDatosFiltrados());}
 function actualizarBotonesSupervisores(){document.querySelectorAll('#supervisorButtons button').forEach(b=>{const a=selectedSupervisors.has(b.dataset.supervisor);b.className=a?'compact-filter-btn rounded-lg border font-semibold bg-indigo-600 border-indigo-600 text-white':'compact-filter-btn rounded-lg border bg-white border-slate-300 text-slate-700';});}
@@ -3198,14 +2861,11 @@ function seleccionarTodasSucursales(render=true){selectedBranches=new Set([...ne
 function diasEnMes(mes,anio){return new Date(Number(anio),Number(mes),0).getDate();}
 function isoFecha(anio,mes,dia){return `${anio}-${String(mes).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;}
 function calcularUltimaFechaConDatos(){let max='';mainData.forEach(d=>{const f=normalizarFecha(d.fecha);if(f>max)max=f;});return max;}
-/* EIG (Expendio Inglaterra) ya no se fusiona con ING (Inglaterra): cada una aparece por separado en Avance de Meta. */
-const METAS_MERGE_BRANCHES = {};
-function metaBranchCode(cod){ return METAS_MERGE_BRANCHES[cod] || cod; }
 function construirMetasPorSucursalFecha(){
   const map=new Map();
   metasData.forEach(r=>{
     if(r.meta===null||!r.codigo||!r.fecha)return;
-    const cod=metaBranchCode(r.codigo);
+    const cod=r.codigo;
     if(!map.has(cod))map.set(cod,new Map());
     const dayMap=map.get(cod);
     dayMap.set(r.fecha,(dayMap.get(r.fecha)||0)+num(r.meta));
@@ -3219,7 +2879,7 @@ function construirVentasPorSucursalFecha(){
     const pay=getTicketInfo(folio);
     if(pay.total===0&&pay.cortesia>0)return;
     const monto=metaSelectedPaymentMethods.size?pay.rows.filter(p=>metaSelectedPaymentMethods.has(p.formaPago)).reduce((s,p)=>s+p.cobrado,0):pay.total;
-    const cod=metaBranchCode(first.sucursalNom); const fecha=normalizarFecha(first.fecha);
+    const cod=first.sucursalNom; const fecha=normalizarFecha(first.fecha);
     if(!cod||!fecha)return;
     if(!map.has(cod))map.set(cod,new Map());
     const dayMap=map.get(cod);
@@ -3309,7 +2969,7 @@ function calcularMeta(codigos){
   return {metaMes,vendido,restante,pctAvance,metaAFecha,vendidoAFecha,pctVsEsperado,promedioDiario,ventaDiariaNecesaria,proyeccionCierre,diasTranscurridos,diasFuturosConMeta,totalDias};
 }
 function metaUniversoSucursales(){
-  return [...new Set([...mainData.map(d=>metaBranchCode(d.sucursalNom)),...metasPorSucursalFecha.keys()].filter(Boolean))];
+  return [...new Set([...mainData.map(d=>d.sucursalNom),...metasPorSucursalFecha.keys()].filter(Boolean))];
 }
 function cargarFiltroMetaSucursales(){
   const el=$('metaBranchButtons'); if(!el)return;
@@ -3659,7 +3319,6 @@ function setupSidebar(){
   }
   enhancePrimaryFilterGroups();
   enhanceFilterAccordions();
-  $('openSidebar')?.addEventListener('click',openAnalysisSidebar);
   $('floatingFiltersButton')?.addEventListener('click',openAnalysisSidebar);
   $('closeSidebar')?.addEventListener('click',closeAnalysisSidebar);
   $('floatingMetaFiltersButton')?.addEventListener('click',openMetaSidebar);
@@ -3672,8 +3331,6 @@ function setupSidebar(){
   $('metaToolbarHomeBtn')?.addEventListener('click',goHome);
   $('metaToolbarAnalysisBtn')?.addEventListener('click',openAnalysis);
   $('metaToolbarReturnsBtn')?.addEventListener('click',()=>showPlaceholder('Devoluciones','Este módulo quedará disponible próximamente.'));
-  $('metaSupTodos')?.addEventListener('click',metaSeleccionarTodo);
-  $('metaSupLimpiar')?.addEventListener('click',metaLimpiarFiltros);
   $('metaSucTodas')?.addEventListener('click',metaSeleccionarTodo);
   $('metaSucLimpiar')?.addEventListener('click',metaLimpiarFiltros);
   $('metaDetalleSelect')?.addEventListener('change',renderMetaDetalleDiario);
@@ -3767,7 +3424,6 @@ function syncFloatingFilterVisibility(){
   if(fm){const visibleMeta=meta&&!meta.classList.contains('dashboard-shell-hidden')&&!document.body.classList.contains('sidebar-open');fm.classList.toggle('hidden-float',!visibleMeta);}
 }
 function refreshDashboardLayout(){
-  document.documentElement.style.setProperty('--nf-sidebar', getComputedStyle(document.documentElement).getPropertyValue('--nf-sidebar') || '410px');
   requestAnimationFrame(()=>window.dispatchEvent(new Event('resize')));
   setTimeout(()=>{
     window.dispatchEvent(new Event('resize'));
@@ -3862,7 +3518,7 @@ function resetAllFilters(){
 }
 /* ===== Easter egg: 5 clics seguidos sobre el logo de la pantalla de inicio ===== */
 function setupEasterEgg(){
-  const logo=$('homeLogo')||document.querySelector('.home-logo'), overlay=$('easterEggOverlay'), closeBtn=$('closeEasterEgg');
+  const logo=document.querySelector('.home-logo'), overlay=$('easterEggOverlay'), closeBtn=$('closeEasterEgg');
   if(!logo||!overlay)return;
   let clics=0, temporizador=null;
   const reiniciar=()=>{clics=0;clearTimeout(temporizador);};
@@ -3884,11 +3540,11 @@ function setupEasterEgg(){
 }
 function setupListeners(){
   setupEasterEgg();
-  btn?.addEventListener('click',()=>{pendingModuleAfterLoad='analysis';cargarDesdeTurso();}); $('changeMonthBtn')?.addEventListener('click',openAnalysisSidebar);
+  btn?.addEventListener('click',()=>{pendingModuleAfterLoad='analysis';cargarDesdeTurso();});
   fechaInicio?.addEventListener('change',aplicarFiltroFechas);fechaFin?.addEventListener('change',aplicarFiltroFechas);horaInicioFiltro?.addEventListener('change',aplicarFiltroHorario);horaFinFiltro?.addEventListener('change',aplicarFiltroHorario);
   btnTodoElMes?.addEventListener('click',()=>{configurarRangoFechas();renderDashboard(obtenerDatosFiltrados())});btnTodoElDia?.addEventListener('click',()=>{selectedHourFrom='';selectedHourTo='';horaInicioFiltro.value='';horaFinFiltro.value='';actualizarEstadoFiltroHorario();renderDashboard(obtenerDatosFiltrados())});
   btnTodasFamilias?.addEventListener('click',seleccionarTodasFamilias);btnLimpiarFamilias?.addEventListener('click',limpiarFamilias);btnClearProductSearch?.addEventListener('click',limpiarBusquedaProducto);btnClearSelectedProducts?.addEventListener('click',limpiarProductosSeleccionados);productSearch?.addEventListener('input',actualizarSugerenciasProductos);productSearch?.addEventListener('focus',actualizarSugerenciasProductos);btnTodosMetodosPago?.addEventListener('click',seleccionarTodosMetodosPago);btnLimpiarMetodosPago?.addEventListener('click',limpiarMetodosPago);
-  ticketsExcluirPromedioInput?.addEventListener('input',()=>{});$('btnAplicarExclusionPromedio')?.addEventListener('click',applyExclusion);$('btnLimpiarExclusionPromedio')?.addEventListener('click',limpiarExclusion);
+  $('btnAplicarExclusionPromedio')?.addEventListener('click',applyExclusion);$('btnLimpiarExclusionPromedio')?.addEventListener('click',limpiarExclusion);
   $('topProductosSelector')?.addEventListener('change',e=>{topProductosLimit=Number(e.target.value)||10;renderTopProductos()});$('evolucionMetricaModo')?.addEventListener('change',e=>{metricaEvolucion=e.target.value==='unidades'?'unidades':'ingreso';renderGraficaEvolucionTemporal()});$('diaSemanaModo')?.addEventListener('change',e=>{modoDiaSemana=e.target.value==='promedio'?'promedio':'total';renderGraficaDiasSemana()});$('horaModo')?.addEventListener('change',e=>{modoHora=e.target.value==='promedio'?'promedio':'total';renderGraficaHoras()});
   document.addEventListener('click',e=>{if(!e.target.closest('#productSearch')&&!e.target.closest('#productSuggestions'))productSuggestions?.classList.add('hidden')});
   document.addEventListener('click',e=>{const b=e.target.closest('[data-table-download]');if(b)downloadTable(b.dataset.tableDownload);const l=e.target.closest('[data-list-download]');if(l)downloadList(l.dataset.listDownload);});
@@ -3966,7 +3622,7 @@ function returnToEntryScreen(){goHome();}
 function startDataLoadingExperience(){const o=$('dataLoadingOverlay');o?.classList.add('show');o?.setAttribute('aria-hidden','false');}
 function stopDataLoadingExperience(){const o=$('dataLoadingOverlay');o?.classList.remove('show');o?.setAttribute('aria-hidden','true');}
 
-goHome(); setupSidebar(); enhancePrimaryFilterGroups(); enhanceFilterAccordions(); bindExclusiveSidebarAccordions(); syncFloatingFilterVisibility(); setupListeners(); poblarFiltrosHora(); cargarFiltroFamilias(); actualizarEstadoFamilias(); actualizarEstadoMetodosPago(); updateDashboardStatus(false);
+goHome(); setupSidebar(); syncFloatingFilterVisibility(); setupListeners(); poblarFiltrosHora(); cargarFiltroFamilias(); actualizarEstadoFamilias(); actualizarEstadoMetodosPago(); updateDashboardStatus(false);
 window.__NEUFELD_RULES__={
   moneySource:'pagos.cobrado (excluyendo forma_pago = Cortesía)',
   cortesiaSource:'pagos.cobrado con forma_pago = Cortesía <-> maestro.tipo_operacion = MERMA COMANDA',
