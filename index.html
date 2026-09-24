@@ -1840,7 +1840,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-emerald-500">
                 <div class="flex items-start justify-between gap-3">
-                    <div><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Total Cobrado</p>
+                    <div><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Total de ingresos</p>
                     <p class="text-2xl font-bold text-slate-800 mt-2" id="kpiVentasTotales">$0.00</p></div>
                     <span class="kpi-icon bg-emerald-50 text-emerald-600">↗</span>
                 </div>
@@ -1872,8 +1872,8 @@
         <!-- Resumen visual: primero contexto general, después detalle -->
         <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 w-full">
             <div class="dashboard-card chart-card-animate bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-                <h3 class="text-lg font-semibold text-slate-800 mb-1">Importe Neto por Familia de Producto</h3>
-                <p class="text-sm text-slate-500 mb-4">Distribución del dinero realmente cobrado por familia de producto.</p>
+                <h3 class="text-lg font-semibold text-slate-800 mb-1">Ingresos por Familia de Producto</h3>
+                <p class="text-sm text-slate-500 mb-4">Distribución del ingreso generado por familia de producto.</p>
                 <div class="chart-container family-chart w-full"><canvas id="chartFamilias"></canvas></div>
             </div>
             <div class="dashboard-card chart-card-animate bg-white rounded-xl shadow-sm border border-slate-200 p-5">
@@ -1885,8 +1885,8 @@
 
         <section class="space-y-6 mb-6 w-full">
             <div class="dashboard-card chart-card-animate bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-                <h3 class="text-lg font-semibold text-slate-800 mb-1">Cobrado por Sucursal</h3>
-                <p class="text-sm text-slate-500 mb-4">Monto total realmente cobrado por cada sucursal.</p>
+                <h3 class="text-lg font-semibold text-slate-800 mb-1">Ingresos por Sucursal</h3>
+                <p class="text-sm text-slate-500 mb-4">Monto de ingresos generados por cada sucursal.</p>
                 <div class="chart-container tall sucursal-compact"><canvas id="chartSucursales"></canvas></div>
             </div>
         </section>
@@ -1947,11 +1947,11 @@
         <section class="space-y-6 mb-6">
             <div class="dashboard-card bg-white rounded-xl shadow-sm border border-slate-200 p-5">
                 <h3 class="text-lg font-semibold text-slate-800 mb-1">Pedidos Call Center por Sucursal</h3>
-                <p class="text-sm text-slate-500 mb-4">Cantidad de pedidos de Call Center registrados por sucursal.</p>
+                <p class="text-sm text-slate-500 mb-4">Cantidad de pedidos de Call Center cobrados por sucursal.</p>
                 <div class="chart-container tall sucursal-compact"><canvas id="chartCallCenter"></canvas></div>
             </div>
             <div class="dashboard-card relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 overflow-hidden flex flex-col lg:w-1/2">
-                <h3 class="text-lg font-semibold text-slate-800 mb-1">Cobrado de Call Center por Sucursal</h3>
+                <h3 class="text-lg font-semibold text-slate-800 mb-1">Ingresos generados de Call Center por Sucursal</h3>
                  <button type="button" class="absolute top-4 right-4 z-10 inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-white/95 hover:bg-slate-50 text-slate-500 hover:text-slate-700 shadow-sm transition-colors" title="Descargar tabla" aria-label="Descargar tabla" data-table-download="tablaCallCenterBody"><span class="download-icon">↓</span></button>
                 <p class="text-sm text-slate-500 mb-4">Resumen de pedidos, ingresos y ticket promedio de Call Center por sucursal.</p>
                 <div class="overflow-y-auto max-h-[420px]">
@@ -2032,12 +2032,12 @@
             
             <div class="dashboard-card bg-white rounded-xl shadow-sm border border-slate-200 p-5">
                 <h3 id="tituloTopProductos" class="text-lg font-semibold text-slate-800 mb-1">Top 10 - Productos con Mayor Ingreso Generado</h3>
-                <p class="text-sm text-slate-500 mb-4">Productos con mayor importe neto teórico.</p>
+                <p class="text-sm text-slate-500 mb-4">Productos que han generado mayor ingreso.</p>
                 <div class="chart-container"><canvas id="chartProductos"></canvas></div>
             </div>
         </section>
 
-        <div class="dashboard-section-kicker">Cortesías y mermas</div>
+        <div class="dashboard-section-kicker">Cortesías</div>
         <!-- Cortesías, donaciones y degustaciones -->
         <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             <div class="dashboard-card relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 overflow-hidden">
@@ -2060,8 +2060,8 @@
                 </div>
             </div>
             <div class="dashboard-card bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-                <h3 class="text-lg font-semibold text-slate-800 mb-1">Importe Neto de Cortesía, Donación y Degustación</h3>
-                <p class="text-sm text-slate-500 mb-4">Valor teórico de los productos registrados como Cortesía, Donación y Degustación, según Importe neto de MAESTRO.</p>
+                <h3 class="text-lg font-semibold text-slate-800 mb-1">Importe de Cortesía, Donación y Degustación</h3>
+                <p class="text-sm text-slate-500 mb-4">Importe de los productos registrados como Cortesía, Donación y Degustación.</p>
                 <div class="chart-container"><canvas id="chartMermaProductos"></canvas></div>
             </div>
         </section>
@@ -2070,9 +2070,9 @@
         <!-- Tablas de promociones y vendedores -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             <div class="dashboard-card relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 overflow-hidden flex flex-col">
-                <h3 class="text-lg font-semibold text-slate-800 mb-1">Cobrado por Promoción</h3>
+                <h3 class="text-lg font-semibold text-slate-800 mb-1">Ingresos por promociones</h3>
                  <button type="button" class="absolute top-4 right-4 z-10 inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-white/95 hover:bg-slate-50 text-slate-500 hover:text-slate-700 shadow-sm transition-colors" title="Descargar tabla" aria-label="Descargar tabla" data-table-download="tablaPromocionesBody"><span class="download-icon">↓</span></button>
-                <p class="text-sm text-slate-500 mb-4">Monto efectivamente cobrado y cantidad de tickets asociados a cada promoción.</p>
+                <p class="text-sm text-slate-500 mb-4">Ingresos generados por ventas de promoción.</p>
                 <div class="overflow-y-auto max-h-[420px]">
                     <table class="w-full text-sm text-left text-slate-600 table-row-hover">
                         <thead class="text-xs text-slate-700 uppercase bg-slate-100 sticky top-0 z-10">
@@ -2084,9 +2084,9 @@
                 </div>
             </div>
             <div class="dashboard-card relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 overflow-hidden flex flex-col">
-                <h3 class="text-lg font-semibold text-slate-800 mb-1">Cobrado por Vendedor</h3>
+                <h3 class="text-lg font-semibold text-slate-800 mb-1">Ingresos por Vendedor</h3>
                  <button type="button" class="absolute top-4 right-4 z-10 inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-white/95 hover:bg-slate-50 text-slate-500 hover:text-slate-700 shadow-sm transition-colors" title="Descargar tabla" aria-label="Descargar tabla" data-table-download="tablaVendedoresBody"><span class="download-icon">↓</span></button>
-                <p class="text-sm text-slate-500 mb-4">Monto efectivamente cobrado, tickets y ticket promedio por vendedor.</p>
+                <p class="text-sm text-slate-500 mb-4">Ingreso, tickets y ticket promedio por vendedor.</p>
                 <div class="overflow-y-auto max-h-[420px]">
                     <table class="w-full text-sm text-left text-slate-600 table-row-hover">
                         <thead class="text-xs text-slate-700 uppercase bg-slate-100 sticky top-0 z-10">
@@ -2105,13 +2105,13 @@
             <div class="chart-card-animate dashboard-card relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 overflow-y-auto max-h-[400px]">
                 <h3 class="text-lg font-semibold text-slate-800 mb-1 pr-10">Top Clientes</h3>
                 <button type="button" class="absolute top-4 right-4 z-10 inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-white/95 hover:bg-slate-50 text-slate-500 hover:text-slate-700 shadow-sm transition-colors" title="Descargar tabla" aria-label="Descargar tabla" data-list-download="listClientesNormales"><span class="download-icon">↓</span></button>
-                <p class="text-sm text-slate-500 mb-4">Clientes con mayor monto efectivamente cobrado.</p>
+                <p class="text-sm text-slate-500 mb-4">Clientes con mayor monto de compras.</p>
                 <ul id="listClientesNormales" class="divide-y divide-slate-100"></ul>
             </div>
             <div class="chart-card-animate dashboard-card relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 overflow-y-auto max-h-[400px]">
                 <h3 class="text-lg font-semibold text-slate-800 mb-1 pr-10">Top Supervisores</h3>
                 <button type="button" class="absolute top-4 right-4 z-10 inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-white/95 hover:bg-slate-50 text-slate-500 hover:text-slate-700 shadow-sm transition-colors" title="Descargar tabla" aria-label="Descargar tabla" data-list-download="listSupervisores"><span class="download-icon">↓</span></button>
-                <p class="text-sm text-slate-500 mb-4">Cobrado efectivamente acumulado por zona.</p>
+                <p class="text-sm text-slate-500 mb-4">Distribución de ingresos acumulados por zona.</p>
                 <ul id="listSupervisores" class="divide-y divide-slate-100"></ul>
             </div>
         </div>
@@ -2264,7 +2264,7 @@
                 </div>
                 <div id="metaKpiPctEsperadoCard" class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-slate-300">
                     <div class="flex items-start justify-between gap-3">
-                        <div><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">% Avance vs. esperado hoy</p>
+                        <div><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">% Avance actual</p>
                         <p class="text-2xl font-bold text-slate-800 mt-2" id="metaKpiPctEsperado">--</p></div>
                         <span class="kpi-icon bg-slate-100 text-slate-500">⚖</span>
                     </div>
@@ -2304,7 +2304,7 @@
                 </table>
             </div>
 
-            <div class="dashboard-section-kicker">Cumplimiento por zona (supervisor)</div>
+            <div class="dashboard-section-kicker">Cumplimiento por zona</div>
             <div class="chart-card-animate dashboard-card relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 mb-6 overflow-x-auto">
                 <h3 class="text-lg font-semibold text-slate-800 mb-1 pr-10">Detalle por zona</h3>
                 <p class="text-sm text-slate-500 mb-4">Suma de todas las sucursales a cargo de cada supervisor.</p>
