@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>(function(){try{var t=localStorage.getItem('nf-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();</script>
-    <title>Neufeld Data Hub · Dashboard de Ventas</title>
+    <title>Neufeld · Comercial</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -1964,7 +1964,7 @@
             
             <div class="space-y-5">
                 <div class="period-filter-block">
-                    <div class="period-filter-title"><span>🗓️</span><div><strong>Periodo de análisis</strong><small>Elige año y mes para cargar la información desde Turso.</small></div></div>
+                    <div class="period-filter-title"><span>🗓️</span><div><strong>Periodo de análisis</strong><small>Elige año y mes para cargar la información.</small></div></div>
                     <div class="grid grid-cols-2 gap-3">
                         <div><label for="yearSelector" class="filter-label">Año</label><select id="yearSelector" class="entry-select compact-select"><option value="2026" selected>2026</option><option value="2025">2025</option><option value="2027">2027</option><option value="2028">2028</option></select></div>
                         <div><label for="monthSelector" class="filter-label">Mes</label><select id="monthSelector" class="entry-select compact-select"><option value="Enero">Enero</option><option value="Febrero">Febrero</option><option value="Marzo">Marzo</option><option value="Abril">Abril</option><option value="Mayo">Mayo</option><option value="Junio">Junio</option><option value="Julio">Julio</option><option value="Agosto">Agosto</option><option value="Septiembre" selected>Septiembre</option><option value="Octubre">Octubre</option><option value="Noviembre">Noviembre</option><option value="Diciembre">Diciembre</option></select></div>
@@ -3058,7 +3058,7 @@ async function cargarDesdeTurso(opts){
     let maestroRows=[], pagosRows=[], metasRows=null;
     let datos=await buscarEnCache(year,monthNum);
     if(!datos){
-      setStage(`Consultando MAESTRO · ${month} ${year}...`);
+      setStage(`Consultando base de datos · ${month} ${year}...`);
       maestroRows=await consultarMaestro(year,monthNum);
       if(!maestroRows.length){
         // Una sola consulta (con índice, una sola lectura) para hallar el periodo anterior más reciente con datos.
@@ -3070,7 +3070,7 @@ async function cargarDesdeTurso(opts){
         year=Number(mt[1]); monthNum=Number(mt[2]); month=NOMBRES_MESES[monthNum-1];
         datos=await buscarEnCache(year,monthNum);
         if(!datos){
-          setStage(`Consultando MAESTRO · ${month} ${year}...`);
+          setStage(`Consultando base de datos · ${month} ${year}...`);
           maestroRows=await consultarMaestro(year,monthNum);
           if(!maestroRows.length)throw new Error(sinDatosMsg());
         }
@@ -3084,7 +3084,7 @@ async function cargarDesdeTurso(opts){
       maestroRows=datos.maestroRows; pagosRows=datos.pagosRows; metasRows=datos.metasRows||null;
       setStage(`Usando datos guardados (hace ${edadCache(Date.now()-datos.ts)}) · ${maestroRows.length.toLocaleString('es-MX')} renglones...`);
     }else{
-      setStage(`Encontrados ${maestroRows.length.toLocaleString('es-MX')} renglones. Consultando PAGOS...`);
+      setStage(`Encontrados ${maestroRows.length.toLocaleString('es-MX')} renglones. Consultando formas de pago...`);
       pagosRows=await supabaseRpc('get_pagos_periodo',{p_anio:year,p_mes:monthNum});
       try{
         setStage(`Consultando metas del periodo...`);
