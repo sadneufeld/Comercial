@@ -1126,10 +1126,8 @@
     .filter-accordion-body .p-4, .sidebar-filter-group-body .p-4 { padding:11px!important; }
     .filter-accordion-body .space-y-5, .sidebar-filter-group-body .space-y-5 { gap:8px!important; }
     .analysis-sidebar-scroll #advancedFiltersContent>.advanced-filter-inner { gap:14px!important; }
-    #metaSidebarMount {
-      display:flex!important;
-      flex-direction:column!important;
-      gap:14px!important;
+    #metaSidebarMount > * + * {
+      margin-top:14px!important;
     }
     .meta-filter-status-row {
       display:flex;
@@ -1613,6 +1611,12 @@
     [data-theme="dark"] .universal-download { color:#a5b4fc!important; }
     [data-theme="dark"] ::placeholder { color:#6b7688!important; }
     [data-theme="dark"] .meta-progress-track { background:#20242e!important; }
+    .table-row-hover tbody tr.meta-row-cumplida { background:#ecfdf5; }
+    .table-row-hover tbody tr.meta-row-cumplida:hover { background:#d1fae5; }
+    .meta-row-cumplida td { font-weight:800!important; color:#065f46!important; }
+    [data-theme="dark"] .table-row-hover tbody tr.meta-row-cumplida { background:rgba(16,185,129,.14)!important; }
+    [data-theme="dark"] .table-row-hover tbody tr.meta-row-cumplida:hover { background:rgba(16,185,129,.22)!important; }
+    [data-theme="dark"] .meta-row-cumplida td { color:#6ee7b7!important; }
     [data-theme="dark"] .header-status { background:#1a1f29!important; border-color:#2a303c!important; color:#dfe4ec!important; }
     [data-theme="dark"] .sidebar-reset-button-inline { background:linear-gradient(135deg,#1a1f29,#1c212c)!important; border-color:#2a303c!important; color:#dfe4ec!important; }
     [data-theme="dark"] .sidebar-reset-button-inline:hover { background:#20263a!important; border-color:#4f46e5!important; color:#a5b4fc!important; }
@@ -2417,7 +2421,7 @@
                 <p class="text-sm text-slate-500 mb-4">Ordenado de mayor a menor % de avance.</p>
                 <table class="w-full text-sm text-left text-slate-600 table-row-hover">
                     <thead class="text-xs text-slate-700 uppercase bg-slate-100 sticky top-0 z-10">
-                        <tr><th class="py-3 px-3">Sucursal</th><th class="py-3 px-3 text-right">Meta mes</th><th class="py-3 px-3 text-right">Vendido</th><th class="py-3 px-3 text-right">Restante</th><th class="py-3 px-3 text-right">% Avance</th><th class="py-3 px-3">Progreso</th><th class="py-3 px-3 text-right">Venta diaria necesaria</th></tr>
+                        <tr><th class="py-3 px-3">Sucursal</th><th class="py-3 px-3 text-right">Meta mes</th><th class="py-3 px-3 text-right">Vendido</th><th class="py-3 px-3 text-right">Restante</th><th class="py-3 px-3 text-right">% Avance</th><th class="py-3 px-3">Progreso</th><th class="py-3 px-3 text-right">Promedio diario</th><th class="py-3 px-3 text-right">Venta diaria necesaria</th></tr>
                     </thead>
                     <tbody id="tablaMetaSucursalesBody" class="divide-y divide-slate-100"></tbody>
                     <tfoot id="tablaMetaSucursalesFoot" class="sticky bottom-0 bg-slate-100 border-t-2 border-slate-300 font-bold text-slate-800"></tfoot>
@@ -3144,6 +3148,11 @@ function renderMetaProgress(){
   vacio?.classList.add('dashboard-shell-hidden'); contenido?.classList.remove('dashboard-shell-hidden');
   const codigos=[...metaSelectedBranches];
   const total=calcularMeta(codigos);
+  const anioActual=Number(loadedYear)||new Date().getFullYear();
+  const mesNumActual=loadedMonthNum||1;
+  const ultimoDiaMesISO=isoFecha(anioActual,mesNumActual,diasEnMes(mesNumActual,anioActual));
+  const mesFinalizado=!!ultimaFechaVenta&&ultimaFechaVenta>=ultimoDiaMesISO;
+  const metaAlcanzada=total.metaMes>0&&total.pctAvance>=100;
   const sinMetas=total.metaMes<=0 && metasData.length===0;
   $('metaSinDatosAviso')?.classList.toggle('dashboard-shell-hidden',!sinMetas);
   $('metaKpiMetaMes').textContent=money(total.metaMes);
@@ -3152,10 +3161,16 @@ function renderMetaProgress(){
   $('metaKpiPct').textContent=total.metaMes>0?`${total.pctAvance.toFixed(1)}%`:'--';
   $('metaKpiPromedioDiario').textContent=money(total.promedioDiario);
   $('metaKpiVentaNecesaria').textContent=total.diasFuturosConMeta>0?money(total.ventaDiariaNecesaria):(total.metaMes>0?'Meta cumplida 🎉':'--');
-  $('metaKpiPctEsperado').textContent=total.metaAFecha>0?`${total.pctVsEsperado.toFixed(1)}%`:'--';
+  $('metaKpiPctEsperado').textContent=mesFinalizado&&total.metaMes>0
+    ?(metaAlcanzada?'Meta cumplida 🎉':'Meta no alcanzada')
+    :(total.metaAFecha>0?`${total.pctVsEsperado.toFixed(1)}%`:'--');
   $('metaKpiProyeccion').textContent=money(total.proyeccionCierre);
   const semCard=$('metaKpiPctEsperadoCard');
-  if(semCard){semCard.classList.remove('border-l-emerald-500','border-l-amber-500','border-l-red-500','border-l-slate-300');semCard.classList.add(total.metaAFecha>0?semaforoBorde(total.pctVsEsperado):'border-l-slate-300');}
+  if(semCard){
+    semCard.classList.remove('border-l-emerald-500','border-l-amber-500','border-l-red-500','border-l-slate-300');
+    if(mesFinalizado&&total.metaMes>0) semCard.classList.add(metaAlcanzada?'border-l-emerald-500':'border-l-red-500');
+    else semCard.classList.add(total.metaAFecha>0?semaforoBorde(total.pctVsEsperado):'border-l-slate-300');
+  }
   const projCard=$('metaKpiProyeccionCard');
   if(projCard){projCard.classList.remove('border-l-emerald-500','border-l-amber-500','border-l-red-500','border-l-slate-300');projCard.classList.add(total.metaMes>0?semaforoBorde(total.proyeccionCierre/Math.max(1,total.metaMes)*100):'border-l-slate-300');}
   const fill=$('metaProgressFillTotal');
@@ -3167,18 +3182,22 @@ function renderMetaProgress(){
   const filasSucursal=codigos.map(cod=>({cod,calc:calcularMeta([cod])})).sort((a,b)=>b.calc.pctAvance-a.calc.pctAvance);
   const bodySuc=$('tablaMetaSucursalesBody');
   if(bodySuc){
-    bodySuc.innerHTML=filasSucursal.length?filasSucursal.map(({cod,calc})=>`<tr>
-      <td class="py-2.5 px-3 font-medium text-slate-700">${escapeHtml(catMap[cod]?.sucursal||cod)}</td>
+    bodySuc.innerHTML=filasSucursal.length?filasSucursal.map(({cod,calc})=>{
+      const cumplida=calc.metaMes>0&&calc.pctAvance>=100;
+      return `<tr class="${cumplida?'meta-row-cumplida':''}">
+      <td class="py-2.5 px-3 font-medium text-slate-700">${escapeHtml(catMap[cod]?.sucursal||cod)}${cumplida?' <span title="Meta cumplida" aria-hidden="true">🏆</span>':''}</td>
       <td class="py-2.5 px-3 text-right">${calc.metaMes>0?money(calc.metaMes):'--'}</td>
       <td class="py-2.5 px-3 text-right font-bold text-indigo-600">${money(calc.vendido)}</td>
       <td class="py-2.5 px-3 text-right text-amber-600">${calc.metaMes>0?money(calc.restante):'--'}</td>
       <td class="py-2.5 px-3 text-right font-semibold ${calc.metaMes>0?semaforoTexto(calc.pctVsEsperado):'text-slate-400'}">${calc.metaMes>0?calc.pctAvance.toFixed(1)+'%':'--'}</td>
       <td class="py-2.5 px-3"><div class="meta-progress-track sm"><div class="meta-progress-fill ${calc.metaMes>0?semaforoClase(calc.pctVsEsperado):'ok'}" style="width:${calc.metaMes>0?Math.min(100,calc.pctAvance):0}%"></div></div></td>
+      <td class="py-2.5 px-3 text-right">${money(calc.promedioDiario)}</td>
       <td class="py-2.5 px-3 text-right">${calc.diasFuturosConMeta>0?money(calc.ventaDiariaNecesaria):(calc.metaMes>0?'✔':'--')}</td>
-    </tr>`).join(''):'<tr><td colspan="7" class="py-4 px-3 text-center text-slate-400">Sin sucursales seleccionadas.</td></tr>';
+    </tr>`;
+    }).join(''):'<tr><td colspan="8" class="py-4 px-3 text-center text-slate-400">Sin sucursales seleccionadas.</td></tr>';
   }
   const footSuc=$('tablaMetaSucursalesFoot');
-  if(footSuc)footSuc.innerHTML=`<tr><td class="py-2.5 px-3">TOTAL</td><td class="py-2.5 px-3 text-right">${money(total.metaMes)}</td><td class="py-2.5 px-3 text-right">${money(total.vendido)}</td><td class="py-2.5 px-3 text-right">${money(total.restante)}</td><td class="py-2.5 px-3 text-right">${total.metaMes>0?total.pctAvance.toFixed(1)+'%':'--'}</td><td></td><td class="py-2.5 px-3 text-right">${total.diasFuturosConMeta>0?money(total.ventaDiariaNecesaria):'--'}</td></tr>`;
+  if(footSuc)footSuc.innerHTML=`<tr><td class="py-2.5 px-3">TOTAL</td><td class="py-2.5 px-3 text-right">${money(total.metaMes)}</td><td class="py-2.5 px-3 text-right">${money(total.vendido)}</td><td class="py-2.5 px-3 text-right">${money(total.restante)}</td><td class="py-2.5 px-3 text-right">${total.metaMes>0?total.pctAvance.toFixed(1)+'%':'--'}</td><td></td><td class="py-2.5 px-3 text-right">${money(total.promedioDiario)}</td><td class="py-2.5 px-3 text-right">${total.diasFuturosConMeta>0?money(total.ventaDiariaNecesaria):'--'}</td></tr>`;
 
   const gruposSup={};
   codigos.forEach(cod=>{const sup=catMap[cod]?.supervisor||'Sin supervisor';(gruposSup[sup]=gruposSup[sup]||[]).push(cod);});
