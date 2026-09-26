@@ -2379,7 +2379,7 @@
                         <span class="kpi-icon bg-blue-50 text-blue-600">Σ</span>
                     </div>
                 </div>
-                <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-purple-500">
+                <div id="metaKpiVentaNecesariaCard" class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-purple-500">
                     <div class="flex items-start justify-between gap-3">
                         <div><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Venta diaria necesaria</p>
                         <p class="text-2xl font-bold text-slate-800 mt-2" id="metaKpiVentaNecesaria">$0.00</p></div>
@@ -3160,16 +3160,20 @@ function renderMetaProgress(){
   $('metaKpiRestante').textContent=money(total.restante);
   $('metaKpiPct').textContent=total.metaMes>0?`${total.pctAvance.toFixed(1)}%`:'--';
   $('metaKpiPromedioDiario').textContent=money(total.promedioDiario);
-  $('metaKpiVentaNecesaria').textContent=total.diasFuturosConMeta>0?money(total.ventaDiariaNecesaria):(total.metaMes>0?'Meta cumplida 🎉':'--');
-  $('metaKpiPctEsperado').textContent=mesFinalizado&&total.metaMes>0
+  $('metaKpiVentaNecesaria').textContent=mesFinalizado&&total.metaMes>0
     ?(metaAlcanzada?'Meta cumplida 🎉':'Meta no alcanzada')
-    :(total.metaAFecha>0?`${total.pctVsEsperado.toFixed(1)}%`:'--');
+    :(total.diasFuturosConMeta>0?money(total.ventaDiariaNecesaria):(total.metaMes>0?'Meta cumplida 🎉':'--'));
+  const ventaNecesariaCard=$('metaKpiVentaNecesariaCard');
+  if(ventaNecesariaCard){
+    ventaNecesariaCard.classList.remove('border-l-emerald-500','border-l-red-500','border-l-purple-500');
+    ventaNecesariaCard.classList.add(mesFinalizado&&total.metaMes>0?(metaAlcanzada?'border-l-emerald-500':'border-l-red-500'):'border-l-purple-500');
+  }
+  $('metaKpiPctEsperado').textContent=total.metaAFecha>0?`${total.pctVsEsperado.toFixed(1)}%`:'--';
   $('metaKpiProyeccion').textContent=money(total.proyeccionCierre);
   const semCard=$('metaKpiPctEsperadoCard');
   if(semCard){
     semCard.classList.remove('border-l-emerald-500','border-l-amber-500','border-l-red-500','border-l-slate-300');
-    if(mesFinalizado&&total.metaMes>0) semCard.classList.add(metaAlcanzada?'border-l-emerald-500':'border-l-red-500');
-    else semCard.classList.add(total.metaAFecha>0?semaforoBorde(total.pctVsEsperado):'border-l-slate-300');
+    semCard.classList.add(total.metaAFecha>0?semaforoBorde(total.pctVsEsperado):'border-l-slate-300');
   }
   const projCard=$('metaKpiProyeccionCard');
   if(projCard){projCard.classList.remove('border-l-emerald-500','border-l-amber-500','border-l-red-500','border-l-slate-300');projCard.classList.add(total.metaMes>0?semaforoBorde(total.proyeccionCierre/Math.max(1,total.metaMes)*100):'border-l-slate-300');}
