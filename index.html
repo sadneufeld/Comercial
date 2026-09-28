@@ -1767,7 +1767,7 @@
                 <div class="period-filter-block">
                     <div class="period-filter-title"><span>🗓️</span><div><strong>Periodo de análisis</strong><small>Elige año y mes para cargar la información.</small></div></div>
                     <div class="grid grid-cols-2 gap-3">
-                        <div><label for="yearSelector" class="filter-label">Año</label><select id="yearSelector" class="entry-select compact-select"><option value="2026" selected>2026</option><option value="2025">2025</option><option value="2027">2027</option><option value="2028">2028</option></select></div>
+                        <div><label for="yearSelector" class="filter-label">Año</label><select id="yearSelector" class="entry-select compact-select"><option value="2026" selected>2026</option><option value="2027">2027</option></select></div>
                         <div><label for="monthSelector" class="filter-label">Mes</label><select id="monthSelector" class="entry-select compact-select"><option value="Enero">Enero</option><option value="Febrero">Febrero</option><option value="Marzo">Marzo</option><option value="Abril">Abril</option><option value="Mayo">Mayo</option><option value="Junio">Junio</option><option value="Julio">Julio</option><option value="Agosto">Agosto</option><option value="Septiembre" selected>Septiembre</option><option value="Octubre">Octubre</option><option value="Noviembre">Noviembre</option><option value="Diciembre">Diciembre</option></select></div>
                     </div>
                     <button id="fetchBtn" class="entry-button sidebar-load-btn flex items-center justify-center gap-2 px-5 mt-3"><span id="btnText">Actualizar periodo</span><div id="loadingSpinner" class="spinner hidden" style="width:20px;height:20px;border-width:2px;border-left-color:#fff;"></div></button>
@@ -1873,7 +1873,7 @@
                                 <label for="productSearch" class="block text-sm font-semibold text-slate-800 mb-2">🔎 Buscar producto específico</label>
                                 <div class="flex flex-col md:flex-row gap-2">
                                     <div class="relative flex-1">
-                                        <input id="productSearch" type="text" autocomplete="off" placeholder="Escribe el nombre o descripción del producto..." class="w-full border border-slate-300 rounded-lg shadow-sm py-2.5 px-3 pr-10 focus:ring-indigo-500 focus:border-indigo-500">
+                                        <input id="productSearch" type="text" autocomplete="off" placeholder="Escribe el nombre del producto..." class="w-full border border-slate-300 rounded-lg shadow-sm py-2.5 px-3 pr-10 focus:ring-indigo-500 focus:border-indigo-500">
                                         <button type="button" id="btnClearProductSearch" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 text-lg" title="Limpiar búsqueda">×</button>
                                     </div>
                                     <button type="button" id="btnClearSelectedProducts" class="shrink-0 px-4 py-2.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 text-sm font-medium transition-colors">
@@ -1927,7 +1927,7 @@
                                         <span class="text-lg">💳</span>
                                         <h2 class="text-sm font-semibold text-slate-800">Métodos de pago</h2>
                                     </div>
-                                    <p class="text-xs text-slate-500 mt-1">Filtra por movimientos de pago; el importe proviene de PAGOS.cobrado.</p>
+                                    <p class="text-xs text-slate-500 mt-1">Filtra por las diferentes formas de pago.</p>
                                 </div>
                                 <div class="flex gap-2">
                                     <button type="button" id="btnTodosMetodosPago" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-md border border-slate-200">Todos</button>
@@ -1937,7 +1937,7 @@
                             <div id="paymentButtons" class="flex flex-wrap content-start gap-1.5 p-2 border border-slate-200 rounded-lg bg-slate-50 min-h-[46px]">
                                 <span class="text-xs text-slate-400 p-2">Carga los datos para ver los métodos de pago.</span>
                             </div>
-                            <p id="paymentFilterStatus" class="filter-status mt-1">Carga los datos para habilitar el filtro de métodos de pago.</p><p class="filter-status mt-1">Desconocido se conserva como cobro válido y representa anticipos cuyo método original no está disponible.</p>
+                            <p id="paymentFilterStatus" class="filter-status mt-1">Carga los datos para habilitar el filtro de métodos de pago.</p><p class="filter-status mt-1">"Desconocido" representa anticipos en pedidos cuyo método original no está registrado.</p>
                         </div>
                     </div>
 
@@ -1970,7 +1970,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-emerald-500">
                 <div class="flex items-start justify-between gap-3">
-                    <div><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Total Cobrado</p>
+                    <div><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Total de Ingresos</p>
                     <p class="text-2xl font-bold text-slate-800 mt-2" id="kpiVentasTotales">$0.00</p></div>
                     <span class="kpi-icon bg-emerald-50 text-emerald-600">↗</span>
                 </div>
@@ -2002,8 +2002,8 @@
         <!-- Resumen visual: primero contexto general, después detalle -->
         <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 w-full">
             <div class="dashboard-card chart-card-animate bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-                <h3 class="text-lg font-semibold text-slate-800 mb-1">Importe Neto por Familia de Producto</h3>
-                <p class="text-sm text-slate-500 mb-4">Distribución del dinero realmente cobrado por familia de producto.</p>
+                <h3 class="text-lg font-semibold text-slate-800 mb-1">Ingresos por Familia de Producto</h3>
+                <p class="text-sm text-slate-500 mb-4">Distribución del ingreso generado por familia de producto.</p>
                 <div class="chart-container family-chart w-full"><canvas id="chartFamilias"></canvas></div>
             </div>
             <div class="dashboard-card chart-card-animate bg-white rounded-xl shadow-sm border border-slate-200 p-5">
@@ -2015,8 +2015,8 @@
 
         <section class="space-y-6 mb-6 w-full">
             <div class="dashboard-card chart-card-animate bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-                <h3 class="text-lg font-semibold text-slate-800 mb-1">Cobrado por Sucursal</h3>
-                <p class="text-sm text-slate-500 mb-4">Monto total realmente cobrado por cada sucursal.</p>
+                <h3 class="text-lg font-semibold text-slate-800 mb-1">Ingresos por Sucursal</h3>
+                <p class="text-sm text-slate-500 mb-4">Ingresos generados por cada sucursal.</p>
                 <div class="chart-container tall sucursal-compact"><canvas id="chartSucursales"></canvas></div>
             </div>
         </section>
@@ -2152,7 +2152,7 @@
                                 <th class="py-3 px-3 w-16 text-center">#</th>
                                 <th class="py-3 px-3">Producto</th>
                                 <th class="py-3 px-3 text-right">Unidades</th>
-                                <th class="py-3 px-3 text-right">Importe neto ($)</th>
+                                <th class="py-3 px-3 text-right">Importe ($)</th>
                             </tr>
                         </thead>
                         <tbody id="tablaUnidadesProductosBody" class="divide-y divide-slate-100"></tbody>
@@ -2162,7 +2162,7 @@
             
             <div class="dashboard-card bg-white rounded-xl shadow-sm border border-slate-200 p-5">
                 <h3 id="tituloTopProductos" class="text-lg font-semibold text-slate-800 mb-1">Top 10 - Productos con Mayor Ingreso Generado</h3>
-                <p class="text-sm text-slate-500 mb-4">Productos con mayor importe neto teórico.</p>
+                <p class="text-sm text-slate-500 mb-4">Productos que generaron mayor ingreso.</p>
                 <div class="chart-container"><canvas id="chartProductos"></canvas></div>
             </div>
         </section>
@@ -2173,7 +2173,7 @@
             <div class="dashboard-card relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 overflow-hidden">
                 <h3 class="text-lg font-semibold text-slate-800 mb-1">Productos de Cortesía, Donación y Degustación</h3>
                  <button type="button" class="absolute top-4 right-4 z-10 inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-white/95 hover:bg-slate-50 text-slate-500 hover:text-slate-700 shadow-sm transition-colors" title="Descargar tabla" aria-label="Descargar tabla" data-table-download="tablaMermaProductosBody"><span class="download-icon">↓</span></button>
-                <p class="text-sm text-slate-500 mb-4">Productos registrados como Cortesía, Donación y Degustación, agrupados por producto y ordenados por unidades.</p>
+                <p class="text-sm text-slate-500 mb-4">Productos cobrados como Cortesía, Donación y Degustación, agrupados por producto y ordenados por unidades.</p>
                 <div class="overflow-x-auto overflow-y-auto max-h-[420px]">
                     <table class="w-full text-sm text-left text-slate-600 table-row-hover">
                         <thead class="text-xs text-slate-700 uppercase bg-slate-100 sticky top-0 z-10">
@@ -2181,7 +2181,7 @@
                                 <th class="py-3 px-3 w-16 text-center">#</th>
                                 <th class="py-3 px-3">Producto</th>
                                 <th class="py-3 px-3 text-right">Unidades</th>
-                                <th class="py-3 px-3 text-right">Importe neto ($)</th>
+                                <th class="py-3 px-3 text-right">Importe ($)</th>
                             </tr>
                         </thead>
                         <tbody id="tablaMermaProductosBody" class="divide-y divide-slate-100"></tbody>
@@ -2190,8 +2190,8 @@
                 </div>
             </div>
             <div class="dashboard-card bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-                <h3 class="text-lg font-semibold text-slate-800 mb-1">Importe Neto de Cortesía, Donación y Degustación</h3>
-                <p class="text-sm text-slate-500 mb-4">Valor teórico de los productos registrados como Cortesía, Donación y Degustación, según Importe neto de MAESTRO.</p>
+                <h3 class="text-lg font-semibold text-slate-800 mb-1">Importe de Cortesía, Donación y Degustación</h3>
+                <p class="text-sm text-slate-500 mb-4">Valor de los productos cobrados como Cortesía, Donación y Degustación.</p>
                 <div class="chart-container"><canvas id="chartMermaProductos"></canvas></div>
             </div>
         </section>
@@ -2202,7 +2202,7 @@
             <div class="dashboard-card relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 overflow-hidden flex flex-col">
                 <h3 class="text-lg font-semibold text-slate-800 mb-1">Cobrado por Promoción</h3>
                  <button type="button" class="absolute top-4 right-4 z-10 inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-white/95 hover:bg-slate-50 text-slate-500 hover:text-slate-700 shadow-sm transition-colors" title="Descargar tabla" aria-label="Descargar tabla" data-table-download="tablaPromocionesBody"><span class="download-icon">↓</span></button>
-                <p class="text-sm text-slate-500 mb-4">Monto efectivamente cobrado y cantidad de tickets asociados a cada promoción.</p>
+                <p class="text-sm text-slate-500 mb-4">Ingreso y cantidad de tickets asociados a cada promoción.</p>
                 <div class="overflow-y-auto max-h-[420px]">
                     <table class="w-full text-sm text-left text-slate-600 table-row-hover">
                         <thead class="text-xs text-slate-700 uppercase bg-slate-100 sticky top-0 z-10">
@@ -2214,9 +2214,9 @@
                 </div>
             </div>
             <div class="dashboard-card relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 overflow-hidden flex flex-col">
-                <h3 class="text-lg font-semibold text-slate-800 mb-1">Cobrado por Vendedor</h3>
+                <h3 class="text-lg font-semibold text-slate-800 mb-1">Ingresos por Vendedor</h3>
                  <button type="button" class="absolute top-4 right-4 z-10 inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-white/95 hover:bg-slate-50 text-slate-500 hover:text-slate-700 shadow-sm transition-colors" title="Descargar tabla" aria-label="Descargar tabla" data-table-download="tablaVendedoresBody"><span class="download-icon">↓</span></button>
-                <p class="text-sm text-slate-500 mb-4">Monto efectivamente cobrado, tickets y ticket promedio por vendedor.</p>
+                <p class="text-sm text-slate-500 mb-4">Monto cobrado, tickets y ticket promedio por cada vendedor.</p>
                 <div class="overflow-y-auto max-h-[420px]">
                     <table class="w-full text-sm text-left text-slate-600 table-row-hover">
                         <thead class="text-xs text-slate-700 uppercase bg-slate-100 sticky top-0 z-10">
@@ -2235,13 +2235,13 @@
             <div class="chart-card-animate dashboard-card relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 overflow-y-auto max-h-[400px]">
                 <h3 class="text-lg font-semibold text-slate-800 mb-1 pr-10">Top Clientes</h3>
                 <button type="button" class="absolute top-4 right-4 z-10 inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-white/95 hover:bg-slate-50 text-slate-500 hover:text-slate-700 shadow-sm transition-colors" title="Descargar tabla" aria-label="Descargar tabla" data-list-download="listClientesNormales"><span class="download-icon">↓</span></button>
-                <p class="text-sm text-slate-500 mb-4">Clientes con mayor monto efectivamente cobrado.</p>
+                <p class="text-sm text-slate-500 mb-4">Clientes con mayor consumo.</p>
                 <ul id="listClientesNormales" class="divide-y divide-slate-100"></ul>
             </div>
             <div class="chart-card-animate dashboard-card relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 overflow-y-auto max-h-[400px]">
                 <h3 class="text-lg font-semibold text-slate-800 mb-1 pr-10">Top Supervisores</h3>
                 <button type="button" class="absolute top-4 right-4 z-10 inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-white/95 hover:bg-slate-50 text-slate-500 hover:text-slate-700 shadow-sm transition-colors" title="Descargar tabla" aria-label="Descargar tabla" data-list-download="listSupervisores"><span class="download-icon">↓</span></button>
-                <p class="text-sm text-slate-500 mb-4">Cobrado efectivamente acumulado por zona.</p>
+                <p class="text-sm text-slate-500 mb-4">Ingreso acumulado por zona.</p>
                 <ul id="listSupervisores" class="divide-y divide-slate-100"></ul>
             </div>
         </div>
@@ -2262,9 +2262,9 @@
                 <summary><span><span class="filter-summary-icon" aria-hidden="true">🗓️</span><span>Periodo de análisis</span></span><span class="accordion-chevron">⌄</span></summary>
                 <div class="sidebar-filter-group-body">
                     <div class="period-filter-block">
-                        <div class="period-filter-title"><span>🗓️</span><div><strong>Periodo de análisis</strong><small>Elige año y mes para cargar la información desde Turso.</small></div></div>
+                        <div class="period-filter-title"><span>🗓️</span><div><strong>Periodo de análisis</strong><small>Elige año y mes para cargar la información.</small></div></div>
                         <div class="grid grid-cols-2 gap-3">
-                            <div><label for="metaYearSelector" class="filter-label">Año</label><select id="metaYearSelector" class="entry-select compact-select"><option value="2026">2026</option><option value="2025">2025</option><option value="2027">2027</option><option value="2028">2028</option></select></div>
+                            <div><label for="metaYearSelector" class="filter-label">Año</label><select id="metaYearSelector" class="entry-select compact-select"><option value="2026">2026</option><option value="2027">2027</option></select></div>
                             <div><label for="metaMonthSelector" class="filter-label">Mes</label><select id="metaMonthSelector" class="entry-select compact-select"><option value="Enero">Enero</option><option value="Febrero">Febrero</option><option value="Marzo">Marzo</option><option value="Abril">Abril</option><option value="Mayo">Mayo</option><option value="Junio">Junio</option><option value="Julio">Julio</option><option value="Agosto">Agosto</option><option value="Septiembre">Septiembre</option><option value="Octubre">Octubre</option><option value="Noviembre">Noviembre</option><option value="Diciembre">Diciembre</option></select></div>
                         </div>
                         <button id="metaFetchBtn" type="button" class="entry-button sidebar-load-btn flex items-center justify-center gap-2 px-5 mt-3"><span>Actualizar periodo</span><div id="metaLoadingSpinner" class="spinner hidden" style="width:20px;height:20px;border-width:2px;border-left-color:#fff;"></div></button>
@@ -2318,7 +2318,7 @@
                 <div class="filter-accordion-body">
                     <div class="flex flex-col gap-3">
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                            <p class="text-xs text-slate-500">Filtra por movimientos de pago; el importe proviene de PAGOS.cobrado.</p>
+                            <p class="text-xs text-slate-500">Filtra por las diferentes formas de pago.</p>
                             <div class="flex gap-2 flex-shrink-0">
                                 <button type="button" id="metaBtnTodosMetodosPago" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-md border border-slate-200">Todos</button>
                                 <button type="button" id="metaBtnLimpiarMetodosPago" class="text-xs bg-white hover:bg-rose-50 text-slate-700 hover:text-rose-700 px-3 py-1.5 rounded-md border border-slate-300">Limpiar</button>
@@ -2435,7 +2435,7 @@
                 </table>
             </div>
 
-            <div class="dashboard-section-kicker">Cumplimiento por zona (supervisor)</div>
+            <div class="dashboard-section-kicker">Cumplimiento por zona</div>
             <div class="chart-card-animate dashboard-card relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 mb-6 overflow-x-auto">
                 <h3 class="text-lg font-semibold text-slate-800 mb-1 pr-10">Detalle por zona</h3>
                 <p class="text-sm text-slate-500 mb-4">Suma de todas las sucursales a cargo de cada supervisor.</p>
@@ -2477,17 +2477,17 @@ const TURSO_READONLY_TOKEN = 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicm8iL
 */
 
 const sucursalesCatalogo = [
-    { mesa: "ATHZIRI", supervisor: "CITLA", cod: "016ACA", nom: "ACA", sucursal: "ACA AVILA CAMACHO" },
-    { mesa: "ATHZIRI", supervisor: "CITLA", cod: "013RCE", nom: "RCE", sucursal: "RCE REAL CENTER" },
-    { mesa: "ATHZIRI", supervisor: "CITLA", cod: "006SIS", nom: "SIS", sucursal: "SIS SAN ISIDRO" },
-    { mesa: "ATHZIRI", supervisor: "CITLA", cod: "022AME", nom: "AME", sucursal: "AME AMERICAS" },
-    { mesa: "ATHZIRI", supervisor: "CITLA", cod: "041CHA", nom: "CHA", sucursal: "CHA CHAPULTEPEC" },
-    { mesa: "ATHZIRI", supervisor: "CITLA", cod: "036FED", nom: "FED", sucursal: "FED FEDERALTA" },
-    { mesa: "ATHZIRI", supervisor: "CITLA", cod: "001LPA", nom: "LPA", sucursal: "LPA LA PAZ" },
-    { mesa: "ATHZIRI", supervisor: "CITLA", cod: "024OBL", nom: "OBL", sucursal: "OBL OBLATOS" },
-    { mesa: "ATHZIRI", supervisor: "CITLA", cod: "009POR", nom: "POR", sucursal: "POR PUNTO ORIENTE" },
-    { mesa: "ATHZIRI", supervisor: "CITLA", cod: "031REV", nom: "REV", sucursal: "REV REVOLUCION" },
-    { mesa: "ATHZIRI", supervisor: "CITLA", cod: "018TEC", nom: "TEC", sucursal: "TEC TECHNOLOGY" },
+    { mesa: "ATHZIRI", supervisor: "ALTAIRA", cod: "016ACA", nom: "ACA", sucursal: "ACA AVILA CAMACHO" },
+    { mesa: "ATHZIRI", supervisor: "ALTAIRA", cod: "013RCE", nom: "RCE", sucursal: "RCE REAL CENTER" },
+    { mesa: "ATHZIRI", supervisor: "ALTAIRA", cod: "006SIS", nom: "SIS", sucursal: "SIS SAN ISIDRO" },
+    { mesa: "ATHZIRI", supervisor: "ALTAIRA", cod: "022AME", nom: "AME", sucursal: "AME AMERICAS" },
+    { mesa: "ATHZIRI", supervisor: "ALTAIRA", cod: "041CHA", nom: "CHA", sucursal: "CHA CHAPULTEPEC" },
+    { mesa: "ATHZIRI", supervisor: "ALTAIRA", cod: "036FED", nom: "FED", sucursal: "FED FEDERALTA" },
+    { mesa: "ATHZIRI", supervisor: "ALTAIRA", cod: "001LPA", nom: "LPA", sucursal: "LPA LA PAZ" },
+    { mesa: "ATHZIRI", supervisor: "ALTAIRA", cod: "024OBL", nom: "OBL", sucursal: "OBL OBLATOS" },
+    { mesa: "ATHZIRI", supervisor: "ALTAIRA", cod: "009POR", nom: "POR", sucursal: "POR PUNTO ORIENTE" },
+    { mesa: "ATHZIRI", supervisor: "ALTAIRA", cod: "031REV", nom: "REV", sucursal: "REV REVOLUCION" },
+    { mesa: "ATHZIRI", supervisor: "ALTAIRA", cod: "018TEC", nom: "TEC", sucursal: "TEC TECHNOLOGY" },
     { mesa: "ANGEL", supervisor: "ADRIANA", cod: "003SLU", nom: "ASL", sucursal: "AMORIPAX SANTA LUCIA" },
     { mesa: "ANGEL", supervisor: "ADRIANA", cod: "017TES", nom: "TES", sucursal: "TES TESISTAN" },
     { mesa: "ANGEL", supervisor: "ADRIANA", cod: "045SLU", nom: "SLU", sucursal: "SLU SANTA LUCIA" },
