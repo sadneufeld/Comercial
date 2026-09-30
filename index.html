@@ -1671,6 +1671,13 @@
     [data-theme="dark"] .easter-egg-icon { background:linear-gradient(135deg,#1d2044,#232a56)!important; }
     [data-theme="dark"] .sidebar-kicker { color:#a5b4fc!important; }
     [data-theme="dark"] .accordion-chevron { background:#1c212c!important; border-color:#2a303c!important; color:#9aa5b8!important; }
+
+    /* Fix: parpadeo al posar el puntero en el borde inferior de las tablas.
+       Al elevar la tarjeta en :hover el borde se alejaba del puntero, perdía el hover
+       y volvía a bajar en bucle. Las tarjetas con tablas ya no se mueven, y las filas
+       resaltan sin desplazarse (evita también un scroll horizontal intermitente). */
+    .dashboard-card:has(table):hover { transform:none!important; }
+    .table-row-hover tbody tr:hover { transform:none!important; box-shadow:inset 3px 0 0 #6366f1; }
     </style>
 </head>
 <body class="text-slate-800 home-mode">
@@ -2081,7 +2088,7 @@
                 <div class="chart-container tall sucursal-compact"><canvas id="chartCallCenter"></canvas></div>
             </div>
             <div class="dashboard-card relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 overflow-hidden flex flex-col lg:w-1/2">
-                <h3 class="text-lg font-semibold text-slate-800 mb-1">Ingreso de Call Center por Sucursal</h3>
+                <h3 class="text-lg font-semibold text-slate-800 mb-1">Cobrado de Call Center por Sucursal</h3>
                  <button type="button" class="absolute top-4 right-4 z-10 inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-white/95 hover:bg-slate-50 text-slate-500 hover:text-slate-700 shadow-sm transition-colors" title="Descargar tabla" aria-label="Descargar tabla" data-table-download="tablaCallCenterBody"><span class="download-icon">↓</span></button>
                 <p class="text-sm text-slate-500 mb-4">Resumen de pedidos, ingresos y ticket promedio de Call Center por sucursal.</p>
                 <div class="overflow-y-auto max-h-[420px]">
@@ -2200,7 +2207,7 @@
         <!-- Tablas de promociones y vendedores -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             <div class="dashboard-card relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 overflow-hidden flex flex-col">
-                <h3 class="text-lg font-semibold text-slate-800 mb-1">Ingresos por Promoción</h3>
+                <h3 class="text-lg font-semibold text-slate-800 mb-1">Cobrado por Promoción</h3>
                  <button type="button" class="absolute top-4 right-4 z-10 inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-white/95 hover:bg-slate-50 text-slate-500 hover:text-slate-700 shadow-sm transition-colors" title="Descargar tabla" aria-label="Descargar tabla" data-table-download="tablaPromocionesBody"><span class="download-icon">↓</span></button>
                 <p class="text-sm text-slate-500 mb-4">Ingreso y cantidad de tickets asociados a cada promoción.</p>
                 <div class="overflow-y-auto max-h-[420px]">
