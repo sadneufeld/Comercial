@@ -3310,6 +3310,7 @@ function activateMetaModule(){
   $('dashboardApp')?.classList.add('dashboard-shell-hidden');
   $('metaProgressPage')?.classList.remove('dashboard-shell-hidden');
   closeAnalysisSidebar();
+  closeMetaSidebar();
   syncFloatingFilterVisibility();
   if($('metaPeriodLabel'))$('metaPeriodLabel').textContent=loadedMonth?`${loadedMonth} ${loadedYear}`:'Selecciona un periodo desde Filtros';
 }
