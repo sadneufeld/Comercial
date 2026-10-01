@@ -947,9 +947,9 @@
     .sidebar-load-btn {
       animation:buttonPulse 2.4s ease-in-out infinite;
     }
-    @media(max-width:1100px) { body.sidebar-open #dashboardApp, body.sidebar-open #metaProgressPage{margin-left:360px;width:calc(100% - 360px)}.analysis-sidebar{width:360px;min-width:360px}#dashboardApp, #metaProgressPage{padding-left:32px!important;padding-right:32px!important} }
-    @media(max-width:900px) { body.sidebar-open #dashboardApp, body.sidebar-open #metaProgressPage{margin-left:0;width:100%;padding-top:80px!important}.analysis-sidebar{width:min(410px,88vw);min-width:0}#dashboardApp, #metaProgressPage{padding-left:24px!important;padding-right:24px!important}.analysis-toolbar h1{font-size:32px} }
-    @media(max-width:640px) { #dashboardApp, #metaProgressPage{padding:18px 18px 42px!important}.toolbar-actions{width:100%}.toolbar-button{flex:1;min-width:110px}.floating-filters{left:12px;top:12px}.analysis-toolbar{padding-left:48px;padding-right:48px}.analysis-toolbar h1{font-size:28px} }
+    @media(max-width:1100px) { body.sidebar-open #dashboardApp, body.sidebar-open #metaProgressPage, body.sidebar-open #dashboardApp, body.sidebar-open #returnsPage{margin-left:360px;width:calc(100% - 360px)}.analysis-sidebar{width:360px;min-width:360px}#dashboardApp, #metaProgressPage, #dashboardApp, #returnsPage{padding-left:32px!important;padding-right:32px!important} }
+    @media(max-width:900px) { body.sidebar-open #dashboardApp, body.sidebar-open #metaProgressPage, body.sidebar-open #dashboardApp, body.sidebar-open #returnsPage{margin-left:0;width:100%;padding-top:80px!important}.analysis-sidebar{width:min(410px,88vw);min-width:0}#dashboardApp, #metaProgressPage, #dashboardApp, #returnsPage{padding-left:24px!important;padding-right:24px!important}.analysis-toolbar h1{font-size:32px} }
+    @media(max-width:640px) { #dashboardApp, #metaProgressPage, #dashboardApp, #returnsPage{padding:18px 18px 42px!important}.toolbar-actions{width:100%}.toolbar-button{flex:1;min-width:110px}.floating-filters{left:12px;top:12px}.analysis-toolbar{padding-left:48px;padding-right:48px}.analysis-toolbar h1{font-size:28px} }
 
     /* ===== Refinamientos UX vNext ===== */
     :root {
@@ -957,7 +957,7 @@
       --nf-page-gutter:96px;
       --nf-bottom-gutter:96px;
     }
-    #dashboardApp, #metaProgressPage {
+    #dashboardApp, #metaProgressPage, #dashboardApp, #returnsPage{
       max-width:none!important;
       margin-left:0!important;
       margin-right:0!important;
@@ -1127,7 +1127,7 @@
     .filter-accordion-body .p-4, .sidebar-filter-group-body .p-4 { padding:11px!important; }
     .filter-accordion-body .space-y-5, .sidebar-filter-group-body .space-y-5 { gap:8px!important; }
     .analysis-sidebar-scroll #advancedFiltersContent>.advanced-filter-inner { gap:14px!important; }
-    #metaSidebarMount > * + * {
+    #metaSidebarMount > * + *, #returnsSidebarMount > * + *{
       margin-top:14px!important;
     }
     .meta-filter-status-row {
@@ -1137,11 +1137,12 @@
       gap:10px;
     }
     @media(max-width:1100px) { :root{--nf-sidebar:360px;--nf-page-gutter:56px}.analysis-sidebar{width:var(--nf-sidebar)!important;min-width:var(--nf-sidebar)!important} }
-    @media(max-width:900px) { :root{--nf-sidebar:min(410px,88vw);--nf-page-gutter:34px}body.sidebar-open #dashboardApp, body.sidebar-open #metaProgressPage{margin-left:var(--nf-sidebar)!important;width:calc(100% - var(--nf-sidebar))!important;padding-top:78px!important} }
-    @media(max-width:640px) { :root{--nf-page-gutter:22px;--nf-bottom-gutter:54px}.analysis-sidebar{width:min(410px,92vw)!important;min-width:0!important}body.sidebar-open #dashboardApp, body.sidebar-open #metaProgressPage{margin-left:0!important;width:100%!important;padding-top:74px!important}.floating-filters{left:12px!important;top:12px!important} }
+    @media(max-width:900px) { :root{--nf-sidebar:min(410px,88vw);--nf-page-gutter:34px}body.sidebar-open #dashboardApp, body.sidebar-open #metaProgressPage, body.sidebar-open #dashboardApp, body.sidebar-open #returnsPage{margin-left:var(--nf-sidebar)!important;width:calc(100% - var(--nf-sidebar))!important;padding-top:78px!important} }
+    @media(max-width:640px) { :root{--nf-page-gutter:22px;--nf-bottom-gutter:54px}.analysis-sidebar{width:min(410px,92vw)!important;min-width:0!important}body.sidebar-open #dashboardApp, body.sidebar-open #metaProgressPage, body.sidebar-open #dashboardApp, body.sidebar-open #returnsPage{margin-left:0!important;width:100%!important;padding-top:74px!important}.floating-filters{left:12px!important;top:12px!important} }
 
     /* ===== Layout / UX final pass ===== */
-    #dashboardApp, #metaProgressPage {
+    #dashboardApp, #metaProgressPage, /* ===== Layout / UX final pass ===== */
+    #dashboardApp, #returnsPage{
       box-sizing:border-box!important;
       width:100%!important;
       max-width:none!important;
@@ -1225,7 +1226,14 @@
     #dashboardApp>section,
     #metaProgressPage>section,
     #dashboardApp>div,
-    #metaProgressPage>div {
+    #metaProgressPage>div, #dashboardApp>.analysis-toolbar,
+    #returnsPage>.analysis-toolbar,
+    #dashboardApp>.dashboard-section-kicker,
+    #returnsPage>.dashboard-section-kicker,
+    #dashboardApp>section,
+    #returnsPage>section,
+    #dashboardApp>div,
+    #returnsPage>div{
       max-width:none!important;
     }
     .chart-container canvas { box-shadow:0 4px 10px rgba(15,23,42,.04); border-radius:8px; }
@@ -1299,9 +1307,9 @@
       color:#fff;
       transform:translateX(2px) scale(1.06);
     }
-    @media(max-width:1100px) { :root{--nf-sidebar:360px}#dashboardApp, #metaProgressPage{padding-left:44px!important;padding-right:44px!important} }
-    @media(max-width:900px) { body.sidebar-open #dashboardApp, body.sidebar-open #metaProgressPage{margin-left:0!important;width:100%!important;transform:none!important}.analysis-sidebar{width:min(410px,88vw)!important;min-width:0!important}#dashboardApp, #metaProgressPage{padding-left:28px!important;padding-right:28px!important} }
-    @media(max-width:640px) { #dashboardApp, #metaProgressPage{padding:24px 20px 64px!important}.analysis-sidebar{width:92vw!important}.floating-filters{left:12px!important;top:12px!important}.analysis-toolbar{padding-left:52px!important;padding-right:18px!important} }
+    @media(max-width:1100px) { :root{--nf-sidebar:360px}#dashboardApp, #metaProgressPage, #dashboardApp, #returnsPage{padding-left:44px!important;padding-right:44px!important} }
+    @media(max-width:900px) { body.sidebar-open #dashboardApp, body.sidebar-open #metaProgressPage, body.sidebar-open #dashboardApp, body.sidebar-open #returnsPage{margin-left:0!important;width:100%!important;transform:none!important}.analysis-sidebar{width:min(410px,88vw)!important;min-width:0!important}#dashboardApp, #metaProgressPage, #dashboardApp, #returnsPage{padding-left:28px!important;padding-right:28px!important} }
+    @media(max-width:640px) { #dashboardApp, #metaProgressPage, #dashboardApp, #returnsPage{padding:24px 20px 64px!important}.analysis-sidebar{width:92vw!important}.floating-filters{left:12px!important;top:12px!important}.analysis-toolbar{padding-left:52px!important;padding-right:18px!important} }
     .analysis-sidebar-scroll #advancedFilters::before,
     .advanced-filter-shell::before {
       display:none!important;
@@ -1351,7 +1359,7 @@
       height:auto!important;
       min-height:100vh!important;
     }
-    #dashboardApp, #metaProgressPage {
+    #dashboardApp, #metaProgressPage, #dashboardApp, #returnsPage{
       box-sizing:border-box!important;
       display:block!important;
       height:auto!important;
@@ -1362,8 +1370,8 @@
       padding:48px clamp(48px,8vw,128px) 128px!important;
       overflow:visible!important;
     }
-    #dashboardApp.dashboard-shell-hidden, #metaProgressPage.dashboard-shell-hidden { display:none!important; }
-    body.sidebar-open #dashboardApp, body.sidebar-open #metaProgressPage {
+    #dashboardApp.dashboard-shell-hidden, #metaProgressPage.dashboard-shell-hidden, #dashboardApp.dashboard-shell-hidden, #returnsPage.dashboard-shell-hidden{ display:none!important; }
+    body.sidebar-open #dashboardApp, body.sidebar-open #metaProgressPage, body.sidebar-open #dashboardApp, body.sidebar-open #returnsPage{
       margin-left:var(--nf-sidebar)!important;
       width:calc(100% - var(--nf-sidebar))!important;
     }
@@ -1497,9 +1505,9 @@
       top:16px!important;
     }
     .dashboard-card { position:relative!important; }
-    @media(max-width:1100px) { #dashboardApp, #metaProgressPage{padding-left:64px!important;padding-right:64px!important} }
-    @media(max-width:900px) { #dashboardApp, #metaProgressPage{padding-left:40px!important;padding-right:40px!important}body.sidebar-open #dashboardApp, body.sidebar-open #metaProgressPage{margin-left:var(--nf-sidebar)!important;width:calc(100% - var(--nf-sidebar))!important} }
-    @media(max-width:640px) { #dashboardApp, #metaProgressPage{padding:28px 24px 72px!important}body.sidebar-open #dashboardApp, body.sidebar-open #metaProgressPage{margin-left:0!important;width:100%!important;padding-top:74px!important}.analysis-sidebar{width:92vw!important;min-width:0!important} }
+    @media(max-width:1100px) { #dashboardApp, #metaProgressPage, #dashboardApp, #returnsPage{padding-left:64px!important;padding-right:64px!important} }
+    @media(max-width:900px) { #dashboardApp, #metaProgressPage, #dashboardApp, #returnsPage{padding-left:40px!important;padding-right:40px!important}body.sidebar-open #dashboardApp, body.sidebar-open #metaProgressPage, body.sidebar-open #dashboardApp, body.sidebar-open #returnsPage{margin-left:var(--nf-sidebar)!important;width:calc(100% - var(--nf-sidebar))!important} }
+    @media(max-width:640px) { #dashboardApp, #metaProgressPage, #dashboardApp, #returnsPage{padding:28px 24px 72px!important}body.sidebar-open #dashboardApp, body.sidebar-open #metaProgressPage, body.sidebar-open #dashboardApp, body.sidebar-open #returnsPage{margin-left:0!important;width:100%!important;padding-top:74px!important}.analysis-sidebar{width:92vw!important;min-width:0!important} }
     .sidebar-reset-row {
       padding:10px 0 2px;
       position:sticky;
@@ -1713,7 +1721,7 @@
             <nav class="home-menu" aria-label="Módulos">
                 <button type="button" class="module-button" data-module="meta"><span class="module-icon">🎯</span><span><strong>Avance de meta</strong><small>Cumplimiento diario por sucursal</small></span><span class="module-arrow">›</span></button>
                 <button type="button" class="module-button module-primary" data-module="analysis"><span class="module-icon">📊</span><span><strong>Análisis de venta</strong><small>Ventas, productos y cobros</small></span><span class="module-arrow">›</span></button>
-                <button type="button" class="module-button" data-module="returns"><span class="module-icon">↩️</span><span><strong>Devoluciones</strong><small>Próximamente</small></span><span class="module-arrow">›</span></button>
+                <button type="button" class="module-button" data-module="returns"><span class="module-icon">↩️</span><span><strong>Devoluciones</strong><small>Por sucursal, producto y % de venta</small></span><span class="module-arrow">›</span></button>
             </nav>
         </div>
     </section>
@@ -2255,6 +2263,114 @@
 
     </div>
 
+
+    <aside id="returnsSidebar" class="analysis-sidebar" aria-hidden="true">
+        <div class="analysis-sidebar-head">
+            <div><div class="sidebar-kicker">DEVOLUCIONES</div><h2>Filtros</h2></div>
+            <button type="button" id="closeReturnsSidebar" class="sidebar-close" aria-label="Plegar filtros" title="Plegar panel de filtros">‹</button>
+        </div>
+        <div id="returnsSidebarMount" class="analysis-sidebar-scroll">
+            <div class="meta-filter-status-row">
+                <span id="retDashboardStatus" class="header-status"><span class="dot"></span><span>Esperando datos</span></span>
+                <button type="button" id="retClearFiltersBtn" class="sidebar-reset-button-inline">↺ Borrar filtros</button>
+            </div>
+            <details class="sidebar-filter-group">
+                <summary><span><span class="filter-summary-icon" aria-hidden="true">🗓️</span><span>Periodo de análisis</span></span><span class="accordion-chevron">⌄</span></summary>
+                <div class="sidebar-filter-group-body">
+                    <div class="period-filter-block">
+                        <div class="period-filter-title"><span>🗓️</span><div><strong>Periodo de análisis</strong><small>Elige año y mes para cargar ventas y devoluciones.</small></div></div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div><label for="retYearSelector" class="filter-label">Año</label><select id="retYearSelector" class="entry-select compact-select"><option value="2026">2026</option><option value="2027">2027</option></select></div>
+                            <div><label for="retMonthSelector" class="filter-label">Mes</label><select id="retMonthSelector" class="entry-select compact-select"><option value="Enero">Enero</option><option value="Febrero">Febrero</option><option value="Marzo">Marzo</option><option value="Abril">Abril</option><option value="Mayo">Mayo</option><option value="Junio">Junio</option><option value="Julio">Julio</option><option value="Agosto">Agosto</option><option value="Septiembre">Septiembre</option><option value="Octubre">Octubre</option><option value="Noviembre">Noviembre</option><option value="Diciembre">Diciembre</option></select></div>
+                        </div>
+                        <button id="retFetchBtn" type="button" class="entry-button sidebar-load-btn flex items-center justify-center gap-2 px-5 mt-3"><span>Actualizar periodo</span></button>
+                        <label class="block text-xs text-slate-500 mt-3">¿Aún no creas la función en Supabase? Prueba con un CSV de la tabla <b>devolucion</b>:</label>
+                        <input id="retCsvInput" type="file" accept=".csv,text/csv" class="block w-full text-xs text-slate-600 mt-1">
+                    </div>
+                </div>
+            </details>
+            <details class="sidebar-filter-group">
+                <summary><span><span class="filter-summary-icon" aria-hidden="true">🏪</span><span>Sucursales</span></span><span class="accordion-chevron">⌄</span></summary>
+                <div class="sidebar-filter-group-body">
+                    <div class="branch-filter-combined">
+                        <div>
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2"><label class="block text-sm font-medium text-slate-700">👥 Supervisores</label><span class="text-xs text-slate-400">Selecciona/deselecciona sus sucursales.</span></div>
+                            <div id="retSupervisorButtons" class="flex flex-wrap gap-1.5 min-h-[36px]"></div>
+                        </div>
+                        <div>
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2"><label class="block text-sm font-medium text-slate-700">🏪 Sucursales</label>
+                                <div class="flex gap-2"><button type="button" id="retSucTodas" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-md border border-slate-200">Todas</button><button type="button" id="retSucLimpiar" class="text-xs bg-white hover:bg-rose-50 text-slate-700 hover:text-rose-700 px-3 py-1.5 rounded-md border border-slate-300">Limpiar</button></div></div>
+                            <div id="retBranchButtons" class="filter-scroll flex flex-wrap content-start gap-1.5 p-2 border border-slate-200 rounded-lg bg-slate-50 min-h-[48px]"></div>
+                        </div>
+                    </div>
+                </div>
+            </details>
+            <details class="filter-accordion">
+                <summary><span><span class="filter-summary-icon" aria-hidden="true">📅</span><span>Rango de fechas</span></span><span class="accordion-chevron">⌄</span></summary>
+                <div class="filter-accordion-body">
+                    <p class="text-xs text-slate-500 mb-2">Limita las devoluciones (y la venta usada para el %) a un rango de días.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div><label for="retFechaInicio" class="block text-xs font-medium text-slate-600 mb-1">Desde</label><input id="retFechaInicio" type="date" class="w-full border border-slate-300 rounded-lg shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500"></div>
+                        <div><label for="retFechaFin" class="block text-xs font-medium text-slate-600 mb-1">Hasta</label><input id="retFechaFin" type="date" class="w-full border border-slate-300 rounded-lg shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500"></div>
+                    </div>
+                    <div class="flex flex-wrap gap-2 mt-3"><button type="button" id="retBtnTodoElMes" class="px-3 py-2 rounded-lg border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 text-sm font-medium">Todo el mes</button></div>
+                    <p id="retDateFilterStatus" class="filter-status mt-2">Carga los datos para habilitar el rango.</p>
+                </div>
+            </details>
+            <details class="filter-accordion">
+                <summary><span><span class="filter-summary-icon" aria-hidden="true">🥐</span><span>Familias y productos</span></span><span class="accordion-chevron">⌄</span></summary>
+                <div class="filter-accordion-body">
+                    <div class="flex items-center justify-between gap-2 mb-2"><p class="text-xs text-slate-500">Sin selección = todas las familias.</p><button type="button" id="retFamTodas" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-md border border-slate-200">Todas</button></div>
+                    <div id="retFamilyButtons" class="filter-scroll flex flex-wrap content-start gap-1.5 p-2 border border-slate-200 rounded-lg bg-slate-50 min-h-[46px]"><span class="text-xs text-slate-400 p-2">Carga los datos para ver las familias.</span></div>
+                    <label for="retProductSearch" class="block text-xs font-medium text-slate-600 mt-3 mb-1">Buscar producto</label>
+                    <input id="retProductSearch" type="search" placeholder="Ej. tiramisu, gelatina..." class="w-full border border-slate-300 rounded-lg shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+            </details>
+        </div>
+    </aside>
+    <button type="button" id="floatingReturnsFiltersButton" class="floating-filters" aria-label="Abrir filtros de devoluciones"><span class="float-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"></line><circle cx="9" cy="6" r="2.2" fill="currentColor" stroke="none"></circle><line x1="4" y1="12" x2="20" y2="12"></line><circle cx="16" cy="12" r="2.2" fill="currentColor" stroke="none"></circle><line x1="4" y1="18" x2="20" y2="18"></line><circle cx="11" cy="18" r="2.2" fill="currentColor" stroke="none"></circle></svg></span></button>
+
+    <div id="returnsPage" class="dashboard-shell-hidden max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+        <div class="analysis-toolbar">
+            <div class="toolbar-brand"><h1>↩️ Devoluciones</h1><p id="retPeriodLabel">Selecciona un periodo desde Filtros</p></div>
+            <div class="toolbar-actions"><button type="button" id="retToolbarHomeBtn" class="toolbar-button"><span class="toolbar-button-icon tbi-indigo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10v9a1 1 0 0 0 1 1H10v-5.5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1V20h3.5a1 1 0 0 0 1-1v-9"></path></svg></span><span>Inicio</span></button><button type="button" id="retToolbarAnalysisBtn" class="toolbar-button"><span class="toolbar-button-icon tbi-violet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V10"></path><path d="M10 19V5"></path><path d="M16 19v-7"></path><path d="M4 19h16"></path></svg></span><span>Análisis de venta</span></button><button type="button" id="retToolbarMetaBtn" class="toolbar-button"><span class="toolbar-button-icon tbi-violet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"></circle><circle cx="12" cy="12" r="4.5"></circle><circle cx="12" cy="12" r="1"></circle></svg></span><span>Avance de meta</span></button></div>
+        </div>
+        <div id="retEmptyState" class="dashboard-card bg-white rounded-xl shadow-sm border border-slate-200 p-10 text-center text-slate-500 mb-6">Cargando devoluciones...</div>
+        <div id="retContent" class="dashboard-shell-hidden">
+            <div class="dashboard-section-kicker">Resumen general</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+                <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-rose-500"><div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Total devuelto ($)</p><p class="text-2xl font-bold text-slate-800 mt-2 break-words" id="retKpiTotal">--</p></div><span class="kpi-icon bg-rose-50 text-rose-600">↩</span></div></div>
+                <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-amber-500"><div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Piezas devueltas</p><p class="text-2xl font-bold text-slate-800 mt-2 break-words" id="retKpiPiezas">--</p></div><span class="kpi-icon bg-amber-50 text-amber-600">📦</span></div></div>
+                <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-indigo-500"><div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Folios con devolución</p><p class="text-2xl font-bold text-slate-800 mt-2 break-words" id="retKpiFolios">--</p></div><span class="kpi-icon bg-indigo-50 text-indigo-600">🧾</span></div></div>
+                <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-purple-500"><div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">% de devolución sobre venta</p><p class="text-2xl font-bold text-slate-800 mt-2 break-words" id="retKpiPct">--</p><p id="retKpiPctSub" class="text-xs text-slate-500 mt-1">&nbsp;</p></div><span class="kpi-icon bg-purple-50 text-purple-600">%</span></div></div>
+                <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-cyan-500"><div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Devolución promedio por folio</p><p class="text-2xl font-bold text-slate-800 mt-2 break-words" id="retKpiProm">--</p></div><span class="kpi-icon bg-cyan-50 text-cyan-600">⚖</span></div></div>
+                <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-emerald-500"><div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Productos distintos devueltos</p><p class="text-2xl font-bold text-slate-800 mt-2 break-words" id="retKpiProductos">--</p></div><span class="kpi-icon bg-emerald-50 text-emerald-600">🥐</span></div></div>
+                <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-slate-400"><div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Sucursal con más devolución</p><p class="text-lg font-bold text-slate-800 mt-2 break-words" id="retKpiTopSuc">--</p><p id="retKpiTopSucSub" class="text-xs text-slate-500 mt-1">&nbsp;</p></div><span class="kpi-icon bg-slate-100 text-slate-500">🏪</span></div></div>
+                <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-slate-400"><div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Día con más devolución</p><p class="text-lg font-bold text-slate-800 mt-2 break-words" id="retKpiTopDia">--</p><p id="retKpiTopDiaSub" class="text-xs text-slate-500 mt-1">&nbsp;</p></div><span class="kpi-icon bg-slate-100 text-slate-500">📅</span></div></div>
+            </div>
+            <div class="dashboard-section-kicker">Por sucursal</div>
+            <section class="space-y-6 mb-6">
+                <div class="dashboard-card bg-white rounded-xl shadow-sm border border-slate-200 p-5"><h3 class="text-lg font-semibold text-slate-800 mb-1">Devoluciones por sucursal ($)</h3><p class="text-sm text-slate-500 mb-4">Monto devuelto, de mayor a menor.</p><div class="chart-container tall sucursal-compact"><canvas id="chartRetSucursal"></canvas></div></div>
+                <div class="dashboard-card bg-white rounded-xl shadow-sm border border-slate-200 p-5"><h3 class="text-lg font-semibold text-slate-800 mb-1">% de devolución sobre la venta por sucursal</h3><p class="text-sm text-slate-500 mb-4">Devuelto ÷ venta cobrada de la misma sucursal y periodo. Un % alto puede indicar un problema de calidad, surtido o captura.</p><div class="chart-container tall sucursal-compact"><canvas id="chartRetPct"></canvas></div></div>
+            </section>
+            <div class="dashboard-section-kicker">Tendencia</div>
+            <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <div class="dashboard-card bg-white rounded-xl shadow-sm border border-slate-200 p-5"><h3 class="text-lg font-semibold text-slate-800 mb-1">Devoluciones por día ($)</h3><p class="text-sm text-slate-500 mb-4">Evolución diaria del monto devuelto.</p><div class="chart-container"><canvas id="chartRetDias"></canvas></div></div>
+                <div class="dashboard-card bg-white rounded-xl shadow-sm border border-slate-200 p-5"><h3 class="text-lg font-semibold text-slate-800 mb-1">Devoluciones por día de la semana ($)</h3><p class="text-sm text-slate-500 mb-4">Acumulado por día de la semana en el rango elegido.</p><div class="chart-container"><canvas id="chartRetSemana"></canvas></div></div>
+            </section>
+            <div class="dashboard-section-kicker">Productos</div>
+            <section class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                <div class="lg:col-span-2"><div class="dashboard-card relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 overflow-hidden flex flex-col"><button type="button" class="absolute top-4 right-4 z-10 inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-white/95 hover:bg-slate-50 text-slate-500 hover:text-slate-700 shadow-sm transition-colors" title="Descargar tabla" aria-label="Descargar tabla" data-table-download="tablaRetProductosBody"><span class="download-icon">↓</span></button><h3 class="text-lg font-semibold text-slate-800 mb-1 pr-10">Productos más devueltos</h3><p class="text-sm text-slate-500 mb-4">Ordenados por piezas. «% de lo vendido» compara contra las unidades vendidas del mismo producto.</p><div class="overflow-y-auto max-h-[420px]"><table class="w-full text-sm text-left text-slate-600 table-row-hover"><thead class="text-xs text-slate-700 uppercase bg-slate-100 sticky top-0 z-10"><tr><th scope="col" class="py-3 px-3">Producto</th><th scope="col" class="py-3 px-3">Familia</th><th scope="col" class="py-3 px-3 text-center">Piezas</th><th scope="col" class="py-3 px-3 text-right">Monto</th><th scope="col" class="py-3 px-3 text-right">% de lo vendido</th><th scope="col" class="py-3 px-3 text-center">Sucursales</th></tr></thead><tbody id="tablaRetProductosBody"></tbody></table></div></div></div>
+                <div class="dashboard-card bg-white rounded-xl shadow-sm border border-slate-200 p-5"><h3 class="text-lg font-semibold text-slate-800 mb-1">Devoluciones por familia</h3><p class="text-sm text-slate-500 mb-4">Participación del monto devuelto.</p><div class="chart-container"><canvas id="chartRetFamilia"></canvas></div></div>
+            </section>
+            <section class="space-y-6 mb-6">
+                <div class="dashboard-card relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 overflow-hidden flex flex-col"><button type="button" class="absolute top-4 right-4 z-10 inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-white/95 hover:bg-slate-50 text-slate-500 hover:text-slate-700 shadow-sm transition-colors" title="Descargar tabla" aria-label="Descargar tabla" data-table-download="tablaRetProdSucBody"><span class="download-icon">↓</span></button><h3 class="text-lg font-semibold text-slate-800 mb-1 pr-10">Producto más devuelto por sucursal</h3><p class="text-sm text-slate-500 mb-4">El producto con más piezas devueltas en cada sucursal.</p><div class="overflow-y-auto max-h-[420px]"><table class="w-full text-sm text-left text-slate-600 table-row-hover"><thead class="text-xs text-slate-700 uppercase bg-slate-100 sticky top-0 z-10"><tr><th scope="col" class="py-3 px-3">Sucursal</th><th scope="col" class="py-3 px-3">Producto</th><th scope="col" class="py-3 px-3 text-center">Piezas</th><th scope="col" class="py-3 px-3 text-right">Monto</th><th scope="col" class="py-3 px-3 text-right">% de las devoluciones de la sucursal</th></tr></thead><tbody id="tablaRetProdSucBody"></tbody></table></div></div>
+                <div class="dashboard-card relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 overflow-hidden flex flex-col"><button type="button" class="absolute top-4 right-4 z-10 inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-white/95 hover:bg-slate-50 text-slate-500 hover:text-slate-700 shadow-sm transition-colors" title="Descargar tabla" aria-label="Descargar tabla" data-table-download="tablaRetSucursalBody"><span class="download-icon">↓</span></button><h3 class="text-lg font-semibold text-slate-800 mb-1 pr-10">Resumen por sucursal</h3><p class="text-sm text-slate-500 mb-4">Devolución vs. venta cobrada. En rojo, las sucursales por encima del % global; en verde, las que están por debajo.</p><div class="overflow-y-auto max-h-[420px]"><table class="w-full text-sm text-left text-slate-600 table-row-hover"><thead class="text-xs text-slate-700 uppercase bg-slate-100 sticky top-0 z-10"><tr><th scope="col" class="py-3 px-3">Sucursal</th><th scope="col" class="py-3 px-3">Supervisor</th><th scope="col" class="py-3 px-3 text-center">Folios</th><th scope="col" class="py-3 px-3 text-center">Piezas</th><th scope="col" class="py-3 px-3 text-right">Devuelto</th><th scope="col" class="py-3 px-3 text-right">Venta cobrada</th><th scope="col" class="py-3 px-3 text-right">% devolución</th></tr></thead><tbody id="tablaRetSucursalBody"></tbody><tfoot id="tablaRetSucursalFoot" class="text-sm font-bold text-slate-800 bg-slate-50 sticky bottom-0"></tfoot></table></div></div>
+                <div class="dashboard-card relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 overflow-hidden flex flex-col"><button type="button" class="absolute top-4 right-4 z-10 inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-white/95 hover:bg-slate-50 text-slate-500 hover:text-slate-700 shadow-sm transition-colors" title="Descargar tabla" aria-label="Descargar tabla" data-table-download="tablaRetFoliosBody"><span class="download-icon">↓</span></button><h3 class="text-lg font-semibold text-slate-800 mb-1 pr-10">Folios con mayor monto devuelto</h3><p class="text-sm text-slate-500 mb-4">Los 15 folios con más dinero devuelto; útiles para revisar casos puntuales.</p><div class="overflow-y-auto max-h-[420px]"><table class="w-full text-sm text-left text-slate-600 table-row-hover"><thead class="text-xs text-slate-700 uppercase bg-slate-100 sticky top-0 z-10"><tr><th scope="col" class="py-3 px-3">Folio</th><th scope="col" class="py-3 px-3">Sucursal</th><th scope="col" class="py-3 px-3">Fecha</th><th scope="col" class="py-3 px-3 text-center">Piezas</th><th scope="col" class="py-3 px-3 text-center">Productos</th><th scope="col" class="py-3 px-3 text-right">Monto</th></tr></thead><tbody id="tablaRetFoliosBody"></tbody></table></div></div>
+            </section>
+        </div>
+    </div>
+
     <aside id="metaSidebar" class="analysis-sidebar" aria-hidden="true">
         <div class="analysis-sidebar-head">
             <div><div class="sidebar-kicker">AVANCE DE META</div><h2>Filtros</h2></div>
@@ -2560,6 +2676,8 @@ let metaFechaDesde = '', metaFechaHasta = '';
 let metaSelectedPaymentMethods = new Set();
 let metaAllPaymentMethods = [];
 let pendingModuleAfterLoad = 'analysis';
+let retData=[], retLoadedKey='', retError='', retVenta={dias:new Map(),fam:new Map()};
+let retSelBranches=new Set(), retSelSupervisors=new Set(), retSelFamilies=new Set(), retDesde='', retHasta='', retBusqueda='';
 
 const TIPO_VENTA = 'VENTA CAJA';
 const TIPO_CORTESIA = 'MERMA COMANDA';
@@ -2909,7 +3027,7 @@ async function cargarDesdeTurso(opts){
     loadedMonth=month; loadedYear=String(year); loadedMonthNum=monthNum; if(selectedMonthLabel) selectedMonthLabel.textContent=`${month} ${year}`;
     metasData=(metasRows||[]).map(r=>({codigo:repairText(String(r.nomenclatura??'').trim()),fecha:normalizarFecha(r.fecha),meta:(r.meta===null||r.meta===undefined||r.meta==='')?null:num(r.meta)}));
     prepararAvanceDeMeta();
-    if(pendingModuleAfterLoad==='meta'){ activateMetaModule(); } else { prepareDashboardForRendering(); showDashboardAfterLoad(); }
+    if(pendingModuleAfterLoad==='returns'){ activateReturnsModule(); } else if(pendingModuleAfterLoad==='meta'){ activateMetaModule(); } else { prepareDashboardForRendering(); showDashboardAfterLoad(); }
     statusMsg.innerText=datos?`Datos desde caché (hace ${edadCache(Date.now()-datos.ts)}). Pulsa «Actualizar periodo» de nuevo para consultar otra vez.`:'¡Datos cargados con éxito!';
     setTimeout(()=>statusMsg.classList.add('hidden'),datos?6000:3000);
   }catch(err){returnToEntryScreen(); alert('Error al consultar Supabase: '+err.message);}
@@ -3309,6 +3427,7 @@ function activateMetaModule(){
   $('placeholderPage')?.classList.add('dashboard-shell-hidden');
   $('dashboardApp')?.classList.add('dashboard-shell-hidden');
   $('metaProgressPage')?.classList.remove('dashboard-shell-hidden');
+  $('returnsPage')?.classList.add('dashboard-shell-hidden');closeReturnsSidebar();
   closeAnalysisSidebar();
   closeMetaSidebar();
   syncFloatingFilterVisibility();
@@ -3331,6 +3450,7 @@ function showMetaProgress(){
   $('placeholderPage')?.classList.add('dashboard-shell-hidden');
   $('dashboardApp')?.classList.add('dashboard-shell-hidden');
   $('metaProgressPage')?.classList.remove('dashboard-shell-hidden');
+  $('returnsPage')?.classList.add('dashboard-shell-hidden');closeReturnsSidebar();
   syncFloatingFilterVisibility();
   window.scrollTo({top:0,left:0,behavior:'auto'});
   if($('metaPeriodLabel'))$('metaPeriodLabel').textContent=loadedMonth?`${loadedMonth} ${loadedYear}`:'Selecciona un periodo desde Filtros';
@@ -3477,12 +3597,12 @@ function setupSidebar(){
   $('closeMetaSidebar')?.addEventListener('click',closeMetaSidebar);
   $('toolbarHomeBtn')?.addEventListener('click',goHome);
   $('toolbarMetaBtn')?.addEventListener('click',showMetaProgress);
-  $('toolbarReturnsBtn')?.addEventListener('click',()=>showPlaceholder('Devoluciones','Este módulo quedará disponible próximamente.'));
+  $('toolbarReturnsBtn')?.addEventListener('click',showReturns);
   $('placeholderHomeBtn')?.addEventListener('click',goHome);
   $('placeholderAnalysisBtn')?.addEventListener('click',()=>{goHome();setTimeout(openAnalysis,60)});
   $('metaToolbarHomeBtn')?.addEventListener('click',goHome);
   $('metaToolbarAnalysisBtn')?.addEventListener('click',openAnalysis);
-  $('metaToolbarReturnsBtn')?.addEventListener('click',()=>showPlaceholder('Devoluciones','Este módulo quedará disponible próximamente.'));
+  $('metaToolbarReturnsBtn')?.addEventListener('click',showReturns);
   $('metaSupTodos')?.addEventListener('click',metaSeleccionarTodo);
   $('metaSupLimpiar')?.addEventListener('click',metaLimpiarFiltros);
   $('metaSucTodas')?.addEventListener('click',metaSeleccionarTodo);
@@ -3501,6 +3621,7 @@ function setupSidebar(){
   $('metaBtnTodosMetodosPago')?.addEventListener('click',metaSeleccionarTodosMetodosPago);
   $('metaBtnLimpiarMetodosPago')?.addEventListener('click',metaLimpiarMetodosPago);
   $('themeToggleBtn')?.addEventListener('click',()=>{const isDark=document.documentElement.getAttribute('data-theme')==='dark';aplicarTema(!isDark);});
+  initDevoluciones();
   document.querySelectorAll('.module-button').forEach(b=>b.addEventListener('click',()=>irAModulo(b.dataset.module)));ensureUniversalDownloadButtons();
 }
 function makeSidebarGroup(title,icon,content,open=false){
@@ -3539,7 +3660,7 @@ function iconForFilterTitle(title){
   return '⚙️';
 }
 function bindExclusiveSidebarAccordions(){
-  const details=[...document.querySelectorAll('#sidebarMount details.sidebar-filter-group, #sidebarMount details.filter-accordion, #metaSidebarMount details.sidebar-filter-group, #metaSidebarMount details.filter-accordion')];
+  const details=[...document.querySelectorAll('#sidebarMount details.sidebar-filter-group, #sidebarMount details.filter-accordion, #metaSidebarMount details.sidebar-filter-group, #metaSidebarMount details.filter-accordion, #returnsSidebarMount details.sidebar-filter-group, #returnsSidebarMount details.filter-accordion')];
   details.forEach(detail=>{
     if(detail.dataset.exclusiveBound)return;
     detail.addEventListener('toggle',()=>{
@@ -3576,6 +3697,8 @@ function syncFloatingFilterVisibility(){
   const fm=$('floatingMetaFiltersButton');
   const meta=$('metaProgressPage');
   if(fm){const visibleMeta=meta&&!meta.classList.contains('dashboard-shell-hidden')&&!document.body.classList.contains('sidebar-open');fm.classList.toggle('hidden-float',!visibleMeta);}
+  const fr=$('floatingReturnsFiltersButton'), rp=$('returnsPage');
+  if(fr){const visibleRet=rp&&!rp.classList.contains('dashboard-shell-hidden')&&!document.body.classList.contains('sidebar-open');fr.classList.toggle('hidden-float',!visibleRet);}
 }
 function refreshDashboardLayout(){
   document.documentElement.style.setProperty('--nf-sidebar', getComputedStyle(document.documentElement).getPropertyValue('--nf-sidebar') || '410px');
@@ -3590,7 +3713,7 @@ function refreshDashboardLayout(){
   },420);
 }
 function closeAllSidebarAccordions(){
-  document.querySelectorAll('#sidebarMount details[open], #metaSidebarMount details[open]').forEach(d=>d.open=false);
+  document.querySelectorAll('#sidebarMount details[open], #metaSidebarMount details[open], #returnsSidebarMount details[open]').forEach(d=>d.open=false);
 }
 function openAnalysisSidebar(){
   const s=$('analysisSidebar');
@@ -3629,6 +3752,225 @@ function closeMetaSidebar(){
   syncFloatingFilterVisibility();
   refreshDashboardLayout();
 }
+/* ============ DEVOLUCIONES ============ */
+const RET_ON='compact-filter-btn rounded-lg border font-semibold bg-emerald-600 border-emerald-600 text-white';
+const RET_OFF='compact-filter-btn rounded-lg border bg-white border-slate-300 text-slate-700';
+const RET_SUP_ON='compact-filter-btn rounded-lg border font-semibold bg-indigo-600 border-indigo-600 text-white';
+/* El nombre de sucursal de la tabla devolucion viene sin código ("ALCALDE"); se empata con el catálogo
+   por nombre (la Ñ se trata como comodín porque el CSV la trae dañada) y, si no, por el prefijo del folio. */
+const RET_SUC_RE=sucursalesCatalogo.map(x=>{const n=x.sucursal.startsWith(x.nom+' ')?x.sucursal.slice(x.nom.length+1):x.sucursal;return {x,re:new RegExp('^'+n.replace(/[.*+?^${}()|[\]\\]/g,'\\$&').replace(/Ñ/g,'.')+'$','i')};});
+function retResolverSucursal(nombre,folio){
+  const n=repairText(String(nombre||'')).trim(); const h=RET_SUC_RE.find(o=>o.re.test(n)); if(h)return h.x;
+  return catMap[String(folio||'').slice(0,3).toUpperCase()]||null;
+}
+const retMemo=(fn)=>{const m=new Map();return v=>{let r=m.get(v);if(r===undefined){r=fn(v);m.set(v,r);}return r;};};
+const retClave=retMemo(claveTexto), retFechaN=retMemo(normalizarFecha);
+const retNum=v=>Number(v||0).toLocaleString('es-MX',{maximumFractionDigits:2});
+const retPct=(a,b)=>b>0?a/b*100:null;
+const retPctTxt=v=>v===null?'--':v.toFixed(2)+'%';
+function retEtiqueta(nom){return catMap[nom]?.sucursal||String(nom).replace(/^\?/,'');}
+
+function retNormalizar(rows){
+  const g=(r,ns)=>{for(const k in r){if(ns.includes(k.toLowerCase().replace(/[^a-z0-9]/g,'')))return r[k];}return '';};
+  return (rows||[]).map(r=>{
+    const folio=String(g(r,['folioaux','folio'])).trim(), nombre=String(g(r,['sucursalaux','sucursal'])).trim();
+    const cat=retResolverSucursal(nombre,folio), desc=repairText(String(g(r,['descripcion'])).trim())||'Sin descripción';
+    const cantidad=num(g(r,['cantidad'])), precio=num(g(r,['precio'])); let total=num(g(r,['total'])); if(!total)total=cantidad*precio;
+    return {folio,desc,clave:claveTexto(desc),cantidad,precio,total,nom:cat?cat.nom:('?'+repairText(nombre)),suc:cat?cat.sucursal:(repairText(nombre)||'Sin sucursal'),sup:cat?cat.supervisor:'Desconocido',fecha:normalizarFecha(g(r,['fechaaux','fecha']))};
+  }).filter(x=>x.fecha||x.total);
+}
+function retParseCSV(t){
+  const rows=[];let row=[],f='',q=false;
+  for(let i=0;i<t.length;i++){const c=t[i];
+    if(q){if(c==='"'){if(t[i+1]==='"'){f+='"';i++;}else q=false;}else f+=c;}
+    else if(c==='"')q=true; else if(c===','){row.push(f);f='';}
+    else if(c==='\n'||c==='\r'){if(c==='\r'&&t[i+1]==='\n')i++;row.push(f);f='';if(row.length>1||row[0]!=='')rows.push(row);row=[];}
+    else f+=c;}
+  if(f!==''||row.length){row.push(f);rows.push(row);}
+  const h=rows.shift()||[]; return rows.map(r=>Object.fromEntries(h.map((k,i)=>[k,r[i]])));
+}
+/* Índice de ventas del periodo cargado: cobrado por sucursal/día y familia de cada producto. */
+function retConstruirVenta(){
+  const dias=new Map(), fam=new Map();
+  mainRowsByTicket.forEach((rows,folio)=>{
+    const f0=rows[0]; if(!f0)return; const p=getTicketInfo(folio); if(p.total===0&&p.cortesia>0)return;
+    const nom=f0.sucursalNom, f=normalizarFecha(f0.fecha); if(!nom||!f)return;
+    let m=dias.get(nom); if(!m)dias.set(nom,m=new Map()); m.set(f,(m.get(f)||0)+p.total);
+  });
+  mainData.forEach(d=>{const k=retClave(d.descripcion);if(!fam.has(k))fam.set(k,d.familia);});
+  retVenta={dias,fam};
+}
+async function cargarDevolucionesPeriodo(){
+  const key=periodoClave(loadedMonthNum,loadedYear);
+  if(retLoadedKey===key&&retData.length)return;
+  try{
+    const rows=await supabaseRpc('get_devolucion_periodo',{p_anio:Number(loadedYear),p_mes:loadedMonthNum});
+    retData=retNormalizar(rows); retError=''; retLoadedKey=key;
+  }catch(e){retData=[]; retError=e.message||String(e); retLoadedKey='';}
+}
+function retUniverso(){return [...new Set([...retData.map(r=>r.nom),...retVenta.dias.keys()].filter(Boolean))].sort((a,b)=>retEtiqueta(a).localeCompare(retEtiqueta(b),'es'));}
+function retActualizarBotones(){
+  document.querySelectorAll('#retBranchButtons button').forEach(b=>{b.className=retSelBranches.has(b.dataset.k)?RET_ON:RET_OFF;});
+  document.querySelectorAll('#retSupervisorButtons button').forEach(b=>{b.className=retSelSupervisors.has(b.dataset.k)?RET_SUP_ON:RET_OFF;});
+  document.querySelectorAll('#retFamilyButtons button').forEach(b=>{b.className=retSelFamilies.has(b.dataset.k)?RET_ON:RET_OFF;});
+}
+function retEstadoFechas(){const el=$('retDateFilterStatus');if(el)el.textContent=retData.length?`Periodo: ${formatearFecha(retDesde)} al ${formatearFecha(retHasta)}.`:'Carga los datos para habilitar el rango.';}
+function retConfigurarFechas(){
+  const fs=retData.map(r=>r.fecha).filter(Boolean).sort();
+  retDesde=fs[0]||''; retHasta=fs[fs.length-1]||'';
+  const a=$('retFechaInicio'), b=$('retFechaFin');
+  if(a){a.value=retDesde;a.min=retDesde;a.max=retHasta;} if(b){b.value=retHasta;b.min=retDesde;b.max=retHasta;}
+  retEstadoFechas();
+}
+function cargarFiltrosDevoluciones(){
+  const uni=retUniverso(); retSelBranches=new Set(uni);
+  const bb=$('retBranchButtons'); if(bb){bb.innerHTML='';uni.forEach(n=>{const b=document.createElement('button');b.type='button';b.dataset.k=n;b.textContent=retEtiqueta(n);
+    b.onclick=()=>{retSelBranches.has(n)?retSelBranches.delete(n):retSelBranches.add(n);retSelSupervisors.clear();retActualizarBotones();renderDevoluciones();};bb.appendChild(b);});}
+  const sups=[...new Set(sucursalesCatalogo.map(x=>x.supervisor).filter(x=>x&&x!=='NA'))].sort((a,b)=>a.localeCompare(b,'es')); retSelSupervisors=new Set(sups);
+  const sb=$('retSupervisorButtons'); if(sb){sb.innerHTML='';sups.forEach(sv=>{const b=document.createElement('button');b.type='button';b.dataset.k=sv;b.textContent=sv;
+    b.onclick=()=>{retSelSupervisors.has(sv)?retSelSupervisors.delete(sv):retSelSupervisors.add(sv);
+      const ok=retSelSupervisors.size?new Set(sucursalesCatalogo.filter(x=>retSelSupervisors.has(x.supervisor)).map(x=>x.nom)):new Set(uni);
+      retSelBranches=new Set(uni.filter(n=>ok.has(n)));retActualizarBotones();renderDevoluciones();};sb.appendChild(b);});}
+  retSelFamilies=new Set(); retBusqueda=''; if($('retProductSearch'))$('retProductSearch').value='';
+  const fams=[...new Set(retData.map(r=>retVenta.fam.get(r.clave)||'Sin familia'))].sort((a,b)=>a.localeCompare(b,'es'));
+  const fb=$('retFamilyButtons'); if(fb){fb.innerHTML='';fams.forEach(f=>{const b=document.createElement('button');b.type='button';b.dataset.k=f;b.textContent=f;
+    b.onclick=()=>{retSelFamilies.has(f)?retSelFamilies.delete(f):retSelFamilies.add(f);retActualizarBotones();renderDevoluciones();};fb.appendChild(b);});}
+  retConfigurarFechas(); retActualizarBotones();
+}
+function retResetFiltros(){
+  cargarFiltrosDevoluciones();
+  document.querySelectorAll('#returnsSidebarMount details[open]').forEach(d=>d.open=false);
+  renderDevoluciones();
+}
+function retFiltradas(){
+  const q=claveTexto(retBusqueda);
+  return retData.filter(r=>{
+    if(!retSelBranches.has(r.nom))return false;
+    if(retDesde&&r.fecha<retDesde)return false; if(retHasta&&r.fecha>retHasta)return false;
+    r.fam=retVenta.fam.get(r.clave)||'Sin familia';
+    if(retSelFamilies.size&&!retSelFamilies.has(r.fam))return false;
+    return !q||r.clave.includes(q);
+  });
+}
+function renderDevoluciones(){
+  if(!$('retKpiTotal'))return;
+  const vacio=$('retEmptyState'), cont=$('retContent');
+  if(!retData.length){
+    vacio.classList.remove('dashboard-shell-hidden'); cont.classList.add('dashboard-shell-hidden');
+    vacio.innerHTML=retError
+      ?`<b class="text-rose-600">No se pudieron consultar las devoluciones.</b><br><span class="text-xs">${escapeHtml(retError)}</span><br><br>Verifica que ejecutaste <b>supabase_devolucion_rpc.sql</b> en Supabase, o carga un CSV desde Filtros › Periodo de análisis.`
+      :'No hay devoluciones registradas para este periodo.';
+    return;
+  }
+  vacio.classList.add('dashboard-shell-hidden'); cont.classList.remove('dashboard-shell-hidden');
+  const rows=retFiltradas(), q=claveTexto(retBusqueda), hayProd=retSelFamilies.size>0||!!q;
+  const sucs=new Map(),prods=new Map(),dias=new Map(),fams=new Map(),folios=new Map(),prodSuc=new Map(),sem=[0,0,0,0,0,0,0];
+  let total=0,piezas=0;
+  rows.forEach(r=>{
+    total+=r.total; piezas+=r.cantidad;
+    let s=sucs.get(r.nom); if(!s)sucs.set(r.nom,s={nom:r.nom,label:r.suc,sup:r.sup,folios:new Set(),piezas:0,monto:0}); s.folios.add(r.folio); s.piezas+=r.cantidad; s.monto+=r.total;
+    let p=prods.get(r.clave); if(!p)prods.set(r.clave,p={clave:r.clave,desc:r.desc,fam:r.fam,piezas:0,monto:0,sucs:new Set()}); p.piezas+=r.cantidad; p.monto+=r.total; p.sucs.add(r.nom);
+    dias.set(r.fecha,(dias.get(r.fecha)||0)+r.total);
+    if(r.fecha)sem[(new Date(r.fecha+'T00:00:00').getDay()+6)%7]+=r.total;
+    fams.set(r.fam,(fams.get(r.fam)||0)+r.total);
+    let fo=folios.get(r.folio); if(!fo)folios.set(r.folio,fo={folio:r.folio,suc:r.suc,fecha:r.fecha,piezas:0,monto:0,items:new Set()}); fo.piezas+=r.cantidad; fo.monto+=r.total; fo.items.add(r.clave);
+    let ps=prodSuc.get(r.nom); if(!ps)prodSuc.set(r.nom,ps=new Map()); let pp=ps.get(r.clave); if(!pp)ps.set(r.clave,pp={desc:r.desc,piezas:0,monto:0}); pp.piezas+=r.cantidad; pp.monto+=r.total;
+  });
+  /* Venta de referencia (misma sucursal, rango y, si aplica, familia/producto) y unidades vendidas por producto. */
+  const enRango=f=>(!retDesde||f>=retDesde)&&(!retHasta||f<=retHasta);
+  const ventaSuc=new Map(), udsProd=new Map();
+  if(!hayProd)retVenta.dias.forEach((m,nom)=>{if(!retSelBranches.has(nom))return;let sum=0;m.forEach((v,f)=>{if(enRango(f))sum+=v;});ventaSuc.set(nom,sum);});
+  mainData.forEach(d=>{
+    if(!retSelBranches.has(d.sucursalNom)||!enRango(retFechaN(d.fecha)))return;
+    const k=retClave(d.descripcion); udsProd.set(k,(udsProd.get(k)||0)+d.cantidad);
+    if(hayProd&&(!retSelFamilies.size||retSelFamilies.has(d.familia))&&(!q||k.includes(q)))ventaSuc.set(d.sucursalNom,(ventaSuc.get(d.sucursalNom)||0)+d.importeNeto);
+  });
+  const ventaTot=[...ventaSuc.values()].reduce((a,b)=>a+b,0), pctGlobal=retPct(total,ventaTot);
+  const sA=[...sucs.values()].sort((a,b)=>b.monto-a.monto), dA=[...dias.entries()].sort((a,b)=>a[0].localeCompare(b[0]));
+  const topDia=[...dias.entries()].sort((a,b)=>b[1]-a[1])[0];
+  const set=(id,t)=>{const e=$(id);if(e)e.textContent=t;};
+  set('retKpiTotal',money(total)); set('retKpiPiezas',retNum(piezas)); set('retKpiFolios',folios.size.toLocaleString('es-MX'));
+  set('retKpiPct',retPctTxt(pctGlobal)); set('retKpiPctSub',ventaTot>0?`sobre ${money(ventaTot)} de venta`:'Sin venta cargada para comparar');
+  set('retKpiProm',folios.size?money(total/folios.size):'$0.00'); set('retKpiProductos',prods.size.toLocaleString('es-MX'));
+  set('retKpiTopSuc',sA[0]?sA[0].label:'--'); set('retKpiTopSucSub',sA[0]?`${money(sA[0].monto)} · ${retPctTxt(retPct(sA[0].monto,total))} del total`:'');
+  set('retKpiTopDia',topDia?formatearFecha(topDia[0]):'--'); set('retKpiTopDiaSub',topDia?money(topDia[1]):'');
+  const st=$('retDashboardStatus'); if(st)st.innerHTML=`<span class="dot"></span><span>${rows.length.toLocaleString('es-MX')} renglones</span>`;
+  /* Gráficas */
+  createChart('chartRetSucursal','bar',sA.map(x=>x.label),sA.map(x=>+x.monto.toFixed(2)),'Devuelto ($)');
+  const sP=sA.map(x=>({l:x.label,p:retPct(x.monto,ventaSuc.get(x.nom))||0})).sort((a,b)=>b.p-a.p);
+  createChart('chartRetPct','bar',sP.map(x=>x.l),sP.map(x=>+x.p.toFixed(2)),'% de devolución');
+  createChart('chartRetDias','line',dA.map(x=>formatearFecha(x[0])),dA.map(x=>+x[1].toFixed(2)),'Devuelto ($)');
+  createChart('chartRetSemana','bar',['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'],sem.map(v=>+v.toFixed(2)),'Devuelto ($)');
+  const fA=[...fams.entries()].sort((a,b)=>b[1]-a[1]); createChart('chartRetFamilia','doughnut',fA.map(x=>x[0]),fA.map(x=>+x[1].toFixed(2)),'Devuelto ($)');
+  /* Tablas */
+  const td='py-2.5 px-3', setBody=(id,h,cols)=>{const e=$(id);if(e)e.innerHTML=h||`<tr><td colspan="${cols}" class="py-4 px-3 text-center text-slate-400">Sin información.</td></tr>`;};
+  setBody('tablaRetProductosBody',[...prods.values()].sort((a,b)=>b.piezas-a.piezas||b.monto-a.monto).slice(0,15).map(p=>{
+    const pv=retPct(p.piezas,udsProd.get(p.clave));
+    return `<tr class="border-b border-slate-100"><td class="${td} font-medium text-slate-800">${escapeHtml(p.desc)}</td><td class="${td}">${escapeHtml(p.fam)}</td><td class="${td} text-center">${retNum(p.piezas)}</td><td class="${td} text-right">${money(p.monto)}</td><td class="${td} text-right">${retPctTxt(pv)}</td><td class="${td} text-center">${p.sucs.size}</td></tr>`;}).join(''),6);
+  setBody('tablaRetProdSucBody',sA.map(x=>{
+    const top=[...prodSuc.get(x.nom).values()].sort((a,b)=>b.piezas-a.piezas||b.monto-a.monto)[0];
+    return `<tr class="border-b border-slate-100"><td class="${td} font-medium text-slate-800">${escapeHtml(x.label)}</td><td class="${td}">${escapeHtml(top.desc)}</td><td class="${td} text-center">${retNum(top.piezas)}</td><td class="${td} text-right">${money(top.monto)}</td><td class="${td} text-right">${retPctTxt(retPct(top.monto,x.monto))}</td></tr>`;}).join(''),5);
+  setBody('tablaRetSucursalBody',sA.map(x=>{
+    const v=ventaSuc.get(x.nom)||0, p=retPct(x.monto,v);
+    const c=p===null||pctGlobal===null?'text-slate-600':p>pctGlobal*1.25?'text-red-600 font-semibold':p<=pctGlobal*.75?'text-emerald-600 font-semibold':'text-slate-700';
+    return `<tr class="border-b border-slate-100"><td class="${td} font-medium text-slate-800">${escapeHtml(x.label)}</td><td class="${td}">${escapeHtml(x.sup)}</td><td class="${td} text-center">${x.folios.size}</td><td class="${td} text-center">${retNum(x.piezas)}</td><td class="${td} text-right">${money(x.monto)}</td><td class="${td} text-right">${v>0?money(v):'--'}</td><td class="${td} text-right ${c}">${retPctTxt(p)}</td></tr>`;}).join(''),7);
+  const ft=$('tablaRetSucursalFoot'); if(ft)ft.innerHTML=`<tr><td class="${td}">TOTAL</td><td></td><td class="${td} text-center">${folios.size}</td><td class="${td} text-center">${retNum(piezas)}</td><td class="${td} text-right">${money(total)}</td><td class="${td} text-right">${ventaTot>0?money(ventaTot):'--'}</td><td class="${td} text-right">${retPctTxt(pctGlobal)}</td></tr>`;
+  setBody('tablaRetFoliosBody',[...folios.values()].sort((a,b)=>b.monto-a.monto).slice(0,15).map(f=>
+    `<tr class="border-b border-slate-100"><td class="${td} font-medium text-slate-800">${escapeHtml(f.folio)}</td><td class="${td}">${escapeHtml(f.suc)}</td><td class="${td}">${formatearFecha(f.fecha)}</td><td class="${td} text-center">${retNum(f.piezas)}</td><td class="${td} text-center">${f.items.size}</td><td class="${td} text-right">${money(f.monto)}</td></tr>`).join(''),6);
+}
+/* ----- Navegación del módulo ----- */
+function openReturnsSidebar(){const s=$('returnsSidebar');if(!s)return;closeAllSidebarAccordions();s.classList.add('open');s.setAttribute('aria-hidden','false');document.body.classList.add('sidebar-open');syncFloatingFilterVisibility();refreshDashboardLayout();}
+function closeReturnsSidebar(){const s=$('returnsSidebar');s?.classList.remove('open');s?.setAttribute('aria-hidden','true');if(!$('analysisSidebar')?.classList.contains('open')&&!$('metaSidebar')?.classList.contains('open'))document.body.classList.remove('sidebar-open');syncFloatingFilterVisibility();refreshDashboardLayout();}
+function retMostrarPagina(){
+  document.body.classList.remove('home-mode');document.body.classList.add('analysis-mode');
+  document.body.style.overflowY='auto';document.body.style.overflowX='hidden';
+  ['homeScreen','placeholderPage','dashboardApp','metaProgressPage'].forEach(id=>$(id)?.classList.add('dashboard-shell-hidden'));
+  closeAnalysisSidebar();closeMetaSidebar();closeReturnsSidebar();
+  $('returnsPage')?.classList.remove('dashboard-shell-hidden');
+  syncFloatingFilterVisibility();
+  if($('retPeriodLabel'))$('retPeriodLabel').textContent=loadedMonth?`${loadedMonth} ${loadedYear}`:'Selecciona un periodo desde Filtros';
+}
+function showReturns(){
+  retMostrarPagina(); window.scrollTo({top:0,left:0,behavior:'auto'});
+  const coincide=mainData.length>0&&String(loadedYear)===String($('yearSelector').value)&&loadedMonth===selectMes.value;
+  if(!coincide){pendingModuleAfterLoad='returns';setTimeout(()=>cargarDesdeTurso(),80);}else activateReturnsModule();
+}
+async function activateReturnsModule(){
+  retMostrarPagina();
+  if($('retYearSelector')&&loadedYear)$('retYearSelector').value=String(loadedYear);
+  if($('retMonthSelector')&&loadedMonth)$('retMonthSelector').value=loadedMonth;
+  retConstruirVenta();
+  const vacio=$('retEmptyState'); if(vacio&&!retData.length){vacio.classList.remove('dashboard-shell-hidden');vacio.textContent='Cargando devoluciones...';$('retContent')?.classList.add('dashboard-shell-hidden');}
+  await cargarDevolucionesPeriodo();
+  cargarFiltrosDevoluciones(); renderDevoluciones();
+}
+function initDevoluciones(){
+  $('floatingReturnsFiltersButton')?.addEventListener('click',openReturnsSidebar);
+  $('closeReturnsSidebar')?.addEventListener('click',closeReturnsSidebar);
+  $('retToolbarHomeBtn')?.addEventListener('click',goHome);
+  $('retToolbarAnalysisBtn')?.addEventListener('click',openAnalysis);
+  $('retToolbarMetaBtn')?.addEventListener('click',showMetaProgress);
+  $('retClearFiltersBtn')?.addEventListener('click',retResetFiltros);
+  $('retSucTodas')?.addEventListener('click',()=>{retSelBranches=new Set(retUniverso());retSelSupervisors=new Set(sucursalesCatalogo.map(x=>x.supervisor).filter(x=>x&&x!=='NA'));retActualizarBotones();renderDevoluciones();});
+  $('retSucLimpiar')?.addEventListener('click',()=>{retSelBranches=new Set();retSelSupervisors=new Set();retActualizarBotones();renderDevoluciones();});
+  $('retFamTodas')?.addEventListener('click',()=>{retSelFamilies=new Set();retActualizarBotones();renderDevoluciones();});
+  let t; $('retProductSearch')?.addEventListener('input',e=>{clearTimeout(t);t=setTimeout(()=>{retBusqueda=e.target.value.trim();renderDevoluciones();},200);});
+  const fechas=()=>{const a=normalizarFecha($('retFechaInicio').value),b=normalizarFecha($('retFechaFin').value);if(!a||!b)return;if(a>b)return alert('La fecha Desde no puede ser posterior a Hasta.');retDesde=a;retHasta=b;retEstadoFechas();renderDevoluciones();};
+  $('retFechaInicio')?.addEventListener('change',fechas); $('retFechaFin')?.addEventListener('change',fechas);
+  $('retBtnTodoElMes')?.addEventListener('click',()=>{retConfigurarFechas();renderDevoluciones();});
+  $('retFetchBtn')?.addEventListener('click',()=>{
+    const y=$('retYearSelector')?.value, m=$('retMonthSelector')?.value;
+    if(y)$('yearSelector').value=y; if(m&&selectMes)selectMes.value=m;
+    retLoadedKey=''; pendingModuleAfterLoad='returns'; cargarDesdeTurso();
+  });
+  $('retCsvInput')?.addEventListener('change',e=>{
+    const f=e.target.files&&e.target.files[0]; if(!f)return;
+    const rd=new FileReader();
+    rd.onload=()=>{retData=retNormalizar(retParseCSV(String(rd.result||'').replace(/^\uFEFF/,'')));retError='';retLoadedKey=periodoClave(loadedMonthNum,loadedYear);retConstruirVenta();cargarFiltrosDevoluciones();renderDevoluciones();closeReturnsSidebar();};
+    rd.readAsText(f); e.target.value='';
+  });
+}
+
 /* ===== Selector de periodo en la pantalla principal =====
    Permite elegir año/mes antes de entrar a un módulo; al elegirlo, ese módulo
    carga directamente ese periodo (sin pasar primero por el sidebar de filtros). */
@@ -3643,14 +3985,14 @@ function sincronizarHomeDesdeSelectorPrincipal(){
   if(m&&$('homeMonthSelector'))$('homeMonthSelector').value=m;
 }
 function irAModulo(modulo){
-  if(modulo==='returns'){showPlaceholder('Devoluciones','Este módulo quedará disponible próximamente.');return;}
   sincronizarSelectoresDesdeHome();
+  if(modulo==='returns'){showReturns();return;}
   if(modulo==='analysis')openAnalysis();
   else if(modulo==='meta')showMetaProgress();
 }
-function showPlaceholder(title,text){closeAnalysisSidebar();closeMetaSidebar();document.body.classList.remove('home-mode');document.body.classList.add('analysis-mode');$('homeScreen')?.classList.add('dashboard-shell-hidden');$('dashboardApp')?.classList.add('dashboard-shell-hidden');$('metaProgressPage')?.classList.add('dashboard-shell-hidden');$('placeholderPage')?.classList.remove('dashboard-shell-hidden');$('placeholderTitle').textContent=title;$('placeholderText').textContent=text;syncFloatingFilterVisibility();}
-function goHome(){closeAnalysisSidebar();closeMetaSidebar();document.body.classList.add('home-mode');document.body.classList.remove('analysis-mode');document.body.style.overflow='hidden';$('dashboardApp')?.classList.add('dashboard-shell-hidden');$('placeholderPage')?.classList.add('dashboard-shell-hidden');$('metaProgressPage')?.classList.add('dashboard-shell-hidden');$('homeScreen')?.classList.remove('dashboard-shell-hidden');syncFloatingFilterVisibility();sincronizarHomeDesdeSelectorPrincipal();window.scrollTo({top:0,left:0,behavior:'auto'});}
-function openAnalysis(){closeAnalysisSidebar();closeMetaSidebar();document.body.classList.remove('home-mode');document.body.classList.add('analysis-mode');document.body.style.overflowY='auto';document.body.style.overflowX='hidden';$('homeScreen')?.classList.add('dashboard-shell-hidden');$('placeholderPage')?.classList.add('dashboard-shell-hidden');$('metaProgressPage')?.classList.add('dashboard-shell-hidden');$('dashboardApp')?.classList.remove('dashboard-shell-hidden');syncFloatingFilterVisibility(); const loaded=mainData.length>0&&String(loadedYear)===String($('yearSelector').value)&&loadedMonth===selectMes.value; if(!loaded){pendingModuleAfterLoad='analysis';setTimeout(()=>cargarDesdeTurso(),80);}}
+function showPlaceholder(title,text){closeAnalysisSidebar();closeMetaSidebar();closeReturnsSidebar();$('returnsPage')?.classList.add('dashboard-shell-hidden');document.body.classList.remove('home-mode');document.body.classList.add('analysis-mode');$('homeScreen')?.classList.add('dashboard-shell-hidden');$('dashboardApp')?.classList.add('dashboard-shell-hidden');$('metaProgressPage')?.classList.add('dashboard-shell-hidden');$('placeholderPage')?.classList.remove('dashboard-shell-hidden');$('placeholderTitle').textContent=title;$('placeholderText').textContent=text;syncFloatingFilterVisibility();}
+function goHome(){closeAnalysisSidebar();closeMetaSidebar();closeReturnsSidebar();$('returnsPage')?.classList.add('dashboard-shell-hidden');document.body.classList.add('home-mode');document.body.classList.remove('analysis-mode');document.body.style.overflow='hidden';$('dashboardApp')?.classList.add('dashboard-shell-hidden');$('placeholderPage')?.classList.add('dashboard-shell-hidden');$('metaProgressPage')?.classList.add('dashboard-shell-hidden');$('homeScreen')?.classList.remove('dashboard-shell-hidden');syncFloatingFilterVisibility();sincronizarHomeDesdeSelectorPrincipal();window.scrollTo({top:0,left:0,behavior:'auto'});}
+function openAnalysis(){closeAnalysisSidebar();closeMetaSidebar();closeReturnsSidebar();$('returnsPage')?.classList.add('dashboard-shell-hidden');document.body.classList.remove('home-mode');document.body.classList.add('analysis-mode');document.body.style.overflowY='auto';document.body.style.overflowX='hidden';$('homeScreen')?.classList.add('dashboard-shell-hidden');$('placeholderPage')?.classList.add('dashboard-shell-hidden');$('metaProgressPage')?.classList.add('dashboard-shell-hidden');$('dashboardApp')?.classList.remove('dashboard-shell-hidden');syncFloatingFilterVisibility(); const loaded=mainData.length>0&&String(loadedYear)===String($('yearSelector').value)&&loadedMonth===selectMes.value; if(!loaded){pendingModuleAfterLoad='analysis';setTimeout(()=>cargarDesdeTurso(),80);}}
 function resetAllFilters(){
   selectedBranches=new Set([...new Set(mainData.map(d=>String(d.sucursalNom||'').trim()).filter(Boolean))]);
   selectedSupervisors=new Set();
@@ -3724,7 +4066,7 @@ function downloadExcel(rows,name,sheetName){
   }
 }
 function ensureUniversalDownloadButtons(){
-  document.querySelectorAll('#dashboardApp .dashboard-card, #metaProgressPage .dashboard-card').forEach(card=>{
+  document.querySelectorAll('#dashboardApp .dashboard-card, #metaProgressPage .dashboard-card, #returnsPage .dashboard-card').forEach(card=>{
     const canvas=card.querySelector('canvas');
     const table=card.querySelector('table');
     const list=card.querySelector('ul[id]');
