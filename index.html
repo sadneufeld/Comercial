@@ -3927,6 +3927,20 @@ function initDevoluciones(){
 /* ===== Selector de periodo en la pantalla principal =====
    Permite elegir año/mes antes de entrar a un módulo; al elegirlo, ese módulo
    carga directamente ese periodo (sin pasar primero por el sidebar de filtros). */
+/* Selecciona por defecto el año y el mes en curso en todos los selectores de periodo.
+   Si el año actual aún no existe en la lista, lo agrega. */
+function establecerPeriodoActual(){
+  const hoy=new Date(), anio=String(hoy.getFullYear()), mes=NOMBRES_MESES[hoy.getMonth()];
+  ['homeYearSelector','yearSelector','metaYearSelector','retYearSelector'].forEach(id=>{
+    const sel=$(id); if(!sel)return;
+    if(![...sel.options].some(o=>o.value===anio)){
+      sel.add(new Option(anio,anio));
+      [...sel.options].sort((a,b)=>a.value-b.value).forEach(o=>sel.add(o));
+    }
+    sel.value=anio;
+  });
+  ['homeMonthSelector','monthSelector','metaMonthSelector','retMonthSelector'].forEach(id=>{const sel=$(id);if(sel)sel.value=mes;});
+}
 function sincronizarSelectoresDesdeHome(){
   const hy=$('homeYearSelector')?.value, hm=$('homeMonthSelector')?.value;
   if(hy){if($('yearSelector'))$('yearSelector').value=hy; if($('metaYearSelector'))$('metaYearSelector').value=hy;}
@@ -4069,7 +4083,7 @@ function returnToEntryScreen(){goHome();}
 function startDataLoadingExperience(){const o=$('dataLoadingOverlay');o?.classList.add('show');o?.setAttribute('aria-hidden','false');}
 function stopDataLoadingExperience(){const o=$('dataLoadingOverlay');o?.classList.remove('show');o?.setAttribute('aria-hidden','true');}
 
-goHome(); setupSidebar(); enhancePrimaryFilterGroups(); enhanceFilterAccordions(); bindExclusiveSidebarAccordions(); syncFloatingFilterVisibility(); setupListeners(); poblarFiltrosHora(); cargarFiltroFamilias(); actualizarEstadoFamilias(); actualizarEstadoMetodosPago(); updateDashboardStatus(false);
+establecerPeriodoActual(); goHome(); setupSidebar(); enhancePrimaryFilterGroups(); enhanceFilterAccordions(); bindExclusiveSidebarAccordions(); syncFloatingFilterVisibility(); setupListeners(); poblarFiltrosHora(); cargarFiltroFamilias(); actualizarEstadoFamilias(); actualizarEstadoMetodosPago(); updateDashboardStatus(false);
 window.__NEUFELD_RULES__={
   moneySource:'pagos.cobrado (excluyendo forma_pago = Cortesía)',
   cortesiaSource:'pagos.cobrado con forma_pago = Cortesía <-> maestro.tipo_operacion = MERMA COMANDA',
