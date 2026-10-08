@@ -14,6 +14,11 @@
     .chart-container { position: relative; height: 500px; width: 100%; }
     .chart-container.tall { height: 400px; }
     .chart-container.family-chart { height: 300px; }
+    .chart-sort-row { display:flex; justify-content:flex-end; margin:0 0 8px; }
+    .chart-sort-btn { display:inline-flex; align-items:center; gap:6px; padding:5px 10px; font-size:12px; font-weight:600; line-height:1.2; color:#475569; background:#fff; border:1px solid #cbd5e1; border-radius:8px; cursor:pointer; transition:background .15s, border-color .15s, color .15s; }
+    .chart-sort-btn:hover { background:#f1f5f9; border-color:#94a3b8; color:#1e293b; }
+    [data-theme="dark"] .chart-sort-btn { background:#1b1f29; color:#cbd5e1; border-color:#2f3542; }
+    [data-theme="dark"] .chart-sort-btn:hover { background:#252b38; color:#f1f5f9; }
     /* Filtros compactos */
     .filter-scroll { scrollbar-width: auto; }
     .family-button-row { position: relative; }
@@ -2212,7 +2217,8 @@
             <div class="dashboard-card relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 overflow-hidden flex flex-col">
                 <h3 class="text-lg font-semibold text-slate-800 mb-1">Ingresos por Vendedor</h3>
                  <button type="button" class="absolute top-4 right-4 z-10 inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-white/95 hover:bg-slate-50 text-slate-500 hover:text-slate-700 shadow-sm transition-colors" title="Descargar tabla" aria-label="Descargar tabla" data-table-download="tablaVendedoresBody"><span class="download-icon">↓</span></button>
-                <p class="text-sm text-slate-500 mb-4">Monto cobrado, tickets y ticket promedio por cada vendedor.</p>
+                <p id="descVendedores" class="text-sm text-slate-500 mb-3">Monto cobrado, tickets y ticket promedio por cada vendedor.</p>
+                <div class="mb-3"><button type="button" id="vendedorCCToggle" class="chart-sort-btn" aria-pressed="false" title="Alterna entre incluir o excluir los tickets de pedidos de Call Center">📞 Pedidos Call Center: Incluidos</button></div>
                 <div class="overflow-y-auto max-h-[420px]">
                     <table class="w-full text-sm text-left text-slate-600 table-row-hover">
                         <thead class="text-xs text-slate-700 uppercase bg-slate-100 sticky top-0 z-10">
@@ -2229,9 +2235,10 @@
         <!-- Top Tablas y Productos -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             <div class="chart-card-animate dashboard-card relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 overflow-y-auto max-h-[400px]">
-                <h3 class="text-lg font-semibold text-slate-800 mb-1 pr-10">Top Clientes</h3>
+                <h3 id="tituloTopClientes" class="text-lg font-semibold text-slate-800 mb-1 pr-10">Top 15 Clientes</h3>
                 <button type="button" class="absolute top-4 right-4 z-10 inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-white/95 hover:bg-slate-50 text-slate-500 hover:text-slate-700 shadow-sm transition-colors" title="Descargar tabla" aria-label="Descargar tabla" data-list-download="listClientesNormales"><span class="download-icon">↓</span></button>
-                <p class="text-sm text-slate-500 mb-4">Clientes con mayor consumo.</p>
+                <p class="text-sm text-slate-500 mb-3">Clientes con mayor consumo.</p>
+                <div class="flex items-center gap-2 mb-3"><label for="topClientesSelector" class="text-xs font-medium text-slate-600">Mostrar</label><select id="topClientesSelector" class="border border-slate-300 rounded-lg shadow-sm py-1.5 px-2.5 text-sm bg-white focus:ring-indigo-500 focus:border-indigo-500"><option value="5">Top 5</option><option value="10">Top 10</option><option value="15" selected>Top 15</option><option value="20">Top 20</option><option value="25">Top 25</option><option value="30">Top 30</option><option value="50">Top 50</option><option value="100">Top 100</option></select></div>
                 <ul id="listClientesNormales" class="divide-y divide-slate-100"></ul>
             </div>
             <div class="chart-card-animate dashboard-card relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 overflow-y-auto max-h-[400px]">
@@ -2531,7 +2538,7 @@
                 <p class="text-sm text-slate-500 mb-4">Ordenado de mayor a menor % de avance.</p>
                 <table class="w-full text-sm text-left text-slate-600 table-row-hover">
                     <thead class="text-xs text-slate-700 uppercase bg-slate-100 sticky top-0 z-10">
-                        <tr><th class="py-3 px-3">Sucursal</th><th class="py-3 px-3 text-right">Meta mes</th><th class="py-3 px-3 text-right">Vendido</th><th class="py-3 px-3 text-right">Restante</th><th class="py-3 px-3 text-right">% Avance</th><th class="py-3 px-3">Progreso</th><th class="py-3 px-3 text-right">Promedio diario</th><th class="py-3 px-3 text-right">Venta diaria necesaria</th></tr>
+                        <tr><th class="py-3 px-3">Sucursal</th><th class="py-3 px-3 text-right">Meta mes</th><th class="py-3 px-3 text-right">Vendido</th><th class="py-3 px-3 text-right">Restante</th><th class="py-3 px-3 text-right">% Avance</th><th class="py-3 px-3 text-right" title="Porcentaje de la meta del mes que se debería llevar a la última fecha con información">% Esperado al día</th><th class="py-3 px-3">Progreso</th><th class="py-3 px-3 text-right">Promedio diario</th><th class="py-3 px-3 text-right">Venta diaria necesaria</th></tr>
                     </thead>
                     <tbody id="tablaMetaSucursalesBody" class="divide-y divide-slate-100"></tbody>
                     <tfoot id="tablaMetaSucursalesFoot" class="sticky bottom-0 bg-slate-100 border-t-2 border-slate-300 font-bold text-slate-800"></tfoot>
@@ -2544,7 +2551,7 @@
                 <p class="text-sm text-slate-500 mb-4">Suma de todas las sucursales a cargo de cada supervisor.</p>
                 <table class="w-full text-sm text-left text-slate-600 table-row-hover">
                     <thead class="text-xs text-slate-700 uppercase bg-slate-100 sticky top-0 z-10">
-                        <tr><th class="py-3 px-3">Supervisor</th><th class="py-3 px-3 text-right">Meta mes</th><th class="py-3 px-3 text-right">Vendido</th><th class="py-3 px-3 text-right">Restante</th><th class="py-3 px-3 text-right">% Avance</th><th class="py-3 px-3">Progreso</th></tr>
+                        <tr><th class="py-3 px-3">Supervisor</th><th class="py-3 px-3 text-right">Meta mes</th><th class="py-3 px-3 text-right">Vendido</th><th class="py-3 px-3 text-right">Restante</th><th class="py-3 px-3 text-right">% Avance</th><th class="py-3 px-3 text-right" title="Porcentaje de la meta del mes que se debería llevar a la última fecha con información">% Esperado al día</th><th class="py-3 px-3">Progreso</th></tr>
                     </thead>
                     <tbody id="tablaMetaSupervisoresBody" class="divide-y divide-slate-100"></tbody>
                 </table>
@@ -3151,23 +3158,26 @@ function calcularMeta(codigos){
   const hasta=metaFechaHasta||isoFecha(anio,mesNum,totalDiasMes);
   const hoyISO=ultimaFechaVenta;
   const totalDias=Math.max(1,Math.round((new Date(hasta+'T00:00:00')-new Date(desde+'T00:00:00'))/86400000)+1);
-  let metaMes=0,vendido=0,vendidoAFecha=0,metaAFecha=0,diasFuturosConMeta=0;
+  let metaMes=0,vendido=0,vendidoAFecha=0,metaAFecha=0,diasFuturosConMeta=0,vendidoConMeta=0;
   codigos.forEach(cod=>{
     const metasDia=metasPorSucursalFecha.get(cod);
     const ventaDia=ventasPorSucursalFecha.get(cod);
+    let metaCod=0,vendCod=0,futurosCod=0;
     for(let d=1;d<=totalDiasMes;d++){
       const fechaISO=isoFecha(anio,mesNum,d);
       if(fechaISO<desde||fechaISO>hasta)continue;
       const m=metasDia?metasDia.get(fechaISO):undefined;
       const v=(ventaDia&&ventaDia.get(fechaISO))||0;
-      vendido+=v;
+      vendido+=v; vendCod+=v;
       const esPasadoOHoy=!hoyISO||fechaISO<=hoyISO;
       if(esPasadoOHoy)vendidoAFecha+=v;
       if(m!==undefined){
-        metaMes+=m;
-        if(esPasadoOHoy)metaAFecha+=m; else diasFuturosConMeta++;
+        metaMes+=m; metaCod+=m;
+        if(esPasadoOHoy)metaAFecha+=m; else futurosCod++;
       }
     }
+    /* Solo las sucursales que realmente tienen meta (>0) cuentan para la venta diaria necesaria. */
+    if(metaCod>0){diasFuturosConMeta+=futurosCod;vendidoConMeta+=vendCod;}
   });
   const restante=Math.max(0,metaMes-vendido);
   const pctAvance=metaMes>0?(vendido/metaMes*100):0;
@@ -3183,19 +3193,29 @@ function calcularMeta(codigos){
     }
   }
   const promedioDiario=diasTranscurridos>0?vendidoAFecha/diasTranscurridos:0;
-  const ventaDiariaNecesaria=diasFuturosConMeta>0?restante/diasFuturosConMeta:0;
+  const restanteConMeta=Math.max(0,metaMes-vendidoConMeta);
+  const ventaDiariaNecesaria=diasFuturosConMeta>0?restanteConMeta/diasFuturosConMeta:0;
+  const pctEsperadoAvance=metaMes>0?(metaAFecha/metaMes*100):0;
   const proyeccionCierre=promedioDiario*totalDias;
-  return {metaMes,vendido,restante,pctAvance,metaAFecha,vendidoAFecha,pctVsEsperado,promedioDiario,ventaDiariaNecesaria,proyeccionCierre,diasTranscurridos,diasFuturosConMeta,totalDias};
+  return {metaMes,vendido,restante,pctAvance,pctEsperadoAvance,metaAFecha,vendidoAFecha,pctVsEsperado,promedioDiario,ventaDiariaNecesaria,proyeccionCierre,diasTranscurridos,diasFuturosConMeta,totalDias};
 }
 function metaUniversoSucursales(){
   return [...new Set([...mainData.map(d=>metaBranchCode(d.sucursalNom)),...metasPorSucursalFecha.keys()].filter(Boolean))];
 }
+/* Por defecto en Avance de Meta no se seleccionan las sucursales cuyo nombre empieza por "Expendio" o "Amori". */
+function metaEsSucursalExcluidaPorDefecto(cod){
+  const nombre=String(catMap[cod]?.sucursal||cod).normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toLowerCase();
+  const sinPrefijo=nombre.replace(/^\S+\s+/,'');
+  const re=/^(expendio|amori)/;
+  return re.test(nombre)||re.test(sinPrefijo);
+}
+function metaSucursalesPorDefecto(){return new Set(metaUniversoSucursales().filter(c=>!metaEsSucursalExcluidaPorDefecto(c)));}
 function cargarFiltroMetaSucursales(){
   const el=$('metaBranchButtons'); if(!el)return;
   const noms=metaUniversoSucursales().sort((a,b)=>(catMap[a]?.sucursal||a).localeCompare(catMap[b]?.sucursal||b,'es'));
   el.innerHTML='';
   noms.forEach(n=>{const b=document.createElement('button');b.type='button';b.dataset.sucursal=n;b.className='compact-filter-btn rounded-lg border bg-white border-slate-300 text-slate-700';b.textContent=catMap[n]?.sucursal||n;b.onclick=()=>alternarMetaSucursal(n);el.appendChild(b);});
-  if(!metaSelectedBranches.size)metaSelectedBranches=new Set(noms);
+  if(!metaSelectedBranches.size)metaSelectedBranches=metaSucursalesPorDefecto();
   actualizarBotonesMetaSucursales();
 }
 function actualizarBotonesMetaSucursales(){document.querySelectorAll('#metaBranchButtons button').forEach(b=>{const a=metaSelectedBranches.has(b.dataset.sucursal);b.className=a?'compact-filter-btn rounded-lg border font-semibold bg-emerald-600 border-emerald-600 text-white':'compact-filter-btn rounded-lg border bg-white border-slate-300 text-slate-700';});}
@@ -3230,7 +3250,7 @@ function alternarMetaMetodoPago(m){if(metaSelectedPaymentMethods.has(m))metaSele
 function metaSeleccionarTodosMetodosPago(){metaSelectedPaymentMethods=new Set(metaAllPaymentMethods);actualizarBotonesMetaMetodosPago();ventasPorSucursalFecha=construirVentasPorSucursalFecha();renderMetaProgress();}
 function metaLimpiarMetodosPago(){metaSelectedPaymentMethods=new Set();actualizarBotonesMetaMetodosPago();ventasPorSucursalFecha=construirVentasPorSucursalFecha();renderMetaProgress();}
 function metaResetAllFilters(){
-  metaSelectedBranches=new Set(metaUniversoSucursales());
+  metaSelectedBranches=metaSucursalesPorDefecto();
   metaSelectedSupervisors=new Set(sucursalesCatalogo.map(x=>x.supervisor).filter(x=>x&&x!=='NA'));
   metaSelectedPaymentMethods=metaMetodosPagoPorDefecto();
   actualizarBotonesMetaSucursales();
@@ -3297,14 +3317,15 @@ function renderMetaProgress(){
       <td class="py-2.5 px-3 text-right font-bold text-indigo-600">${money(calc.vendido)}</td>
       <td class="py-2.5 px-3 text-right text-amber-600">${calc.metaMes>0?money(calc.restante):'--'}</td>
       <td class="py-2.5 px-3 text-right font-semibold ${calc.metaMes>0?semaforoTexto(calc.pctVsEsperado):'text-slate-400'}">${calc.metaMes>0?calc.pctAvance.toFixed(1)+'%':'--'}</td>
+      <td class="py-2.5 px-3 text-right text-slate-500">${calc.metaMes>0?calc.pctEsperadoAvance.toFixed(1)+'%':'--'}</td>
       <td class="py-2.5 px-3"><div class="meta-progress-track sm"><div class="meta-progress-fill ${calc.metaMes>0?semaforoClase(calc.pctVsEsperado):'ok'}" style="width:${calc.metaMes>0?Math.min(100,calc.pctAvance):0}%"></div></div></td>
       <td class="py-2.5 px-3 text-right">${money(calc.promedioDiario)}</td>
       <td class="py-2.5 px-3 text-right">${calc.diasFuturosConMeta>0?money(calc.ventaDiariaNecesaria):(calc.metaMes>0?'✔':'--')}</td>
     </tr>`;
-    }).join(''):'<tr><td colspan="8" class="py-4 px-3 text-center text-slate-400">Sin sucursales seleccionadas.</td></tr>';
+    }).join(''):'<tr><td colspan="9" class="py-4 px-3 text-center text-slate-400">Sin sucursales seleccionadas.</td></tr>';
   }
   const footSuc=$('tablaMetaSucursalesFoot');
-  if(footSuc)footSuc.innerHTML=`<tr><td class="py-2.5 px-3">TOTAL</td><td class="py-2.5 px-3 text-right">${money(total.metaMes)}</td><td class="py-2.5 px-3 text-right">${money(total.vendido)}</td><td class="py-2.5 px-3 text-right">${money(total.restante)}</td><td class="py-2.5 px-3 text-right">${total.metaMes>0?total.pctAvance.toFixed(1)+'%':'--'}</td><td></td><td class="py-2.5 px-3 text-right">${money(total.promedioDiario)}</td><td class="py-2.5 px-3 text-right">${total.diasFuturosConMeta>0?money(total.ventaDiariaNecesaria):'--'}</td></tr>`;
+  if(footSuc)footSuc.innerHTML=`<tr><td class="py-2.5 px-3">TOTAL</td><td class="py-2.5 px-3 text-right">${money(total.metaMes)}</td><td class="py-2.5 px-3 text-right">${money(total.vendido)}</td><td class="py-2.5 px-3 text-right">${money(total.restante)}</td><td class="py-2.5 px-3 text-right">${total.metaMes>0?total.pctAvance.toFixed(1)+'%':'--'}</td><td class="py-2.5 px-3 text-right">${total.metaMes>0?total.pctEsperadoAvance.toFixed(1)+'%':'--'}</td><td></td><td class="py-2.5 px-3 text-right">${money(total.promedioDiario)}</td><td class="py-2.5 px-3 text-right">${total.diasFuturosConMeta>0?money(total.ventaDiariaNecesaria):'--'}</td></tr>`;
 
   const gruposSup={};
   codigos.forEach(cod=>{const sup=catMap[cod]?.supervisor||'Sin supervisor';(gruposSup[sup]=gruposSup[sup]||[]).push(cod);});
@@ -3317,8 +3338,9 @@ function renderMetaProgress(){
       <td class="py-2.5 px-3 text-right font-bold text-indigo-600">${money(calc.vendido)}</td>
       <td class="py-2.5 px-3 text-right text-amber-600">${calc.metaMes>0?money(calc.restante):'--'}</td>
       <td class="py-2.5 px-3 text-right font-semibold ${calc.metaMes>0?semaforoTexto(calc.pctVsEsperado):'text-slate-400'}">${calc.metaMes>0?calc.pctAvance.toFixed(1)+'%':'--'}</td>
+      <td class="py-2.5 px-3 text-right text-slate-500">${calc.metaMes>0?calc.pctEsperadoAvance.toFixed(1)+'%':'--'}</td>
       <td class="py-2.5 px-3"><div class="meta-progress-track sm"><div class="meta-progress-fill ${calc.metaMes>0?semaforoClase(calc.pctVsEsperado):'ok'}" style="width:${calc.metaMes>0?Math.min(100,calc.pctAvance):0}%"></div></div></td>
-    </tr>`).join(''):'<tr><td colspan="6" class="py-4 px-3 text-center text-slate-400">Sin zonas para mostrar.</td></tr>';
+    </tr>`).join(''):'<tr><td colspan="7" class="py-4 px-3 text-center text-slate-400">Sin zonas para mostrar.</td></tr>';
   }
 
   renderMetaTrendChart(codigos);
@@ -3494,22 +3516,81 @@ function buildCharts(data){
   window.__diasSemanaData=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'].map(d=>[d,diasSemana[d].total,diasSemana[d].unidades,diasSemana[d].fechas.size]);renderGraficaDiasSemana();
   const ccBy={};data.forEach(d=>{if(!d.docBase||!d.docBase.startsWith('CCL'))return;const s=d.sucursalNombre||d.sucursalNom;ccBy[s]??={pedidos:new Set(),ingresos:0};ccBy[s].pedidos.add(d.docBase);ccBy[s].ingresos+=d._cobradoAsignado;});const ccRows=Object.entries(ccBy).map(([s,x])=>({sucursal:s,pedidos:x.pedidos.size,ingresos:x.ingresos,promedio:x.pedidos.size?x.ingresos/x.pedidos.size:0})).sort((a,b)=>b.pedidos-a.pedidos||b.ingresos-a.ingresos);createChart('chartCallCenter','bar',ccRows.map(x=>x.sucursal.replace(/^\S+\s/,'')),ccRows.map(x=>x.pedidos),'Pedidos CCL');renderTablaCallCenter(ccRows);
   rankingProductos=sortObj(porProducto);rankingUnidadesProductos=Object.entries(productosResumen).map(([p,v])=>[p,v.unidades,v.importe]).sort((a,b)=>b[1]-a[1]);renderTopProductos();
-  renderList('listSupervisores',sortObj(porSupervisor));renderList('listClientesNormales',Object.entries(cliente).sort((a,b)=>b[1]-a[1]).slice(0,15));
+  renderList('listSupervisores',sortObj(porSupervisor));window.__clientesRank=Object.entries(cliente).sort((a,b)=>b[1]-a[1]);renderTopClientes();
   const promoRows=Object.entries(porPromocion).map(([promocion,ingresos])=>({promocion,ingresos,tickets:ticketSets.promocion[promocion]?.size||0})).sort((a,b)=>b.ingresos-a.ingresos);renderTablaPromociones(promoRows);
-  const vendRows=Object.entries(porVendedor).map(([vendedor,ingresos])=>({vendedor,ingresos,tickets:ticketSets.vendedor[vendedor]?.size||0,promedio:ticketSets.vendedor[vendedor]?.size?ingresos/ticketSets.vendedor[vendedor].size:0})).sort((a,b)=>b.ingresos-a.ingresos);renderTablaVendedores(vendRows);
+  window.__vendDataBase=data;renderVendedoresDesdeData();
 }
 function sortObj(o){return Object.entries(o).sort((a,b)=>b[1]-a[1]);}
-function renderTopProductos(){const lim=Math.min(topProductosLimit,Math.max(rankingProductos.length,rankingUnidadesProductos.length));const p=rankingProductos.slice(0,lim),u=rankingUnidadesProductos.slice(0,lim);createChart('chartProductos','pie',p.map(x=>x[0].substring(0,24)),p.map(x=>x[1]),'Importe neto ($)');renderTablaUnidadesProductos(u);$('tituloUnidadesProductos').textContent=`Top ${lim} - Unidades Vendidas por Producto`;$('tituloTopProductos').textContent=`Top ${lim} - Productos con Mayor Importe Neto`; }
+function renderTopProductos(){const lim=Math.min(topProductosLimit,Math.max(rankingProductos.length,rankingUnidadesProductos.length));const p=rankingProductos.slice(0,lim),u=rankingUnidadesProductos.slice(0,lim);createChart('chartProductos','pie',p.map(x=>x[0].substring(0,24)),p.map(x=>x[1]),'Importe neto ($)');renderTablaUnidadesProductos(u);$('tituloUnidadesProductos').textContent=`Top ${lim} - Unidades Vendidas por Producto`;$('tituloTopProductos').textContent=`Top ${lim} - Productos con Mayor Ingreso Generado`; }
 function renderTablaUnidadesProductos(items){const b=$('tablaUnidadesProductosBody');if(!b)return;b.innerHTML=items.map(([p,u,ing],i)=>`<tr><td class="py-3 px-3 text-center font-semibold text-slate-400">${i+1}</td><td class="py-3 px-3 font-medium text-slate-700">${escapeHtml(p)}</td><td class="py-3 px-3 text-right font-bold text-amber-600">${num(u).toLocaleString('es-MX',{maximumFractionDigits:2})}</td><td class="py-3 px-3 text-right font-bold text-indigo-600">${money(ing)}</td></tr>`).join('');}
 function renderTablaCallCenter(rows){const b=$('tablaCallCenterBody'),f=$('tablaCallCenterFoot');if(!b)return;let tp=0,ti=0;b.innerHTML=rows.length?rows.map(x=>{tp+=x.pedidos;ti+=x.ingresos;return`<tr><td class="py-2.5 px-3 font-medium text-slate-700">${escapeHtml(x.sucursal)}</td><td class="py-2.5 px-3 text-center font-semibold text-amber-600">${x.pedidos}</td><td class="py-2.5 px-3 text-right font-bold text-indigo-600">${money(x.ingresos)}</td><td class="py-2.5 px-3 text-right text-slate-500">${money(x.promedio)}</td></tr>`}).join(''):'<tr><td colspan="4" class="text-center py-4 text-slate-400">Sin pedidos de Call Center</td></tr>';if(f)f.innerHTML=`<tr><td class="py-3 px-3">TOTAL</td><td class="py-3 px-3 text-center">${tp.toLocaleString()}</td><td class="py-3 px-3 text-right">${money(ti)}</td><td class="py-3 px-3 text-right">${money(tp?ti/tp:0)}</td></tr>`;}
 function renderTablaPromociones(items){const b=$('tablaPromocionesBody'),f=$('tablaPromocionesFoot');if(!b)return;let ing=0,t=0;b.innerHTML=items.length?items.map(x=>{ing+=x.ingresos;t+=x.tickets;return`<tr><td class="py-2.5 px-3 font-medium text-slate-700">${escapeHtml(x.promocion)}</td><td class="py-2.5 px-3 text-center font-semibold text-amber-600">${x.tickets.toLocaleString()}</td><td class="py-2.5 px-3 text-right font-bold text-indigo-600">${money(x.ingresos)}</td></tr>`}).join(''):'<tr><td colspan="3" class="text-center py-4 text-slate-400">Sin promociones en el periodo</td></tr>';if(f)f.innerHTML=`<tr><td class="py-3 px-3">TOTAL</td><td class="py-3 px-3 text-center">${t.toLocaleString()}</td><td class="py-3 px-3 text-right">${money(ing)}</td></tr>`;}
+let vendedoresExcluirCC=false;
+function renderVendedoresDesdeData(){
+  const data=window.__vendDataBase||[];
+  let base=data;
+  if(vendedoresExcluirCC){
+    const foliosCC=new Set(); data.forEach(d=>{if(d.docBase&&d.docBase.startsWith('CCL'))foliosCC.add(d.folio);});
+    base=data.filter(d=>!foliosCC.has(d.folio));
+  }
+  const ingresos=aggregateRows(base,d=>d.vendedor), tk={};
+  base.forEach(d=>{const v=d.vendedor||'Sin Vendedor';(tk[v]??=new Set()).add(d.folio);});
+  const rows=Object.entries(ingresos).map(([vendedor,ing])=>({vendedor,ingresos:ing,tickets:tk[vendedor]?.size||0,promedio:tk[vendedor]?.size?ing/tk[vendedor].size:0})).sort((a,b)=>b.ingresos-a.ingresos);
+  renderTablaVendedores(rows);
+  const btn=$('vendedorCCToggle'); if(btn){btn.textContent=vendedoresExcluirCC?'🏬 Solo ventas en tienda (sin Call Center)':'📞 Pedidos Call Center: Incluidos';btn.setAttribute('aria-pressed',vendedoresExcluirCC?'true':'false');}
+  const d=$('descVendedores'); if(d)d.textContent=vendedoresExcluirCC?'Monto cobrado, tickets y ticket promedio por vendedor, solo con ventas en tienda (se excluyen los tickets de pedidos de Call Center).':'Monto cobrado, tickets y ticket promedio por cada vendedor.';
+}
 function renderTablaVendedores(items){const b=$('tablaVendedoresBody'),f=$('tablaVendedoresFoot');if(!b)return;let ing=0,t=0;b.innerHTML=items.map(x=>{ing+=x.ingresos;t+=x.tickets;return`<tr><td class="py-2.5 px-3 font-medium text-slate-700">${escapeHtml(x.vendedor)}</td><td class="py-2.5 px-3 text-center font-semibold text-amber-600">${x.tickets}</td><td class="py-2.5 px-3 text-right font-bold text-indigo-600">${money(x.ingresos)}</td><td class="py-2.5 px-3 text-right text-slate-500">${money(x.promedio)}</td></tr>`}).join('');if(f)f.innerHTML=`<tr><td class="py-3 px-3">TOTAL</td><td class="py-3 px-3 text-center">${t.toLocaleString()}</td><td class="py-3 px-3 text-right">${money(ing)}</td><td class="py-3 px-3 text-right">${money(t?ing/t:0)}</td></tr>`;}
+let topClientesLimit=15;
+function renderTopClientes(){
+  const rank=window.__clientesRank||[];
+  renderList('listClientesNormales',rank.slice(0,topClientesLimit));
+  const t=$('tituloTopClientes'); if(t)t.textContent=`Top ${topClientesLimit} Clientes`;
+}
 function renderList(id,items){const ul=$(id);if(!ul)return;ul.innerHTML=items.length?items.map(([name,v])=>`<li class="py-3 flex justify-between gap-3"><span class="font-medium truncate" title="${escapeHtml(name)}">${escapeHtml(name)}</span><span class="font-bold text-indigo-600 whitespace-nowrap">${money(v)}</span></li>`).join(''):'<li class="py-3 text-slate-400">Sin datos</li>';}
 function obtenerMermaFiltrada(){const base=mermaData.filter(d=>rowPassesBase(d,{cortesia:true}));const out=[];const m=ticketRowsMap(base);for(const [folio,rows] of m){const all=mermaRowsByTicket.get(folio)||[];const net=all.reduce((s,x)=>s+x.importeNeto,0);const cob=getTicketInfo(folio).cortesia;rows.filter(d=>(selectedFamilies.size===0||selectedFamilies.has(d.familia))&&(selectedProducts.size===0||selectedProducts.has(d.descripcion))).forEach(d=>{d._cobradoAsignado=net?cob*d.importeNeto/net:cob/Math.max(1,rows.length);out.push(d)});}return out;}
 function renderMermaSection(data){const importes={},cantidades={};data.forEach(d=>{importes[d.descripcion]=(importes[d.descripcion]||0)+num(d.importeNeto);cantidades[d.descripcion]=(cantidades[d.descripcion]||0)+d.cantidad;});const sorted=Object.entries(cantidades).map(([p,u])=>[p,u,importes[p]||0]).sort((a,b)=>b[1]-a[1]);const b=$('tablaMermaProductosBody'),f=$('tablaMermaProductosFoot');if(b)b.innerHTML=sorted.map(([p,u,ing],i)=>`<tr><td class="py-3 px-3 text-center font-semibold text-slate-400">${i+1}</td><td class="py-3 px-3 font-medium text-slate-700">${escapeHtml(p)}</td><td class="py-3 px-3 text-right font-bold text-amber-600">${u.toLocaleString('es-MX',{maximumFractionDigits:2})}</td><td class="py-3 px-3 text-right font-bold text-indigo-600">${money(ing)}</td></tr>`).join('')||'<tr><td colspan="4" class="text-center py-4 text-slate-400">Sin registros</td></tr>';const total=sorted.reduce((s,x)=>s+x[2],0),units=sorted.reduce((s,x)=>s+x[1],0);if(f)f.innerHTML=`<tr><td class="py-3 px-3">TOTAL</td><td></td><td class="py-3 px-3 text-right">${units.toLocaleString('es-MX',{maximumFractionDigits:2})}</td><td class="py-3 px-3 text-right">${money(total)}</td></tr>`;const vals=Object.entries(importes).sort((a,b)=>b[1]-a[1]);createChart('chartMermaProductos','pie',vals.map(x=>x[0].substring(0,24)),vals.map(x=>x[1]),'Importe neto ($)');}
 
+/* ===== Orden de gráficas de barras (A–Z / mayor) ===== */
+const chartSortState={}, chartRawArgs={};
+const CHART_SORT_CRONO=new Set(['chartHoras','chartDiasSemana','chartRetSemana']);   // orden natural cronológico
+const CHART_SORT_ALFA=new Set(['chartTicketsSucursal','chartTicketPromSucursal']);   // orden original alfabético
+function chartSortCycle(id){return CHART_SORT_CRONO.has(id)?['orig','mayor','alfa']:CHART_SORT_ALFA.has(id)?['alfa','mayor']:['mayor','alfa'];}
+function chartSortLabel(id,mode){return mode==='alfa'?'A–Z':mode==='mayor'?'Mayor a menor':'Cronológico';}
+function ordenarDatosGrafica(labels,data,mode){
+  if(mode!=='alfa'&&mode!=='mayor')return {labels,data};
+  const idx=labels.map((_,i)=>i);
+  if(mode==='alfa')idx.sort((a,b)=>String(labels[a]).localeCompare(String(labels[b]),'es',{sensitivity:'base',numeric:true}));
+  else idx.sort((a,b)=>(Number(data[b])||0)-(Number(data[a])||0));
+  return {labels:idx.map(i=>labels[i]),data:idx.map(i=>data[i])};
+}
+function asegurarBotonOrden(id){
+  const canvas=$(id); if(!canvas)return;
+  const cont=canvas.parentElement; if(!cont||!cont.parentElement)return;
+  const mode=chartSortState[id]||chartSortCycle(id)[0];
+  let row=cont.previousElementSibling;
+  if(!(row&&row.dataset&&row.dataset.sortFor===id)){
+    row=document.createElement('div'); row.className='chart-sort-row'; row.dataset.sortFor=id;
+    const btn=document.createElement('button'); btn.type='button'; btn.className='chart-sort-btn';
+    btn.addEventListener('click',()=>{
+      const cyc=chartSortCycle(id), cur=chartSortState[id]||cyc[0];
+      chartSortState[id]=cyc[(cyc.indexOf(cur)+1)%cyc.length];
+      const a=chartRawArgs[id]; if(a)createChart(id,'bar',a.labels,a.data,a.label);
+    });
+    row.appendChild(btn); cont.parentElement.insertBefore(row,cont);
+  }
+  const b=row.querySelector('button');
+  b.textContent='⇅ Orden: '+chartSortLabel(id,mode);
+  b.title='Clic para cambiar el orden de la gráfica';
+}
 function createChart(id,type,labels,data,label){
   const el=$(id);if(!el||!window.Chart)return;
+  if(type==='bar'){
+    chartRawArgs[id]={labels,data,label};
+    const modo=chartSortState[id]||chartSortCycle(id)[0];
+    const ord=ordenarDatosGrafica(labels,data,modo); labels=ord.labels; data=ord.data;
+    asegurarBotonOrden(id);
+  }
   const ctx=el.getContext('2d');
   if(chartInstances[id])chartInstances[id].destroy();
   const palette=['#4f46e5','#7c3aed','#0891b2','#0f766e','#2563eb','#d97706','#e11d48','#16a34a','#9333ea','#0ea5e9','#ea580c','#db2777'];
@@ -4007,7 +4088,7 @@ function setupListeners(){
   btnTodoElMes?.addEventListener('click',()=>{configurarRangoFechas();renderDashboard(obtenerDatosFiltrados())});btnTodoElDia?.addEventListener('click',()=>{selectedHourFrom='';selectedHourTo='';horaInicioFiltro.value='';horaFinFiltro.value='';actualizarEstadoFiltroHorario();renderDashboard(obtenerDatosFiltrados())});
   btnTodasFamilias?.addEventListener('click',seleccionarTodasFamilias);btnLimpiarFamilias?.addEventListener('click',limpiarFamilias);btnClearProductSearch?.addEventListener('click',limpiarBusquedaProducto);btnClearSelectedProducts?.addEventListener('click',limpiarProductosSeleccionados);productSearch?.addEventListener('input',actualizarSugerenciasProductos);productSearch?.addEventListener('focus',actualizarSugerenciasProductos);btnTodosMetodosPago?.addEventListener('click',seleccionarTodosMetodosPago);btnLimpiarMetodosPago?.addEventListener('click',limpiarMetodosPago);
   ticketsExcluirPromedioInput?.addEventListener('input',()=>{});$('btnAplicarExclusionPromedio')?.addEventListener('click',applyExclusion);$('btnLimpiarExclusionPromedio')?.addEventListener('click',limpiarExclusion);
-  $('topProductosSelector')?.addEventListener('change',e=>{topProductosLimit=Number(e.target.value)||10;renderTopProductos()});$('evolucionMetricaModo')?.addEventListener('change',e=>{metricaEvolucion=e.target.value==='unidades'?'unidades':'ingreso';renderGraficaEvolucionTemporal()});$('diaSemanaModo')?.addEventListener('change',e=>{modoDiaSemana=e.target.value==='promedio'?'promedio':'total';renderGraficaDiasSemana()});$('horaModo')?.addEventListener('change',e=>{modoHora=e.target.value==='promedio'?'promedio':'total';renderGraficaHoras()});
+  $('vendedorCCToggle')?.addEventListener('click',()=>{vendedoresExcluirCC=!vendedoresExcluirCC;renderVendedoresDesdeData();});$('topClientesSelector')?.addEventListener('change',e=>{topClientesLimit=Number(e.target.value)||15;renderTopClientes();});$('topProductosSelector')?.addEventListener('change',e=>{topProductosLimit=Number(e.target.value)||10;renderTopProductos()});$('evolucionMetricaModo')?.addEventListener('change',e=>{metricaEvolucion=e.target.value==='unidades'?'unidades':'ingreso';renderGraficaEvolucionTemporal()});$('diaSemanaModo')?.addEventListener('change',e=>{modoDiaSemana=e.target.value==='promedio'?'promedio':'total';renderGraficaDiasSemana()});$('horaModo')?.addEventListener('change',e=>{modoHora=e.target.value==='promedio'?'promedio':'total';renderGraficaHoras()});
   document.addEventListener('click',e=>{if(!e.target.closest('#productSearch')&&!e.target.closest('#productSuggestions'))productSuggestions?.classList.add('hidden')});
   document.addEventListener('click',e=>{const b=e.target.closest('[data-table-download]');if(b)downloadTable(b.dataset.tableDownload);const l=e.target.closest('[data-list-download]');if(l)downloadList(l.dataset.listDownload);});
   // Barra de progreso de scroll (el CSS ya existía pero nadie la actualizaba).
