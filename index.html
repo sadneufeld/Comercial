@@ -23,6 +23,13 @@
     [data-theme="dark"] .table-row-hover tbody tr.ret-row-excede:hover { background:rgba(244,63,94,.2) !important; }
     [data-theme="dark"] .ret-alert.bad { background:rgba(244,63,94,.14); color:#fda4af; border-color:rgba(244,63,94,.35); }
     [data-theme="dark"] .ret-alert.ok { background:rgba(16,185,129,.14); color:#6ee7b7; border-color:rgba(16,185,129,.35); }
+    .back-to-top { position:fixed; right:18px; bottom:18px; z-index:90; width:44px; height:44px; display:grid; place-items:center; border-radius:999px; border:1px solid #d9dfe8; background:#fff; color:#344054; box-shadow:0 10px 24px rgba(15,23,42,.14); cursor:pointer; opacity:0; transform:translateY(10px); pointer-events:none; transition:opacity .25s ease, transform .25s ease, background .2s ease, border-color .2s ease; }
+    .back-to-top.show { opacity:1; transform:none; pointer-events:auto; }
+    .back-to-top:hover { background:#eef2ff; border-color:#c7d2fe; color:#4338ca; }
+    .back-to-top svg { width:20px; height:20px; }
+    body.home-mode .back-to-top { display:none; }
+    [data-theme="dark"] .back-to-top { background:#1b1f29; color:#cbd5e1; border-color:#2f3542; }
+    [data-theme="dark"] .back-to-top:hover { background:#252b38; color:#f1f5f9; border-color:#4b5563; }
     .chart-sort-row { display:flex; justify-content:flex-end; margin:0 0 8px; }
     .chart-sort-btn { display:inline-flex; align-items:center; gap:6px; padding:5px 10px; font-size:12px; font-weight:600; line-height:1.2; color:#475569; background:#fff; border:1px solid #cbd5e1; border-radius:8px; cursor:pointer; transition:background .15s, border-color .15s, color .15s; }
     .chart-sort-btn:hover { background:#f1f5f9; border-color:#94a3b8; color:#1e293b; }
@@ -2090,43 +2097,25 @@
                 <p class="text-sm text-slate-500 mb-4">Cantidad de pedidos de Call Center registrados por sucursal.</p>
                 <div class="chart-container tall sucursal-compact"><canvas id="chartCallCenter"></canvas></div>
             </div>
-            <div class="dashboard-card relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 overflow-hidden flex flex-col lg:w-1/2">
-                <h3 class="text-lg font-semibold text-slate-800 mb-1">Ingresos de Call Center por Sucursal</h3>
+            <div class="dashboard-card relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 overflow-hidden flex flex-col">
+                <h3 class="text-lg font-semibold text-slate-800 mb-1 pr-10">Call Center vs. Venta en Tienda por Sucursal</h3>
                  <button type="button" class="absolute top-4 right-4 z-10 inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-white/95 hover:bg-slate-50 text-slate-500 hover:text-slate-700 shadow-sm transition-colors" title="Descargar tabla" aria-label="Descargar tabla" data-table-download="tablaCallCenterBody"><span class="download-icon">↓</span></button>
-                <p class="text-sm text-slate-500 mb-4">Resumen de pedidos, ingresos y ticket promedio de Call Center por sucursal.</p>
-                <div class="overflow-y-auto max-h-[420px]">
-                    <table class="w-full text-sm text-left text-slate-600 table-row-hover">
-                        <thead class="text-xs text-slate-700 uppercase bg-slate-100 sticky top-0 z-10">
-                            <tr>
-                                <th scope="col" class="py-3 px-3">Tienda</th>
-                                <th scope="col" class="py-3 px-3 text-center">Pedidos</th>
-                                <th scope="col" class="py-3 px-3 text-right">Ingresos ($)</th>
-                                <th scope="col" class="py-3 px-3 text-right">Ticket Prom.</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tablaCallCenterBody" class="divide-y divide-slate-100"></tbody>
-                        <tfoot id="tablaCallCenterFoot" class="sticky bottom-0 bg-slate-100 border-t-2 border-slate-300 font-bold text-slate-800 z-10"></tfoot>
-                    </table>
-                </div>
-            </div>
-
-            <div class="dashboard-card relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 overflow-hidden flex flex-col lg:w-1/2">
-                <h3 class="text-lg font-semibold text-slate-800 mb-1 pr-10">Call Center vs. Venta en Tienda</h3>
-                <button type="button" class="absolute top-4 right-4 z-10 inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-white/95 hover:bg-slate-50 text-slate-500 hover:text-slate-700 shadow-sm transition-colors" title="Descargar tabla" aria-label="Descargar tabla" data-table-download="tablaCCvsTiendaBody"><span class="download-icon">↓</span></button>
-                <p class="text-sm text-slate-500 mb-4">Lo que cada sucursal generó por Call Center frente a lo que generó con su propia venta en tienda, y qué porcentaje del total representa el Call Center.</p>
+                <p class="text-sm text-slate-500 mb-4">Pedidos, ingresos y ticket promedio de Call Center en cada sucursal, frente a lo que generó con su propia venta en tienda y el porcentaje que representa el Call Center del total.</p>
                 <div class="overflow-y-auto max-h-[420px]">
                     <table class="w-full text-sm text-left text-slate-600 table-row-hover">
                         <thead class="text-xs text-slate-700 uppercase bg-slate-100 sticky top-0 z-10">
                             <tr>
                                 <th scope="col" class="py-3 px-3">Sucursal</th>
+                                <th scope="col" class="py-3 px-3 text-center">Pedidos</th>
                                 <th scope="col" class="py-3 px-3 text-right">Call Center ($)</th>
+                                <th scope="col" class="py-3 px-3 text-right">Ticket Prom.</th>
                                 <th scope="col" class="py-3 px-3 text-right">Tienda ($)</th>
                                 <th scope="col" class="py-3 px-3 text-right">Total ($)</th>
                                 <th scope="col" class="py-3 px-3 text-right">% Call Center</th>
                             </tr>
                         </thead>
-                        <tbody id="tablaCCvsTiendaBody" class="divide-y divide-slate-100"></tbody>
-                        <tfoot id="tablaCCvsTiendaFoot" class="sticky bottom-0 bg-slate-100 border-t-2 border-slate-300 font-bold text-slate-800 z-10"></tfoot>
+                        <tbody id="tablaCallCenterBody" class="divide-y divide-slate-100"></tbody>
+                        <tfoot id="tablaCallCenterFoot" class="sticky bottom-0 bg-slate-100 border-t-2 border-slate-300 font-bold text-slate-800 z-10"></tfoot>
                     </table>
                 </div>
             </div>
@@ -3286,7 +3275,7 @@ function cargarFiltroMetaSupervisores(){
   actualizarBotonesMetaSupervisores();
 }
 function actualizarBotonesMetaSupervisores(){document.querySelectorAll('#metaSupervisorButtons button').forEach(b=>{const a=metaSelectedSupervisors.has(b.dataset.supervisor);b.className=a?'compact-filter-btn rounded-lg border font-semibold bg-indigo-600 border-indigo-600 text-white':'compact-filter-btn rounded-lg border bg-white border-slate-300 text-slate-700';});}
-function alternarMetaSupervisor(s){if(metaSelectedSupervisors.has(s))metaSelectedSupervisors.delete(s);else metaSelectedSupervisors.add(s);const universo=metaUniversoSucursales();const allowed=new Set(metaSelectedSupervisors.size?sucursalesCatalogo.filter(x=>metaSelectedSupervisors.has(x.supervisor)).map(x=>x.nom).filter(n=>universo.includes(n)):universo);metaSelectedBranches=metaSelectedSupervisors.size?allowed:new Set(universo);cargarFiltroMetaSucursales();actualizarBotonesMetaSupervisores();renderMetaProgress();}
+function alternarMetaSupervisor(s){if(metaSelectedSupervisors.has(s))metaSelectedSupervisors.delete(s);else metaSelectedSupervisors.add(s);const universo=metaUniversoSucursales();const incluirExc=universo.some(n=>metaEsSucursalExcluidaPorDefecto(n)&&metaSelectedBranches.has(n));const allowed=new Set(metaSelectedSupervisors.size?sucursalesCatalogo.filter(x=>metaSelectedSupervisors.has(x.supervisor)).map(x=>x.nom).filter(n=>universo.includes(n)):universo);metaSelectedBranches=new Set([...(metaSelectedSupervisors.size?allowed:new Set(universo))].filter(n=>incluirExc||!metaEsSucursalExcluidaPorDefecto(n)));cargarFiltroMetaSucursales();actualizarBotonesMetaSupervisores();renderMetaProgress();}
 function metaSeleccionarTodo(){metaSelectedBranches=new Set(metaUniversoSucursales());metaSelectedSupervisors=new Set(sucursalesCatalogo.map(x=>x.supervisor).filter(x=>x&&x!=='NA'));actualizarBotonesMetaSucursales();actualizarBotonesMetaSupervisores();renderMetaProgress();}
 function metaLimpiarFiltros(){metaSelectedBranches=new Set();metaSelectedSupervisors=new Set();actualizarBotonesMetaSucursales();actualizarBotonesMetaSupervisores();renderMetaProgress();}
 function metaEsMembresias(m){return /^MEMBRESIAS?$/.test(String(m||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toUpperCase());}
@@ -3571,7 +3560,7 @@ function buildCharts(data){
   window.__diasEvolucionData=Object.keys(porDia).sort().map(f=>[f,porDia[f]||0,0]);renderGraficaEvolucionTemporal();
   window.__horasData=Array.from({length:24},(_,h)=>[`${String(h).padStart(2,'0')}:00`,porHora[h]||0,porHoraUnidades[h]||0,new Set(data.filter(d=>d.hora===h).map(d=>normalizarFecha(d.fecha))).size]);renderGraficaHoras();
   window.__diasSemanaData=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'].map(d=>[d,diasSemana[d].total,diasSemana[d].unidades,diasSemana[d].fechas.size]);renderGraficaDiasSemana();
-  const ccBy={};data.forEach(d=>{if(!d.docBase||!d.docBase.startsWith('CCL'))return;const s=d.sucursalNombre||d.sucursalNom;ccBy[s]??={pedidos:new Set(),ingresos:0};ccBy[s].pedidos.add(d.docBase);ccBy[s].ingresos+=d._cobradoAsignado;});const ccRows=Object.entries(ccBy).map(([s,x])=>({sucursal:s,pedidos:x.pedidos.size,ingresos:x.ingresos,promedio:x.pedidos.size?x.ingresos/x.pedidos.size:0})).sort((a,b)=>b.pedidos-a.pedidos||b.ingresos-a.ingresos);createChart('chartCallCenter','bar',ccRows.map(x=>x.sucursal.replace(/^\S+\s/,'')),ccRows.map(x=>x.pedidos),'Pedidos CCL');renderTablaCallCenter(ccRows);renderTablaCCvsTienda(ccRows,porSucursal);
+  const ccBy={};data.forEach(d=>{if(!d.docBase||!d.docBase.startsWith('CCL'))return;const s=d.sucursalNombre||d.sucursalNom;ccBy[s]??={pedidos:new Set(),ingresos:0};ccBy[s].pedidos.add(d.docBase);ccBy[s].ingresos+=d._cobradoAsignado;});const ccRows=Object.entries(ccBy).map(([s,x])=>({sucursal:s,pedidos:x.pedidos.size,ingresos:x.ingresos,promedio:x.pedidos.size?x.ingresos/x.pedidos.size:0})).sort((a,b)=>b.pedidos-a.pedidos||b.ingresos-a.ingresos);createChart('chartCallCenter','bar',ccRows.map(x=>x.sucursal.replace(/^\S+\s/,'')),ccRows.map(x=>x.pedidos),'Pedidos CCL');renderTablaCallCenter(ccRows,porSucursal);
   rankingProductos=sortObj(porProducto);rankingUnidadesProductos=Object.entries(productosResumen).map(([p,v])=>[p,v.unidades,v.importe]).sort((a,b)=>b[1]-a[1]);renderTopProductos();
   renderList('listSupervisores',sortObj(porSupervisor));window.__clientesRank=Object.entries(cliente).sort((a,b)=>b[1]-a[1]);renderTopClientes();
   const promoRows=Object.entries(porPromocion).map(([promocion,ingresos])=>({promocion,ingresos,tickets:ticketSets.promocion[promocion]?.size||0})).sort((a,b)=>b.ingresos-a.ingresos);renderTablaPromociones(promoRows);
@@ -3580,14 +3569,13 @@ function buildCharts(data){
 function sortObj(o){return Object.entries(o).sort((a,b)=>b[1]-a[1]);}
 function renderTopProductos(){const lim=Math.min(topProductosLimit,Math.max(rankingProductos.length,rankingUnidadesProductos.length));const p=rankingProductos.slice(0,lim),u=rankingUnidadesProductos.slice(0,lim);createChart('chartProductos','pie',p.map(x=>x[0].substring(0,24)),p.map(x=>x[1]),'Ingresos ($)');renderTablaUnidadesProductos(u);$('tituloUnidadesProductos').textContent=`Top ${lim} - Unidades Vendidas por Producto`;$('tituloTopProductos').textContent=`Top ${lim} - Productos con Mayor Ingreso`; }
 function renderTablaUnidadesProductos(items){const b=$('tablaUnidadesProductosBody');if(!b)return;b.innerHTML=items.map(([p,u,ing],i)=>`<tr><td class="py-3 px-3 text-center font-semibold text-slate-400">${i+1}</td><td class="py-3 px-3 font-medium text-slate-700">${escapeHtml(p)}</td><td class="py-3 px-3 text-right font-bold text-amber-600">${num(u).toLocaleString('es-MX',{maximumFractionDigits:2})}</td><td class="py-3 px-3 text-right font-bold text-indigo-600">${money(ing)}</td></tr>`).join('');}
-function renderTablaCCvsTienda(ccRows,porSucursal){
-  const b=$('tablaCCvsTiendaBody'),f=$('tablaCCvsTiendaFoot'); if(!b)return;
-  const rows=ccRows.map(x=>{const cc=num(x.ingresos),total=Math.max(num(porSucursal[x.sucursal]),cc);return{sucursal:x.sucursal,cc,tienda:total-cc,total,pct:total>0?cc/total*100:0};}).sort((a,c)=>c.cc-a.cc);
-  let tc=0,tt=0,tot=0;
-  b.innerHTML=rows.length?rows.map(x=>{tc+=x.cc;tt+=x.tienda;tot+=x.total;return`<tr><td class="py-2.5 px-3 font-medium text-slate-700">${escapeHtml(x.sucursal)}</td><td class="py-2.5 px-3 text-right font-bold text-indigo-600">${money(x.cc)}</td><td class="py-2.5 px-3 text-right text-slate-600">${money(x.tienda)}</td><td class="py-2.5 px-3 text-right text-slate-500">${money(x.total)}</td><td class="py-2.5 px-3 text-right font-semibold text-amber-600">${x.pct.toFixed(1)}%</td></tr>`}).join(''):'<tr><td colspan="5" class="text-center py-4 text-slate-400">Sin pedidos de Call Center</td></tr>';
-  if(f)f.innerHTML=`<tr><td class="py-3 px-3">TOTAL</td><td class="py-3 px-3 text-right">${money(tc)}</td><td class="py-3 px-3 text-right">${money(tt)}</td><td class="py-3 px-3 text-right">${money(tot)}</td><td class="py-3 px-3 text-right">${tot>0?(tc/tot*100).toFixed(1)+'%':'--'}</td></tr>`;
+function renderTablaCallCenter(rows,porSucursal){
+  const b=$('tablaCallCenterBody'),f=$('tablaCallCenterFoot');if(!b)return;
+  const vs=porSucursal||{};
+  let tp=0,tcc=0,tt=0,tot=0;
+  b.innerHTML=rows.length?rows.map(x=>{const cc=num(x.ingresos),total=Math.max(num(vs[x.sucursal]),cc),tienda=total-cc,pct=total>0?cc/total*100:0;tp+=x.pedidos;tcc+=cc;tt+=tienda;tot+=total;return`<tr><td class="py-2.5 px-3 font-medium text-slate-700">${escapeHtml(x.sucursal)}</td><td class="py-2.5 px-3 text-center font-semibold text-amber-600">${x.pedidos}</td><td class="py-2.5 px-3 text-right font-bold text-indigo-600">${money(cc)}</td><td class="py-2.5 px-3 text-right text-slate-500">${money(x.promedio)}</td><td class="py-2.5 px-3 text-right text-slate-600">${money(tienda)}</td><td class="py-2.5 px-3 text-right text-slate-500">${money(total)}</td><td class="py-2.5 px-3 text-right font-semibold text-amber-600">${pct.toFixed(1)}%</td></tr>`}).join(''):'<tr><td colspan="7" class="text-center py-4 text-slate-400">Sin pedidos de Call Center</td></tr>';
+  if(f)f.innerHTML=`<tr><td class="py-3 px-3">TOTAL</td><td class="py-3 px-3 text-center">${tp.toLocaleString()}</td><td class="py-3 px-3 text-right">${money(tcc)}</td><td class="py-3 px-3 text-right">${money(tp?tcc/tp:0)}</td><td class="py-3 px-3 text-right">${money(tt)}</td><td class="py-3 px-3 text-right">${money(tot)}</td><td class="py-3 px-3 text-right">${tot>0?(tcc/tot*100).toFixed(1)+'%':'--'}</td></tr>`;
 }
-function renderTablaCallCenter(rows){const b=$('tablaCallCenterBody'),f=$('tablaCallCenterFoot');if(!b)return;let tp=0,ti=0;b.innerHTML=rows.length?rows.map(x=>{tp+=x.pedidos;ti+=x.ingresos;return`<tr><td class="py-2.5 px-3 font-medium text-slate-700">${escapeHtml(x.sucursal)}</td><td class="py-2.5 px-3 text-center font-semibold text-amber-600">${x.pedidos}</td><td class="py-2.5 px-3 text-right font-bold text-indigo-600">${money(x.ingresos)}</td><td class="py-2.5 px-3 text-right text-slate-500">${money(x.promedio)}</td></tr>`}).join(''):'<tr><td colspan="4" class="text-center py-4 text-slate-400">Sin pedidos de Call Center</td></tr>';if(f)f.innerHTML=`<tr><td class="py-3 px-3">TOTAL</td><td class="py-3 px-3 text-center">${tp.toLocaleString()}</td><td class="py-3 px-3 text-right">${money(ti)}</td><td class="py-3 px-3 text-right">${money(tp?ti/tp:0)}</td></tr>`;}
 function renderTablaPromociones(items){const b=$('tablaPromocionesBody'),f=$('tablaPromocionesFoot');if(!b)return;let ing=0,t=0;b.innerHTML=items.length?items.map(x=>{ing+=x.ingresos;t+=x.tickets;return`<tr><td class="py-2.5 px-3 font-medium text-slate-700">${escapeHtml(x.promocion)}</td><td class="py-2.5 px-3 text-center font-semibold text-amber-600">${x.tickets.toLocaleString()}</td><td class="py-2.5 px-3 text-right font-bold text-indigo-600">${money(x.ingresos)}</td></tr>`}).join(''):'<tr><td colspan="3" class="text-center py-4 text-slate-400">Sin promociones en el periodo</td></tr>';if(f)f.innerHTML=`<tr><td class="py-3 px-3">TOTAL</td><td class="py-3 px-3 text-center">${t.toLocaleString()}</td><td class="py-3 px-3 text-right">${money(ing)}</td></tr>`;}
 let vendedoresExcluirCC=false;
 function renderVendedoresDesdeData(){
@@ -3945,15 +3933,21 @@ function retConfigurarFechas(){
   if(a){a.value=retDesde;a.min=retDesde;a.max=retHasta;} if(b){b.value=retHasta;b.min=retDesde;b.max=retHasta;}
   retEstadoFechas();
 }
+/* Por defecto en Devoluciones no se seleccionan los expendios (sucursales cuyo nombre empieza por "Expendio"). */
+function retEsExpendio(cod){
+  const n=String(catMap[cod]?.sucursal||cod).normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toLowerCase();
+  return /^expendio/.test(n)||/^expendio/.test(n.replace(/^\S+\s+/,''));
+}
 function cargarFiltrosDevoluciones(){
-  const uni=retUniverso(); retSelBranches=new Set(uni);
+  const uni=retUniverso(); retSelBranches=new Set(uni.filter(n=>!retEsExpendio(n)));
   const bb=$('retBranchButtons'); if(bb){bb.innerHTML='';uni.forEach(n=>{const b=document.createElement('button');b.type='button';b.dataset.k=n;b.textContent=retEtiqueta(n);
     b.onclick=()=>{retSelBranches.has(n)?retSelBranches.delete(n):retSelBranches.add(n);retSelSupervisors.clear();retActualizarBotones();renderDevoluciones();};bb.appendChild(b);});}
   const sups=[...new Set(sucursalesCatalogo.map(x=>x.supervisor).filter(x=>x&&x!=='NA'))].sort((a,b)=>a.localeCompare(b,'es')); retSelSupervisors=new Set(sups);
   const sb=$('retSupervisorButtons'); if(sb){sb.innerHTML='';sups.forEach(sv=>{const b=document.createElement('button');b.type='button';b.dataset.k=sv;b.textContent=sv;
     b.onclick=()=>{retSelSupervisors.has(sv)?retSelSupervisors.delete(sv):retSelSupervisors.add(sv);
       const ok=retSelSupervisors.size?new Set(sucursalesCatalogo.filter(x=>retSelSupervisors.has(x.supervisor)).map(x=>x.nom)):new Set(uni);
-      retSelBranches=new Set(uni.filter(n=>ok.has(n)));retActualizarBotones();renderDevoluciones();};sb.appendChild(b);});}
+      const incluirExp=uni.some(n=>retEsExpendio(n)&&retSelBranches.has(n));
+      retSelBranches=new Set(uni.filter(n=>ok.has(n)&&(incluirExp||!retEsExpendio(n))));retActualizarBotones();renderDevoluciones();};sb.appendChild(b);});}
   retSelFamilies=new Set(); retBusqueda=''; if($('retProductSearch'))$('retProductSearch').value='';
   const fams=[...new Set(retData.map(r=>retVenta.fam.get(r.clave)||'Sin familia'))].sort((a,b)=>a.localeCompare(b,'es'));
   const fb=$('retFamilyButtons'); if(fb){fb.innerHTML='';fams.forEach(f=>{const b=document.createElement('button');b.type='button';b.dataset.k=f;b.textContent=f;
@@ -4263,5 +4257,15 @@ window.__NEUFELD_ACENTOS_PENDIENTES__=ACENTOS_PENDIENTES;
 
     </script>
 
+    <button type="button" id="backToTopBtn" class="back-to-top" aria-label="Volver arriba" title="Volver arriba"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"></path><path d="M5 12l7-7 7 7"></path></svg></button>
+    <script>
+    (function(){
+      var btn=document.getElementById('backToTopBtn'); if(!btn)return;
+      function actualizar(){btn.classList.toggle('show',(window.pageYOffset||document.documentElement.scrollTop||0)>400);}
+      window.addEventListener('scroll',actualizar,{passive:true});
+      btn.addEventListener('click',function(){window.scrollTo({top:0,left:0,behavior:'smooth'});});
+      actualizar();
+    })();
+    </script>
 </body>
 </html>
