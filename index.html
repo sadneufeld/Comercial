@@ -2390,7 +2390,22 @@
             <div class="dashboard-section-kicker">Tendencia</div>
             <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                 <div class="dashboard-card bg-white rounded-xl shadow-sm border border-slate-200 p-5"><h3 class="text-lg font-semibold text-slate-800 mb-1">Devoluciones por día ($)</h3><p class="text-sm text-slate-500 mb-4">Evolución diaria del monto devuelto.</p><div class="chart-container"><canvas id="chartRetDias"></canvas></div></div>
-                <div class="dashboard-card bg-white rounded-xl shadow-sm border border-slate-200 p-5"><h3 class="text-lg font-semibold text-slate-800 mb-1">Devoluciones por día de la semana ($)</h3><p class="text-sm text-slate-500 mb-4">Acumulado por día de la semana en el rango elegido.</p><div class="chart-container"><canvas id="chartRetSemana"></canvas></div></div>
+                <div class="dashboard-card bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-1 pr-10">
+                        <div>
+                            <h3 id="tituloRetSemana" class="text-lg font-semibold text-slate-800">Devoluciones por día de la semana ($)</h3>
+                            <p id="retSemanaDescripcion" class="text-sm text-slate-500 mt-1">Acumulado por día de la semana en el rango elegido.</p>
+                        </div>
+                        <label class="flex items-center gap-2 text-sm font-medium text-slate-700 shrink-0">
+                            Ver
+                            <select id="retSemanaModo" class="border border-slate-300 rounded-lg shadow-sm py-2 px-3 bg-white focus:ring-indigo-500 focus:border-indigo-500">
+                                <option value="total">Total</option>
+                                <option value="promedio">Promedio</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="chart-container"><canvas id="chartRetSemana"></canvas></div>
+                </div>
             </section>
             <div class="dashboard-section-kicker">Productos</div>
             <section class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
@@ -3602,6 +3617,15 @@ function renderVendedoresDesdeData(){
   const d=$('descVendedores'); if(d)d.textContent=vendedoresExcluirCC?'Ingresos, tickets y ticket promedio de cada vendedor, solo con ventas en tienda (sin pedidos de Call Center).':'Ingresos, tickets y ticket promedio de cada vendedor.';
 }
 function renderTablaVendedores(items){const b=$('tablaVendedoresBody'),f=$('tablaVendedoresFoot');if(!b)return;let ing=0,t=0;b.innerHTML=items.map(x=>{ing+=x.ingresos;t+=x.tickets;return`<tr><td class="py-2.5 px-3 font-medium text-slate-700">${escapeHtml(x.vendedor)}</td><td class="py-2.5 px-3 text-center font-semibold text-amber-600">${x.tickets}</td><td class="py-2.5 px-3 text-right font-bold text-indigo-600">${money(x.ingresos)}</td><td class="py-2.5 px-3 text-right text-slate-500">${money(x.promedio)}</td></tr>`}).join('');if(f)f.innerHTML=`<tr><td class="py-3 px-3">TOTAL</td><td class="py-3 px-3 text-center">${t.toLocaleString()}</td><td class="py-3 px-3 text-right">${money(ing)}</td><td class="py-3 px-3 text-right">${money(t?ing/t:0)}</td></tr>`;}
+let modoRetSemana='total';
+function renderRetSemana(){
+  const d=window.__retSemData; if(!d)return;
+  const prom=modoRetSemana==='promedio';
+  const vals=d.sem.map((v,i)=>+(prom?v/Math.max(1,d.cnt[i]):v).toFixed(2));
+  createChart('chartRetSemana','bar',['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'],vals,prom?'Promedio devuelto ($)':'Devuelto ($)');
+  const t=$('tituloRetSemana'); if(t)t.textContent=prom?'Devolución promedio por día de la semana ($)':'Devoluciones por día de la semana ($)';
+  const ds=$('retSemanaDescripcion'); if(ds)ds.textContent=prom?'Promedio devuelto por cada día de la semana, considerando los días con venta del rango elegido.':'Acumulado por día de la semana en el rango elegido.';
+}
 let topClientesLimit=15;
 function renderTopClientes(){
   const rank=window.__clientesRank||[];
@@ -4031,7 +4055,14 @@ function renderDevoluciones(){
     alerta.innerHTML=excede.length?`<span aria-hidden="true">⚠</span><span>${excede.length} sucursal${excede.length===1?'':'es'} ${excede.length===1?'supera':'superan'} el máximo de ${RET_LIMITE_PCT}%: ${excede.map(x=>escapeHtml(x.l)+' ('+x.p.toFixed(2)+'%)').join(', ')}</span>`:`<span aria-hidden="true">✓</span><span>Todas las sucursales están dentro del máximo permitido de ${RET_LIMITE_PCT}%.</span>`;
   }
   createChart('chartRetDias','line',dA.map(x=>formatearFecha(x[0])),dA.map(x=>+x[1].toFixed(2)),'Devuelto ($)');
-  createChart('chartRetSemana','bar',['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'],sem.map(v=>+v.toFixed(2)),'Devuelto ($)');
+  {
+    /* Días con venta por día de la semana (para el promedio); si no hay venta cargada, se usan los días con devolución. */
+    const fechasAct=new Set(); retVenta.dias.forEach((m,nom)=>{if(!retSelBranches.has(nom))return;m.forEach((v,f)=>{if(v>0&&enRango(f))fechasAct.add(f);});});
+    if(!fechasAct.size)dias.forEach((v,f)=>{if(f)fechasAct.add(f);});
+    const cnt=[0,0,0,0,0,0,0]; fechasAct.forEach(f=>{cnt[(new Date(f+'T00:00:00').getDay()+6)%7]++;});
+    window.__retSemData={sem:sem.slice(),cnt};
+    renderRetSemana();
+  }
   const fA=[...fams.entries()].sort((a,b)=>b[1]-a[1]); createChart('chartRetFamilia','doughnut',fA.map(x=>x[0]),fA.map(x=>+x[1].toFixed(2)),'Devuelto ($)');
   /* Tablas: mismos colores que Análisis de venta (piezas en ámbar, dinero en índigo) + pastillas y barras */
   const td='py-2.5 px-3', setBody=(id,h,cols)=>{const e=$(id);if(e)e.innerHTML=h||`<tr><td colspan="${cols}" class="py-4 px-3 text-center text-slate-400">Sin información.</td></tr>`;};
@@ -4175,7 +4206,7 @@ function setupListeners(){
   btnTodoElMes?.addEventListener('click',()=>{configurarRangoFechas();renderDashboard(obtenerDatosFiltrados())});btnTodoElDia?.addEventListener('click',()=>{selectedHourFrom='';selectedHourTo='';horaInicioFiltro.value='';horaFinFiltro.value='';actualizarEstadoFiltroHorario();renderDashboard(obtenerDatosFiltrados())});
   btnTodasFamilias?.addEventListener('click',seleccionarTodasFamilias);btnLimpiarFamilias?.addEventListener('click',limpiarFamilias);btnClearProductSearch?.addEventListener('click',limpiarBusquedaProducto);btnClearSelectedProducts?.addEventListener('click',limpiarProductosSeleccionados);productSearch?.addEventListener('input',actualizarSugerenciasProductos);productSearch?.addEventListener('focus',actualizarSugerenciasProductos);btnTodosMetodosPago?.addEventListener('click',seleccionarTodosMetodosPago);btnLimpiarMetodosPago?.addEventListener('click',limpiarMetodosPago);
   (()=>{let t;ticketsExcluirPromedioInput?.addEventListener('input',()=>{clearTimeout(t);t=setTimeout(applyExclusion,500);});ticketsExcluirPromedioInput?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();clearTimeout(t);applyExclusion();}});})();$('btnAplicarExclusionPromedio')?.addEventListener('click',applyExclusion);$('btnLimpiarExclusionPromedio')?.addEventListener('click',limpiarExclusion);
-  $('vendedorCCToggle')?.addEventListener('click',()=>{vendedoresExcluirCC=!vendedoresExcluirCC;renderVendedoresDesdeData();});$('topClientesSelector')?.addEventListener('change',e=>{topClientesLimit=Number(e.target.value)||15;renderTopClientes();});$('topProductosSelector')?.addEventListener('change',e=>{topProductosLimit=Number(e.target.value)||10;renderTopProductos()});$('evolucionMetricaModo')?.addEventListener('change',e=>{metricaEvolucion=e.target.value==='unidades'?'unidades':'ingreso';renderGraficaEvolucionTemporal()});$('diaSemanaModo')?.addEventListener('change',e=>{modoDiaSemana=e.target.value==='promedio'?'promedio':'total';renderGraficaDiasSemana()});$('horaModo')?.addEventListener('change',e=>{modoHora=e.target.value==='promedio'?'promedio':'total';renderGraficaHoras()});
+  $('retSemanaModo')?.addEventListener('change',e=>{modoRetSemana=e.target.value;renderRetSemana();});$('vendedorCCToggle')?.addEventListener('click',()=>{vendedoresExcluirCC=!vendedoresExcluirCC;renderVendedoresDesdeData();});$('topClientesSelector')?.addEventListener('change',e=>{topClientesLimit=Number(e.target.value)||15;renderTopClientes();});$('topProductosSelector')?.addEventListener('change',e=>{topProductosLimit=Number(e.target.value)||10;renderTopProductos()});$('evolucionMetricaModo')?.addEventListener('change',e=>{metricaEvolucion=e.target.value==='unidades'?'unidades':'ingreso';renderGraficaEvolucionTemporal()});$('diaSemanaModo')?.addEventListener('change',e=>{modoDiaSemana=e.target.value==='promedio'?'promedio':'total';renderGraficaDiasSemana()});$('horaModo')?.addEventListener('change',e=>{modoHora=e.target.value==='promedio'?'promedio':'total';renderGraficaHoras()});
   document.addEventListener('click',e=>{if(!e.target.closest('#productSearch')&&!e.target.closest('#productSuggestions'))productSuggestions?.classList.add('hidden')});
   document.addEventListener('click',e=>{const b=e.target.closest('[data-table-download]');if(b)downloadTable(b.dataset.tableDownload);const l=e.target.closest('[data-list-download]');if(l)downloadList(l.dataset.listDownload);});
   // Barra de progreso de scroll (el CSS ya existía pero nadie la actualizaba).
@@ -4188,6 +4219,15 @@ function setupListeners(){
   ensureUniversalDownloadButtons();
 }
 function downloadList(id){const ul=$(id);if(!ul)return;const rows=[['Nombre','Ingresos'],...[...ul.children].map(li=>{const s=li.querySelectorAll('span');return[s[0]?.innerText||'',s[1]?.innerText||'']})];downloadExcel(rows,`${id}.xlsx`);}
+function downloadTable(id){
+  const body=$(id); const table=body?body.closest('table'):null;
+  if(!table){console.error('No se encontró la tabla para descargar:',id);return;}
+  const card=table.closest('.dashboard-card');
+  const nombre=slugifyFilename(card?.querySelector('h3')?.textContent||id);
+  const rows=[...table.querySelectorAll('tr')].map(tr=>[...tr.children].map(c=>c.innerText.replace(/\s+/g,' ').trim())).filter(r=>r.some(x=>x!==''));
+  if(!rows.length)return;
+  downloadExcel(rows,`${nombre}.xlsx`,nombre);
+}
 function downloadExcel(rows,name,sheetName){
   try{
     const ws=XLSX.utils.aoa_to_sheet(rows);
