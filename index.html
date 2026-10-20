@@ -1917,6 +1917,10 @@ html[data-theme] .analysis-sidebar-scroll{display:flex!important;flex-direction:
 html[data-theme] .analysis-sidebar-scroll>*{flex:none;margin:0!important}
 html[data-theme] .analysis-sidebar-scroll #advancedFilters,html[data-theme] .analysis-sidebar-scroll #advancedFiltersContent,html[data-theme] .analysis-sidebar-scroll .advanced-filter-inner{display:contents!important}
 html[data-theme] .advanced-filter-shell::before,html[data-theme] .advanced-filter-shell::after{display:none!important}
+/* ===== v10: panel de filtros con scroll, sin bloques apachurrados ===== */
+html[data-theme] .analysis-sidebar-scroll{display:flex!important;flex-direction:column;gap:12px;flex:1 1 auto;min-height:0;overflow-y:auto!important;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+html[data-theme] .analysis-sidebar-scroll>*,html[data-theme] .analysis-sidebar-scroll .sidebar-filter-group,html[data-theme] .analysis-sidebar-scroll .filter-accordion,html[data-theme] .analysis-sidebar-scroll .meta-filter-status-row{flex:0 0 auto!important;min-height:min-content}
+html[data-theme] .analysis-sidebar-scroll .filter-scroll,html[data-theme] .analysis-sidebar-scroll .sidebar-filter-group-body .filter-scroll{overflow-y:auto!important;max-height:min(240px,38vh)!important;touch-action:pan-y}
 </style>
 </head>
 <body class="text-slate-800 home-mode">
@@ -2252,8 +2256,9 @@ html[data-theme] .advanced-filter-shell::before,html[data-theme] .advanced-filte
 
         <section class="space-y-6 mb-6 w-full">
             <div class="dashboard-card chart-card-animate bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-                <h3 class="text-lg font-semibold text-slate-800 mb-1">Ingresos por Sucursal</h3>
-                <p class="text-sm text-slate-500 mb-4">Ingresos generados por cada sucursal.</p>
+                <h3 class="text-lg font-semibold text-slate-800 mb-1">Ingresos y Unidades por Sucursal</h3>
+                <p id="sucMetricDesc" class="text-sm text-slate-500 mb-3">Ingresos generados por cada sucursal.</p>
+                <div class="chart-sort-row"><button type="button" id="sucMetricToggle" class="chart-sort-btn" title="Alterna entre ingresos y unidades vendidas">⇄ Ver unidades vendidas</button></div>
                 <div class="chart-container tall sucursal-compact"><canvas id="chartSucursales"></canvas></div>
             </div>
         </section>
@@ -2943,6 +2948,7 @@ let allPaymentMethods = [], allProductNames = [];
 let chartInstances = {}, chartExportData = {};
 let topProductosLimit = 10, rankingProductos = [], rankingUnidadesProductos = [];
 let ticketsExcluirPromedio = 0, excludedTicketFolios = new Set();
+let sucMetric = 'ingresos';
 let modoDiaSemana = 'total', modoHora = 'total', metricaEvolucion = 'ingreso';
 let loadedMonth = '', loadedYear = '', loadedMonthNum = 0;
 
@@ -3821,7 +3827,9 @@ function buildCharts(data){
   const sucLabelDe=x=>catMap[x]?.sucursal?.replace(/^\S+\s/,'')||x;const sucKeysAlfa=[...sucKeys].sort((a,b)=>sucLabelDe(a).localeCompare(sucLabelDe(b),'es',{sensitivity:'base'}));const sucLabelsAlfa=sucKeysAlfa.map(sucLabelDe);
   createChart('chartFamilias','doughnut',sortObj(porFamilia).map(x=>x[0]),sortObj(porFamilia).map(x=>x[1]),'Ingresos ($)');
   const pm=sortObj(porMetodoPago);createChart('chartMetodosPago','pie',pm.map(x=>x[0]),pm.map(x=>x[1]),'Ingresos ($)');
-  createChart('chartSucursales','bar',sucLabels,sucKeys.map(x=>porSucursal[x]),'Ingresos ($)');
+  const unSuc={};data.forEach(d=>{const k=d.sucursalNombre;unSuc[k]=(unSuc[k]||0)+num(d.cantidad);});
+  window.__sucData={labels:sucLabels,ing:sucKeys.map(x=>porSucursal[x]),uni:sucKeys.map(x=>unSuc[x]||0)};
+  renderGraficaSucursales();
   createChart('chartTicketsSucursal','bar',sucLabelsAlfa,sucKeysAlfa.map(x=>ticketSets.sucursal[x]?.size||0),'Tickets');
   const exSum={},exSet={};data.forEach(d=>{if(excludedTicketFolios.has(d.folio))return;const k=d.sucursalNombre||'Sin dato';exSum[k]=(exSum[k]||0)+num(d._cobradoAsignado);(exSet[k]??=new Set()).add(d.folio);});
   const avgSuc=sucKeysAlfa.map(x=>{const n=exSet[x]?.size||0;return n?exSum[x]/n:0});createChart('chartTicketPromSucursal','bar',sucLabelsAlfa,avgSuc,'Ticket promedio ($)');
@@ -3941,6 +3949,11 @@ if(t==='bar'){const p=el.getProps(['x','y','base','width'],true),h=Math.abs(p.ba
 else{const p=el.getProps(['x','y','startAngle','endAngle','innerRadius','outerRadius'],true);c.lineWidth=2;c.shadowBlur=T.glowArc*dpr;c.arc(p.x,p.y,p.outerRadius-1,p.startAngle,p.endAngle);if(p.innerRadius>0){c.stroke();c.beginPath();c.arc(p.x,p.y,p.innerRadius+1,p.startAngle,p.endAngle);}}
 if(t==='bar'){c.shadowColor=lxA(col,.6);c.stroke();c.shadowColor='transparent';c.shadowBlur=0;c.globalAlpha=.28;c.lineWidth=3.5;c.stroke();c.globalAlpha=1;c.lineWidth=1.5;c.stroke();}else c.stroke();c.restore();});}};
 const chartLastArgs={};
+function renderGraficaSucursales(){const c=window.__sucData;if(!c)return;const u=sucMetric==='unidades';
+  createChart('chartSucursales','bar',c.labels,u?c.uni:c.ing,u?'Unidades':'Ingresos ($)');
+  const d=document.getElementById('sucMetricDesc');if(d)d.textContent=u?'Unidades vendidas en cada sucursal.':'Ingresos generados por cada sucursal.';
+  const b=document.getElementById('sucMetricToggle');if(b){b.textContent=u?'⇄ Ver ingresos':'⇄ Ver unidades vendidas';b.setAttribute('aria-pressed',u?'true':'false');}}
+document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('#sucMetricToggle')){sucMetric=sucMetric==='unidades'?'ingresos':'unidades';renderGraficaSucursales();}});
 function lxGauge(pct,cls,exp){const L=314.16,p=Math.max(0,Math.min(100,Number(pct)||0));
   const f=document.getElementById('lxGaugeFill');if(f){f.style.strokeDashoffset=L*(1-p/100);f.setAttribute('class','lx-gauge-fill '+(cls||'ok'));}
   const n=document.getElementById('lxGaugeNeedle');if(n)n.style.transform='rotate('+(p*1.8)+'deg)';
