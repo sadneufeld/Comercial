@@ -2322,6 +2322,12 @@ html[data-theme] .analysis-sidebar-scroll .filter-scroll,html[data-theme] .analy
                 <p class="text-sm text-slate-500 mb-4">Cantidad de pedidos de Call Center registrados por sucursal.</p>
                 <div class="chart-container tall sucursal-compact"><canvas id="chartCallCenter"></canvas></div>
             </div>
+            <div class="dashboard-card bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+                <h3 class="text-lg font-semibold text-slate-800 mb-1">Pedidos Call Center por Día</h3>
+                <p id="descCCDias" class="text-sm text-slate-500 mb-3">Cantidad de pedidos de Call Center registrados cada día del periodo seleccionado.</p>
+                <div class="chart-sort-row"><button type="button" id="ccDiasToggle" class="chart-sort-btn" title="Alterna entre cantidad de pedidos e ingreso generado">⇄ Ver ingreso generado</button></div>
+                <div class="chart-container"><canvas id="chartCCDias"></canvas></div>
+            </div>
             <div class="dashboard-card relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 overflow-hidden flex flex-col">
                 <h3 class="text-lg font-semibold text-slate-800 mb-1 pr-10">Call Center vs. Venta en Tienda por Sucursal</h3>
                  <button type="button" class="absolute top-4 right-4 z-10 inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-white/95 hover:bg-slate-50 text-slate-500 hover:text-slate-700 shadow-sm transition-colors" title="Descargar tabla" aria-label="Descargar tabla" data-table-download="tablaCallCenterBody"><span class="download-icon">↓</span></button>
@@ -3834,6 +3840,8 @@ function buildCharts(data){
   const exSum={},exSet={};data.forEach(d=>{if(excludedTicketFolios.has(d.folio))return;const k=d.sucursalNombre||'Sin dato';exSum[k]=(exSum[k]||0)+num(d._cobradoAsignado);(exSet[k]??=new Set()).add(d.folio);});
   const avgSuc=sucKeysAlfa.map(x=>{const n=exSet[x]?.size||0;return n?exSum[x]/n:0});createChart('chartTicketPromSucursal','bar',sucLabelsAlfa,avgSuc,'Ticket promedio ($)');
   window.__diasEvolucionData=Object.keys(porDia).sort().map(f=>[f,porDia[f]||0,0]);renderGraficaEvolucionTemporal();
+  const ccDia={};data.forEach(d=>{if(!d.docBase||!d.docBase.startsWith('CCL')||!d.fecha)return;(ccDia[d.fecha]??={p:new Set(),i:0}).p.add(d.docBase);ccDia[d.fecha].i+=num(d._cobradoAsignado);});
+  window.__ccDiasData=Object.keys(porDia).sort().map(f=>[f,ccDia[f]?ccDia[f].p.size:0,ccDia[f]?ccDia[f].i:0]);renderGraficaCCDias();
   window.__horasData=Array.from({length:24},(_,h)=>[`${String(h).padStart(2,'0')}:00`,porHora[h]||0,porHoraUnidades[h]||0,new Set(data.filter(d=>d.hora===h).map(d=>normalizarFecha(d.fecha))).size]);renderGraficaHoras();
   window.__diasSemanaData=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'].map(d=>[d,diasSemana[d].total,diasSemana[d].unidades,diasSemana[d].fechas.size]);renderGraficaDiasSemana();
   const ccBy={};data.forEach(d=>{if(!d.docBase||!d.docBase.startsWith('CCL'))return;const s=d.sucursalNombre||d.sucursalNom;ccBy[s]??={pedidos:new Set(),ingresos:0};ccBy[s].pedidos.add(d.docBase);ccBy[s].ingresos+=d._cobradoAsignado;});const ccRows=Object.entries(ccBy).map(([s,x])=>({sucursal:s,pedidos:x.pedidos.size,ingresos:x.ingresos,promedio:x.pedidos.size?x.ingresos/x.pedidos.size:0})).sort((a,b)=>b.pedidos-a.pedidos||b.ingresos-a.ingresos);createChart('chartCallCenter','bar',ccRows.map(x=>x.sucursal.replace(/^\S+\s/,'')),ccRows.map(x=>x.pedidos),'Pedidos CCL');renderTablaCallCenter(ccRows,porSucursal);
@@ -3949,6 +3957,12 @@ if(t==='bar'){const p=el.getProps(['x','y','base','width'],true),h=Math.abs(p.ba
 else{const p=el.getProps(['x','y','startAngle','endAngle','innerRadius','outerRadius'],true);c.lineWidth=2;c.shadowBlur=T.glowArc*dpr;c.arc(p.x,p.y,p.outerRadius-1,p.startAngle,p.endAngle);if(p.innerRadius>0){c.stroke();c.beginPath();c.arc(p.x,p.y,p.innerRadius+1,p.startAngle,p.endAngle);}}
 if(t==='bar'){c.shadowColor=lxA(col,.6);c.stroke();c.shadowColor='transparent';c.shadowBlur=0;c.globalAlpha=.28;c.lineWidth=3.5;c.stroke();c.globalAlpha=1;c.lineWidth=1.5;c.stroke();}else c.stroke();c.restore();});}};
 const chartLastArgs={};
+let ccDiasMetric='pedidos';
+function renderGraficaCCDias(){const a=window.__ccDiasData;if(!a)return;const u=ccDiasMetric==='ingresos';
+  createChart('chartCCDias','line',a.map(x=>formatearFecha(x[0])),a.map(x=>x[u?2:1]),u?'Ingreso Call Center ($)':'Pedidos Call Center');
+  const d=document.getElementById('descCCDias');if(d)d.textContent=u?'Ingreso generado por los pedidos de Call Center cada día del periodo seleccionado.':'Cantidad de pedidos de Call Center registrados cada día del periodo seleccionado.';
+  const b=document.getElementById('ccDiasToggle');if(b){b.textContent=u?'⇄ Ver cantidad de pedidos':'⇄ Ver ingreso generado';b.setAttribute('aria-pressed',u?'true':'false');}}
+document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('#ccDiasToggle')){ccDiasMetric=ccDiasMetric==='ingresos'?'pedidos':'ingresos';renderGraficaCCDias();}});
 function renderGraficaSucursales(){const c=window.__sucData;if(!c)return;const u=sucMetric==='unidades';
   createChart('chartSucursales','bar',c.labels,u?c.uni:c.ing,u?'Unidades':'Ingresos ($)');
   const d=document.getElementById('sucMetricDesc');if(d)d.textContent=u?'Unidades vendidas en cada sucursal.':'Ingresos generados por cada sucursal.';
