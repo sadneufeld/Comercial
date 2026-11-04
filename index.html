@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <link rel="icon" type="image/png" href="Icono%20comercial.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="Icono%20comercial.png">
+    <link rel="preconnect" href="https://ntazemjwazyhzqkaaqwb.supabase.co" crossorigin>
     <script>(function(){var t='light';try{var g=localStorage.getItem('nf-theme');t=(g==='dark'||g==='light')?g:(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}catch(e){}document.documentElement.setAttribute('data-theme',t);})();</script>
     <title>Neufeld · Comercial</title>
     <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.6.1"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
     body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
@@ -1921,6 +1922,126 @@ html[data-theme] .advanced-filter-shell::before,html[data-theme] .advanced-filte
 html[data-theme] .analysis-sidebar-scroll{display:flex!important;flex-direction:column;gap:12px;flex:1 1 auto;min-height:0;overflow-y:auto!important;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 html[data-theme] .analysis-sidebar-scroll>*,html[data-theme] .analysis-sidebar-scroll .sidebar-filter-group,html[data-theme] .analysis-sidebar-scroll .filter-accordion,html[data-theme] .analysis-sidebar-scroll .meta-filter-status-row{flex:0 0 auto!important;min-height:min-content}
 html[data-theme] .analysis-sidebar-scroll .filter-scroll,html[data-theme] .analysis-sidebar-scroll .sidebar-filter-group-body .filter-scroll{overflow-y:auto!important;max-height:min(240px,38vh)!important;touch-action:pan-y}
+/* ===== Ajustes de auditoría ===== */
+/* Texto atenuado en modo claro: #8a8e97 sobre el fondo crema daba ~2.9:1; ahora ≥4.5:1 (WCAG AA). */
+html[data-theme]:not([data-theme="dark"]){--mu:#575b64;--mu2:#6a6e77}
+/* Anillo de foco visible al navegar con teclado (antes sólo los campos lo tenían). */
+html[data-theme] :is(button,summary,a,[tabindex]):focus-visible{outline:2px solid var(--ac)!important;outline-offset:2px!important;box-shadow:0 0 0 4px var(--halo)!important}
+/* Las cifras de los KPI no se parten a la mitad. */
+html[data-theme] .kpi-card p.text-2xl{white-space:nowrap;font-variant-numeric:tabular-nums;font-size:clamp(1.2rem,1rem + 1vw,1.5rem)!important}
+/* Las tablas anchas se desplazan en horizontal en lugar de quedar recortadas (móvil). */
+html[data-theme] .dashboard-card .overflow-y-auto{overflow-x:auto;-webkit-overflow-scrolling:touch}
+html[data-theme] .dashboard-card table th,html[data-theme] .dashboard-card table td{white-space:nowrap}
+html[data-theme] .dashboard-card table td.font-medium{white-space:normal;min-width:9rem}
+/* Encabezados ordenables: se ve que son clicables. */
+html[data-theme] .dashboard-card thead th{cursor:pointer;user-select:none}
+/* Mientras se recalculan los filtros. */
+body.nf-recalculando{cursor:progress}
+body.nf-recalculando #dashboardApp>:not(.analysis-toolbar){opacity:.55;transition:opacity .12s ease-out}
+/* ===== Estética premium · íconos, carga, entrada de datos y neón refinado ===== */
+/* Íconos de trazo (sustituyen a los emojis) */
+.nf-ico{display:block;flex:none;width:20px;height:20px}
+html[data-theme] .kpi-icon .nf-ico{width:19px;height:19px}
+html[data-theme] .module-icon .nf-ico{width:22px;height:22px}
+html[data-theme] .module-icon{color:var(--ac-tx)}
+html[data-theme] .filter-summary-icon .nf-ico{width:16px;height:16px}
+html[data-theme] .advanced-settings-icon .nf-ico{width:20px;height:20px}
+html[data-theme] .text-lg>.nf-ico{width:18px;height:18px;color:var(--ac-tx)}
+.nf-inline-ico{display:inline-grid;place-items:center;color:var(--ac-tx)}.nf-inline-ico .nf-ico{width:18px;height:18px}
+.nf-label-ico{display:inline-block!important;width:16px;height:16px;vertical-align:-3px;margin-right:6px;color:var(--mu)}
+.nf-h1-ico{display:inline-grid;place-items:center;width:1.3em;height:1.3em;margin-right:.4em;vertical-align:-.22em;border-radius:.38em;background:var(--surf-2);box-shadow:inset 0 0 0 1px var(--bd);color:var(--ac-tx)}
+.nf-h1-ico .nf-ico{width:.7em;height:.7em}
+
+/* Carga: marca de barras en ola y progreso real por etapas */
+html[data-theme] .nf-loader{width:min(460px,100%);padding:30px 30px 24px!important;text-align:center}
+.nf-loader-mark{display:block;width:132px;height:72px;margin:0 auto 18px;overflow:visible}
+.nf-loader-mark .nf-grad-a{stop-color:#bf9a52}.nf-loader-mark .nf-grad-b{stop-color:#ecd7a6}
+html[data-theme="dark"] .nf-loader-mark .nf-grad-a{stop-color:#4d6bff}html[data-theme="dark"] .nf-loader-mark .nf-grad-b{stop-color:#9b7bff}
+.nf-loader-bar{fill:url(#nfBarGrad);transform-box:fill-box;transform-origin:50% 100%;animation:nfOla 1.5s cubic-bezier(.45,0,.25,1) infinite;animation-delay:calc(var(--i)*.13s)}
+html[data-theme="dark"] .nf-loader-bar{filter:drop-shadow(0 0 5px rgba(110,130,255,.55))}
+.nf-loader-base{stroke:var(--bd-hi);stroke-width:1.5;stroke-linecap:round}
+@keyframes nfOla{0%,100%{transform:scaleY(.22)}45%{transform:scaleY(1)}70%{transform:scaleY(.82)}}
+.nf-loader-title{font-size:1.2rem;font-weight:800;letter-spacing:-.02em;color:var(--tx);text-wrap:balance}
+.nf-loader-stage{margin-top:6px;font-size:.875rem;color:var(--mu)}
+.nf-progress{position:relative;height:6px;margin-top:20px;border-radius:999px;background:var(--surf-2);box-shadow:inset 0 0 0 1px var(--bd);overflow:hidden}
+.nf-progress-fill{position:absolute;inset:0;border-radius:inherit;background:var(--ac-bg);transform-origin:left center;transform:scaleX(0);transition:transform .5s cubic-bezier(.16,1,.3,1);overflow:hidden}
+.nf-progress-fill::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);transform:translateX(-100%);animation:nfBrillo 1.8s ease-in-out infinite}
+html[data-theme="dark"] .nf-progress-fill{box-shadow:0 0 12px rgba(110,130,255,.7)}
+@keyframes nfBrillo{60%,100%{transform:translateX(100%)}}
+.nf-progress-meta{display:flex;justify-content:space-between;margin-top:8px;font-size:.75rem;color:var(--mu)}
+.nf-progress-meta b,#loadingPct{color:var(--tx);font-weight:700}
+.nf-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:18px 0 0;padding:0;list-style:none}
+.nf-steps li{display:flex;flex-direction:column;align-items:center;gap:7px;font-size:.72rem;font-weight:600;color:var(--mu);transition:color .25s}
+.nf-step-mark{position:relative;width:18px;height:18px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--bd-hi);transition:background .3s,box-shadow .3s}
+.nf-steps li[data-estado="activo"]{color:var(--tx)}
+.nf-steps li[data-estado="activo"] .nf-step-mark{box-shadow:inset 0 0 0 1.5px var(--bd)}
+.nf-steps li[data-estado="activo"] .nf-step-mark::before{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid transparent;border-top-color:var(--ac);border-right-color:var(--ac);animation:orbitSpin .8s linear infinite}
+.nf-steps li[data-estado="listo"]{color:var(--tx)}
+.nf-steps li[data-estado="listo"] .nf-step-mark{background:var(--ac-bg);box-shadow:0 0 0 3px var(--halo);animation:nfListo .35s cubic-bezier(.16,1,.3,1)}
+.nf-steps li[data-estado="listo"] .nf-step-mark::after{content:"";position:absolute;left:6.5px;top:3.5px;width:4.5px;height:8px;border:solid var(--ac-on);border-width:0 2px 2px 0;transform:rotate(45deg)}
+@keyframes nfListo{from{transform:scale(.6)}}
+.nf-loader-note{margin-top:18px;font-size:.75rem;color:var(--mu);text-wrap:pretty}
+
+/* Entrada de datos: lo que espera su turno queda oculto hasta entrar en pantalla */
+html[data-theme] .dashboard-card canvas{transition:opacity .25s ease-out}
+.nf-intro .dashboard-card:not(.nf-play) canvas{opacity:0}
+.nf-intro .kpi-card:not(.nf-play) :is(p.text-2xl,p.text-lg){opacity:0}
+/* Construcción al hacer scroll: cada pieza espera oculta (nf-wait) y se revela al entrar (nf-in) */
+html[data-theme] .nf-wait{opacity:0;transform:translateY(18px) scale(.985)}
+html[data-theme] :is(tr,li).nf-wait{transform:translateY(8px)}
+html[data-theme] :is(.dashboard-section-kicker,.analysis-toolbar).nf-wait{transform:translateY(10px)}
+html[data-theme] .nf-in.nf-in{transition:opacity .5s cubic-bezier(.16,1,.3,1) var(--nf-d,0ms),transform .7s cubic-bezier(.16,1,.3,1) var(--nf-d,0ms)!important}
+html[data-theme] :is(tr,li).nf-in.nf-in{transition-duration:.38s,.46s!important}
+.nf-intro :is(.kpi-card,.dashboard-card,.analysis-toolbar){animation:none!important}
+/* Barras de progreso de cada fila: se llenan cuando SU fila entra en pantalla */
+html[data-theme] :is(.meta-progress-fill,.ret-bar>i){transform-origin:left center}
+html[data-theme] tr.nf-wait :is(.meta-progress-fill,.ret-bar>i){transform:scaleX(0)}
+html[data-theme] tr.nf-in :is(.meta-progress-fill,.ret-bar>i){animation:nfLlenar .95s cubic-bezier(.16,1,.3,1) both;animation-delay:calc(var(--nf-d,0ms) + 120ms)}
+@keyframes nfLlenar{from{transform:scaleX(0)}}
+
+/* Neón refinado: el color sale del significado de cada KPI (y del semáforo en Avance de meta), no de su posición */
+html[data-theme] .kpi-card.border-l-emerald-500{--neon:52,211,153;--neon-l:16,150,110}
+html[data-theme] .kpi-card.border-l-blue-500{--neon:77,163,255;--neon-l:47,111,237}
+html[data-theme] .kpi-card.border-l-amber-500{--neon:251,191,36;--neon-l:196,128,16}
+html[data-theme] .kpi-card.border-l-purple-500{--neon:176,112,255;--neon-l:139,92,246}
+html[data-theme] .kpi-card.border-l-rose-500{--neon:255,107,129;--neon-l:225,72,100}
+html[data-theme] .kpi-card.border-l-indigo-500{--neon:124,140,255;--neon-l:79,70,229}
+html[data-theme] .kpi-card.border-l-cyan-500{--neon:34,211,238;--neon-l:8,145,178}
+html[data-theme] .kpi-card.border-l-red-500{--neon:255,99,99;--neon-l:220,38,38}
+html[data-theme] .kpi-card:is(.border-l-slate-400,.border-l-slate-300){--neon:160,174,200;--neon-l:120,128,140}
+html[data-theme="dark"] .kpi-card{border-color:rgba(var(--neon,77,163,255),.6)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.1),inset 0 0 24px -14px rgba(var(--neon,77,163,255),.65),0 0 0 1px rgba(var(--neon,77,163,255),.14),0 0 18px -5px rgba(var(--neon,77,163,255),.45),0 16px 30px -16px rgba(0,0,0,.75)!important;transition:transform .25s cubic-bezier(.16,1,.3,1),border-color .25s,box-shadow .25s!important}
+html[data-theme="dark"] .kpi-card:hover{border-color:rgba(var(--neon,77,163,255),.95)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 0 28px -12px rgba(var(--neon,77,163,255),.75),0 0 0 1px rgba(var(--neon,77,163,255),.3),0 0 26px -3px rgba(var(--neon,77,163,255),.6),0 20px 34px -16px rgba(0,0,0,.8)!important}
+html[data-theme="dark"] .kpi-card .kpi-icon{box-shadow:0 0 14px -3px rgba(var(--neon,77,163,255),.7),inset 0 1px 0 rgba(255,255,255,.7)!important}
+html[data-theme="light"] .kpi-card{border-width:1px!important;border-color:rgba(var(--neon-l,184,146,74),.34)!important}
+html[data-theme="light"] .kpi-card:hover{border-color:rgba(var(--neon-l,184,146,74),.6)!important}
+/* Encendido: un destello recorre el borde una vez cuando la tarjeta entra */
+@property --nf-ang{syntax:'<angle>';inherits:false;initial-value:0deg}
+html[data-theme] .kpi-card::after{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1.5px;pointer-events:none;opacity:0;
+  background:conic-gradient(from var(--nf-ang),transparent 0 62%,rgba(var(--nf-c),0) 66%,rgba(var(--nf-c),.95) 80%,rgba(255,255,255,.95) 84%,rgba(var(--nf-c),.95) 88%,transparent 94%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+html[data-theme="dark"] .kpi-card::after{--nf-c:var(--neon,77,163,255)}
+html[data-theme="light"] .kpi-card::after{--nf-c:var(--neon-l,184,146,74)}
+html[data-theme] .nf-play.kpi-card::after{animation:nfEncender 1.25s cubic-bezier(.45,0,.2,1) both}
+html[data-theme] .nf-play.kpi-card:nth-child(2)::after{animation-delay:.08s}html[data-theme] .nf-play.kpi-card:nth-child(3)::after{animation-delay:.16s}html[data-theme] .nf-play.kpi-card:nth-child(4)::after{animation-delay:.24s}html[data-theme] .nf-play.kpi-card:nth-child(n+5)::after{animation-delay:.32s}
+@keyframes nfEncender{0%{--nf-ang:0deg;opacity:0}12%{opacity:1}80%{opacity:1}100%{--nf-ang:360deg;opacity:0}}
+
+/* Superficies del navegador con la paleta del tema */
+html[data-theme]{accent-color:var(--ac);caret-color:var(--ac)}
+html[data-theme] ::selection{background:var(--halo);color:var(--tx)}
+html[data-theme] table,html[data-theme] .lx-gauge-amount,html[data-theme] .kpi-card p{font-variant-numeric:tabular-nums}
+html[data-theme] *{scrollbar-width:thin;scrollbar-color:rgba(128,140,165,.42) transparent}
+html[data-theme] ::-webkit-scrollbar{width:10px;height:10px}
+html[data-theme] ::-webkit-scrollbar-track{background:transparent}
+html[data-theme] ::-webkit-scrollbar-thumb{background:rgba(128,140,165,.4);border-radius:999px;border:3px solid transparent;background-clip:padding-box}
+html[data-theme] ::-webkit-scrollbar-thumb:hover{background-color:rgba(128,140,165,.6)}
+
+/* Movimiento reducido: todo aparece en su estado final; se conservan los cambios de color y de progreso */
+@media (prefers-reduced-motion: reduce){
+  .nf-loader-bar{animation:none!important;transform:none}
+  .nf-progress-fill::after,html[data-theme] .kpi-card::after{display:none}
+  html[data-theme] tr.nf-in :is(.meta-progress-fill,.ret-bar>i){animation:none!important}
+  html[data-theme] .nf-wait{opacity:1;transform:none}
+}
 </style>
 </head>
 <body class="text-slate-800 home-mode">
@@ -1946,37 +2067,45 @@ html[data-theme] .analysis-sidebar-scroll .filter-scroll,html[data-theme] .analy
                 <img src="Logo Pasteleria Neufeld.png" alt="Pastelería Neufeld" class="home-logo">
             </div>
             <div class="home-period-picker">
-                <div class="home-period-picker-title"><span>🗓️</span><span>Periodo a consultar</span></div>
+                <div class="home-period-picker-title"><span class="nf-inline-ico"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg></span><span>Periodo a consultar</span></div>
                 <div class="home-period-grid">
                     <div><label for="homeYearSelector" class="filter-label">Año</label><select id="homeYearSelector" class="entry-select compact-select"><option value="2026">2026</option><option value="2027">2027</option></select></div>
                     <div><label for="homeMonthSelector" class="filter-label">Mes</label><select id="homeMonthSelector" class="entry-select compact-select"><option value="Enero">Enero</option><option value="Febrero">Febrero</option><option value="Marzo">Marzo</option><option value="Abril">Abril</option><option value="Mayo">Mayo</option><option value="Junio">Junio</option><option value="Julio">Julio</option><option value="Agosto">Agosto</option><option value="Septiembre">Septiembre</option><option value="Octubre">Octubre</option><option value="Noviembre">Noviembre</option><option value="Diciembre">Diciembre</option></select></div>
                 </div>
-                <p class="text-xs mt-2" style="color:#94a3b8;font-size:11px;margin-top:8px;">Elige el mes antes de entrar a un módulo; se cargará directamente.</p>
+                <p class="text-xs text-slate-500 mt-2">Elige el mes antes de entrar a un módulo; se cargará directamente.</p>
             </div>
             <nav class="home-menu" aria-label="Módulos">
-                <button type="button" class="module-button" data-module="meta"><span class="module-icon">🎯</span><span><strong>Avance de meta</strong><small>Cumplimiento diario por sucursal</small></span><span class="module-arrow">›</span></button>
-                <button type="button" class="module-button module-primary" data-module="analysis"><span class="module-icon">📊</span><span><strong>Análisis de venta</strong><small>Ventas, productos y cobros</small></span><span class="module-arrow">›</span></button>
-                <button type="button" class="module-button" data-module="returns"><span class="module-icon">↩️</span><span><strong>Devoluciones</strong><small>Por sucursal, producto y % de venta</small></span><span class="module-arrow">›</span></button>
+                <button type="button" class="module-button" data-module="meta"><span class="module-icon"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg></span><span><strong>Avance de meta</strong><small>Cumplimiento diario por sucursal</small></span><span class="module-arrow">›</span></button>
+                <button type="button" class="module-button module-primary" data-module="analysis"><span class="module-icon"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20v-8M10 20V5M15 20v-6M20 20V9"/><path d="M3 20h18" opacity=".55"/></svg></span><span><strong>Análisis de venta</strong><small>Ventas, productos y cobros</small></span><span class="module-arrow">›</span></button>
+                <button type="button" class="module-button" data-module="returns"><span class="module-icon"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></span><span><strong>Devoluciones</strong><small>Por sucursal, producto y % de venta</small></span><span class="module-arrow">›</span></button>
             </nav>
         </div>
     </section>
 
 
     <div id="dataLoadingOverlay" class="data-loading-overlay" aria-hidden="true">
-        <div class="loading-card" role="status" aria-live="polite">
-            <div class="loading-orbit" aria-hidden="true">
-                <div class="loading-orbit-center">🍰</div>
-            </div>
-            <div class="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-600 mb-2">Preparando tu reporte</div>
-            <h2 class="text-xl font-bold text-slate-900">Estamos trayendo tus ventas</h2>
-            <div id="loadingStage" class="loading-stage text-sm text-slate-500 mt-2">Conectando con la base de datos...</div>
-            <div class="mt-5 loading-progress" aria-hidden="true"></div>
-            <div class="mt-4 flex items-center justify-center gap-2 text-xs text-slate-400">
-                <span>Tiempo transcurrido:</span>
-                <span id="loadingElapsed" class="font-semibold text-slate-600 tabular-nums">00:00</span>
-                <span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span>
-            </div>
-            <p class="text-xs text-slate-400 mt-4">Puede tardar un poco porque estamos procesando un archivo grande. No cierres esta ventana.</p>
+        <div class="loading-card nf-loader">
+            <!-- Marca de carga: barras que crecen en ola sobre una línea base -->
+            <svg class="nf-loader-mark" viewBox="0 0 132 72" aria-hidden="true">
+                <defs><linearGradient id="nfBarGrad" x1="0" y1="1" x2="0" y2="0"><stop offset="0" class="nf-grad-a"/><stop offset="1" class="nf-grad-b"/></linearGradient></defs>
+                <rect class="nf-loader-bar" style="--i:0" x="10" y="34" width="16" height="30" rx="4"/>
+                <rect class="nf-loader-bar" style="--i:1" x="34" y="18" width="16" height="46" rx="4"/>
+                <rect class="nf-loader-bar" style="--i:2" x="58" y="28" width="16" height="36" rx="4"/>
+                <rect class="nf-loader-bar" style="--i:3" x="82" y="8" width="16" height="56" rx="4"/>
+                <rect class="nf-loader-bar" style="--i:4" x="106" y="22" width="16" height="42" rx="4"/>
+                <line class="nf-loader-base" x1="4" y1="66" x2="128" y2="66"/>
+            </svg>
+            <h2 class="nf-loader-title">Estamos trayendo tus ventas</h2>
+            <div id="loadingStage" class="loading-stage nf-loader-stage" role="status" aria-live="polite">Conectando con la base de datos...</div>
+            <div class="nf-progress" id="loadingProgress" role="progressbar" aria-label="Progreso de carga" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="nf-progress-fill" id="loadingProgressFill"></div></div>
+            <div class="nf-progress-meta"><span id="loadingPct" class="tabular-nums">0%</span><span>Tiempo <b id="loadingElapsed" class="tabular-nums">00:00</b></span></div>
+            <ol class="nf-steps" id="loadingSteps" aria-label="Etapas de la carga">
+                <li data-paso="ventas"><span class="nf-step-mark" aria-hidden="true"></span>Ventas</li>
+                <li data-paso="pagos"><span class="nf-step-mark" aria-hidden="true"></span>Pagos</li>
+                <li data-paso="metas"><span class="nf-step-mark" aria-hidden="true"></span>Metas</li>
+                <li data-paso="graficas"><span class="nf-step-mark" aria-hidden="true"></span>Gráficas</li>
+            </ol>
+            <p class="nf-loader-note">Es un archivo grande y puede tardar alrededor de medio minuto. No cierres esta ventana.</p>
         </div>
     </div>
 <aside id="analysisSidebar" class="analysis-sidebar" aria-hidden="true">
@@ -1991,7 +2120,7 @@ html[data-theme] .analysis-sidebar-scroll .filter-scroll,html[data-theme] .analy
 
     <div id="dashboardApp" class="dashboard-shell-hidden max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
         <div class="analysis-toolbar">
-            <div class="toolbar-brand"><h1>📊 Análisis de venta</h1><p id="analysisPeriodLabel">Selecciona un periodo desde Filtros</p></div>
+            <div class="toolbar-brand"><h1><span class="nf-h1-ico"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20v-8M10 20V5M15 20v-6M20 20V9"/><path d="M3 20h18" opacity=".55"/></svg></span>Análisis de venta</h1><p id="analysisPeriodLabel">Selecciona un periodo desde Filtros</p></div>
             <div class="toolbar-actions"><button type="button" id="toolbarHomeBtn" class="toolbar-button"><span class="toolbar-button-icon tbi-indigo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10v9a1 1 0 0 0 1 1H10v-5.5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1V20h3.5a1 1 0 0 0 1-1v-9"></path></svg></span><span>Inicio</span></button><button type="button" id="toolbarMetaBtn" class="toolbar-button"><span class="toolbar-button-icon tbi-violet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"></circle><circle cx="12" cy="12" r="4.5"></circle><circle cx="12" cy="12" r="1"></circle></svg></span><span>Avance de meta</span></button><button type="button" id="toolbarReturnsBtn" class="toolbar-button"><span class="toolbar-button-icon tbi-rose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11.5h11.5a4.5 4.5 0 0 1 0 9H10"></path><path d="M8 7.5 4 11.5l4 4"></path></svg></span><span>Devoluciones</span></button></div>
         </div>
         <!-- Encabezado y Conexión -->
@@ -2007,7 +2136,7 @@ html[data-theme] .analysis-sidebar-scroll .filter-scroll,html[data-theme] .analy
             
             <div class="space-y-5">
                 <div class="period-filter-block">
-                    <div class="period-filter-title"><span>🗓️</span><div><strong>Periodo de análisis</strong><small>Elige año y mes para cargar la información.</small></div></div>
+                    <div class="period-filter-title"><span class="nf-inline-ico"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg></span><div><strong>Periodo de análisis</strong><small>Elige año y mes para cargar la información.</small></div></div>
                     <div class="grid grid-cols-2 gap-3">
                         <div><label for="yearSelector" class="filter-label">Año</label><select id="yearSelector" class="entry-select compact-select"><option value="2026" selected>2026</option><option value="2027">2027</option></select></div>
                         <div><label for="monthSelector" class="filter-label">Mes</label><select id="monthSelector" class="entry-select compact-select"><option value="Enero">Enero</option><option value="Febrero">Febrero</option><option value="Marzo">Marzo</option><option value="Abril">Abril</option><option value="Mayo">Mayo</option><option value="Junio">Junio</option><option value="Julio">Julio</option><option value="Agosto">Agosto</option><option value="Septiembre" selected>Septiembre</option><option value="Octubre">Octubre</option><option value="Noviembre">Noviembre</option><option value="Diciembre">Diciembre</option></select></div>
@@ -2018,7 +2147,7 @@ html[data-theme] .analysis-sidebar-scroll .filter-scroll,html[data-theme] .analy
                 <!-- Supervisores arriba, ocupando todo el ancho -->
                 <div class="w-full">
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-                        <label class="block text-sm font-medium text-slate-700">👥 Supervisores</label>
+                        <label class="block text-sm font-medium text-slate-700"><svg class="nf-ico nf-label-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.2a6.5 6.5 0 0 1 3.5 5.8"/></svg>Supervisores</label>
                         <span class="text-xs text-slate-400">Haz clic para seleccionar/deseleccionar sus sucursales.</span>
                     </div>
                     <div id="supervisorButtons" class="flex flex-wrap gap-1.5 min-h-[36px]">
@@ -2029,7 +2158,7 @@ html[data-theme] .analysis-sidebar-scroll .filter-scroll,html[data-theme] .analy
                 <!-- Sucursales: selector compacto con scroll -->
                 <div class="w-full">
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-                        <label class="block text-sm font-medium text-slate-700">🏪 Sucursales</label>
+                        <label class="block text-sm font-medium text-slate-700"><svg class="nf-ico nf-label-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5 5.5 4h13L20 9.5"/><path d="M4 9.5a2.67 2.67 0 0 0 5.33 0 2.67 2.67 0 0 0 5.34 0 2.67 2.67 0 0 0 5.33 0"/><path d="M5.5 11.5V20h13v-8.5M10 20v-4.5h4V20"/></svg>Sucursales</label>
                         <div class="flex gap-2">
                             <button type="button" onclick="seleccionarTodasSucursales()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-md border border-slate-200">Todas</button>
                             <button type="button" onclick="limpiarSucursales()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-md border border-slate-200">Limpiar</button>
@@ -2047,7 +2176,7 @@ html[data-theme] .analysis-sidebar-scroll .filter-scroll,html[data-theme] .analy
             <button type="button" id="advancedFiltersToggle" aria-expanded="false" aria-controls="advancedFiltersContent"
                     class="advanced-filter-toggle w-full cursor-pointer px-4 sm:px-5 py-3 flex items-center justify-between gap-4 hover:bg-white/40 transition-colors text-left">
                 <div class="flex items-center gap-3 min-w-0">
-                    <span class="advanced-settings-icon w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-base shrink-0">⚙️</span>
+                    <span class="advanced-settings-icon w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-base shrink-0"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></svg></span>
                     <div class="min-w-0">
                         <div class="flex flex-wrap items-center gap-2">
                             <h2 class="text-sm font-bold text-slate-900">Filtros avanzados</h2>
@@ -2067,7 +2196,7 @@ html[data-theme] .analysis-sidebar-scroll .filter-scroll,html[data-theme] .analy
                         <div class="flex flex-col xl:flex-row xl:items-end gap-4">
                             <div class="flex-1">
                                 <div class="flex items-center gap-2 mb-1">
-                                    <span class="text-lg">📅</span>
+                                    <span class="text-lg"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg></span>
                                     <h2 class="text-sm font-semibold text-slate-800">Rango de fechas</h2>
                                 </div>
                                 <p class="text-xs text-slate-500 mb-2">Elige el periodo que quieres analizar dentro del mes seleccionado.</p>
@@ -2096,7 +2225,7 @@ html[data-theme] .analysis-sidebar-scroll .filter-scroll,html[data-theme] .analy
                             <div>
                                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
                                     <div class="flex items-center gap-2">
-                                        <span class="text-lg">🏷️</span>
+                                        <span class="text-lg"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12.2V4.5a1 1 0 0 1 1-1h7.7l9 9-8.7 8.7z"/><circle cx="8" cy="8" r="1.4"/></svg></span>
                                         <h2 class="text-sm font-semibold text-slate-800">Familias de productos</h2>
                                     </div>
                                     <div class="flex gap-2">
@@ -2111,11 +2240,11 @@ html[data-theme] .analysis-sidebar-scroll .filter-scroll,html[data-theme] .analy
                                 <p id="familyFilterStatus" class="filter-status mt-1">Carga los datos para habilitar el filtro de familias.</p>
                             </div>
                             <div>
-                                <label for="productSearch" class="block text-sm font-semibold text-slate-800 mb-2">🔎 Buscar producto específico</label>
+                                <label for="productSearch" class="block text-sm font-semibold text-slate-800 mb-2"><svg class="nf-ico nf-label-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.4-4.4"/></svg>Buscar producto específico</label>
                                 <div class="flex flex-col md:flex-row gap-2">
                                     <div class="relative flex-1">
                                         <input id="productSearch" type="text" autocomplete="off" placeholder="Escribe el nombre del producto..." class="w-full border border-slate-300 rounded-lg shadow-sm py-2.5 px-3 pr-10 focus:ring-indigo-500 focus:border-indigo-500">
-                                        <button type="button" id="btnClearProductSearch" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 text-lg" title="Limpiar búsqueda">×</button>
+                                        <button type="button" id="btnClearProductSearch" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 text-lg" title="Limpiar búsqueda" aria-label="Limpiar búsqueda">×</button>
                                     </div>
                                     <button type="button" id="btnClearSelectedProducts" class="shrink-0 px-4 py-2.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 text-sm font-medium transition-colors">
                                         Quitar todas las selecciones
@@ -2134,7 +2263,7 @@ html[data-theme] .analysis-sidebar-scroll .filter-scroll,html[data-theme] .analy
                             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                                 <div>
                                     <div class="flex items-center gap-2">
-                                        <span class="text-lg">🕒</span>
+                                        <span class="text-lg"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span>
                                         <h2 class="text-sm font-semibold text-slate-800">Horario de ventas</h2>
                                     </div>
                                     <p class="text-xs text-slate-500 mt-1">Filtra los registros por hora del día dentro del periodo seleccionado.</p>
@@ -2165,7 +2294,7 @@ html[data-theme] .analysis-sidebar-scroll .filter-scroll,html[data-theme] .analy
                             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                                 <div>
                                     <div class="flex items-center gap-2">
-                                        <span class="text-lg">💳</span>
+                                        <span class="text-lg"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 15h3"/></svg></span>
                                         <h2 class="text-sm font-semibold text-slate-800">Métodos de pago</h2>
                                     </div>
                                     <p class="text-xs text-slate-500 mt-1">Filtra por las diferentes formas de pago.</p>
@@ -2187,7 +2316,7 @@ html[data-theme] .analysis-sidebar-scroll .filter-scroll,html[data-theme] .analy
                         <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
                             <div class="flex-1">
                                 <div class="flex items-center gap-2 mb-1">
-                                    <span class="text-lg">📊</span>
+                                    <span class="text-lg"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20v-8M10 20V5M15 20v-6M20 20V9"/><path d="M3 20h18" opacity=".55"/></svg></span>
                                     <h2 class="text-sm font-semibold text-slate-800">Excluir picos del ticket promedio</h2>
                                 </div>
                                 <p class="text-xs text-slate-500 mb-2">Indica cuántos tickets más altos y más bajos quieres excluir del cálculo del ticket promedio.</p>
@@ -2208,33 +2337,33 @@ html[data-theme] .analysis-sidebar-scroll .filter-scroll,html[data-theme] .analy
 
         <div class="dashboard-section-kicker">Resumen general</div>
         <!-- Indicadores Clave (KPIs) -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
             <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-emerald-500">
                 <div class="flex items-start justify-between gap-3">
                     <div><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Total de Ingresos</p>
                     <p class="text-2xl font-bold text-slate-800 mt-2" id="kpiVentasTotales">$0.00</p></div>
-                    <span class="kpi-icon bg-emerald-50 text-emerald-600">↗</span>
+                    <span class="kpi-icon bg-emerald-50 text-emerald-600"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></span>
                 </div>
             </div>
             <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-blue-500">
                 <div class="flex items-start justify-between gap-3">
                     <div><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Total de Tickets</p>
                     <p class="text-2xl font-bold text-slate-800 mt-2" id="kpiTickets">0</p></div>
-                    <span class="kpi-icon bg-blue-50 text-blue-600">#</span>
+                    <span class="kpi-icon bg-blue-50 text-blue-600"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.5 3h13v18l-2.6-1.6-2.2 1.6-2.2-1.6-2.2 1.6-2.2-1.6-1.6 1.6z"/><path d="M9 8h6M9 12h6M9 16h3.5"/></svg></span>
                 </div>
             </div>
             <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-amber-500">
                 <div class="flex items-start justify-between gap-3">
                     <div><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Pedidos Call Center</p>
                     <p class="text-2xl font-bold text-slate-800 mt-2" id="kpiCallCenter">0</p></div>
-                    <span class="kpi-icon bg-amber-50 text-amber-600">☎</span>
+                    <span class="kpi-icon bg-amber-50 text-amber-600"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h3.5l2 5-2.4 1.5a11 11 0 0 0 5.4 5.4L15 13.5l5 2V19a2 2 0 0 1-2 2A15 15 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg></span>
                 </div>
             </div>
             <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-purple-500">
                 <div class="flex items-start justify-between gap-3">
                     <div><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Ticket Promedio</p>
                     <p class="text-2xl font-bold text-slate-800 mt-2" id="kpiPromedio">$0.00</p></div>
-                    <span class="kpi-icon bg-purple-50 text-purple-600">◫</span>
+                    <span class="kpi-icon bg-purple-50 text-purple-600"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5V6.5A1.5 1.5 0 0 1 4.5 5h15A1.5 1.5 0 0 1 21 6.5v2a3.5 3.5 0 0 0 0 7v2a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5v-2a3.5 3.5 0 0 0 0-7z"/><path d="M14 5v2.2M14 10.9v2.2M14 16.8V19"/></svg></span>
                 </div>
             </div>
         </div>
@@ -2540,10 +2669,10 @@ html[data-theme] .analysis-sidebar-scroll .filter-scroll,html[data-theme] .analy
                 <button type="button" id="retClearFiltersBtn" class="sidebar-reset-button-inline">↺ Borrar filtros</button>
             </div>
             <details class="sidebar-filter-group">
-                <summary><span><span class="filter-summary-icon" aria-hidden="true">🗓️</span><span>Periodo de análisis</span></span><span class="accordion-chevron">⌄</span></summary>
+                <summary><span><span class="filter-summary-icon" aria-hidden="true"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg></span><span>Periodo de análisis</span></span><span class="accordion-chevron">⌄</span></summary>
                 <div class="sidebar-filter-group-body">
                     <div class="period-filter-block">
-                        <div class="period-filter-title"><span>🗓️</span><div><strong>Periodo de análisis</strong><small>Elige año y mes para cargar ventas y devoluciones.</small></div></div>
+                        <div class="period-filter-title"><span class="nf-inline-ico"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg></span><div><strong>Periodo de análisis</strong><small>Elige año y mes para cargar ventas y devoluciones.</small></div></div>
                         <div class="grid grid-cols-2 gap-3">
                             <div><label for="retYearSelector" class="filter-label">Año</label><select id="retYearSelector" class="entry-select compact-select"><option value="2026">2026</option><option value="2027">2027</option></select></div>
                             <div><label for="retMonthSelector" class="filter-label">Mes</label><select id="retMonthSelector" class="entry-select compact-select"><option value="Enero">Enero</option><option value="Febrero">Febrero</option><option value="Marzo">Marzo</option><option value="Abril">Abril</option><option value="Mayo">Mayo</option><option value="Junio">Junio</option><option value="Julio">Julio</option><option value="Agosto">Agosto</option><option value="Septiembre">Septiembre</option><option value="Octubre">Octubre</option><option value="Noviembre">Noviembre</option><option value="Diciembre">Diciembre</option></select></div>
@@ -2555,15 +2684,15 @@ html[data-theme] .analysis-sidebar-scroll .filter-scroll,html[data-theme] .analy
                 </div>
             </details>
             <details class="sidebar-filter-group">
-                <summary><span><span class="filter-summary-icon" aria-hidden="true">🏪</span><span>Sucursales</span></span><span class="accordion-chevron">⌄</span></summary>
+                <summary><span><span class="filter-summary-icon" aria-hidden="true"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5 5.5 4h13L20 9.5"/><path d="M4 9.5a2.67 2.67 0 0 0 5.33 0 2.67 2.67 0 0 0 5.34 0 2.67 2.67 0 0 0 5.33 0"/><path d="M5.5 11.5V20h13v-8.5M10 20v-4.5h4V20"/></svg></span><span>Sucursales</span></span><span class="accordion-chevron">⌄</span></summary>
                 <div class="sidebar-filter-group-body">
                     <div class="branch-filter-combined">
                         <div>
-                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2"><label class="block text-sm font-medium text-slate-700">👥 Supervisores</label><span class="text-xs text-slate-400">Selecciona/deselecciona sus sucursales.</span></div>
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2"><label class="block text-sm font-medium text-slate-700"><svg class="nf-ico nf-label-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.2a6.5 6.5 0 0 1 3.5 5.8"/></svg>Supervisores</label><span class="text-xs text-slate-400">Selecciona/deselecciona sus sucursales.</span></div>
                             <div id="retSupervisorButtons" class="flex flex-wrap gap-1.5 min-h-[36px]"></div>
                         </div>
                         <div>
-                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2"><label class="block text-sm font-medium text-slate-700">🏪 Sucursales</label>
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2"><label class="block text-sm font-medium text-slate-700"><svg class="nf-ico nf-label-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5 5.5 4h13L20 9.5"/><path d="M4 9.5a2.67 2.67 0 0 0 5.33 0 2.67 2.67 0 0 0 5.34 0 2.67 2.67 0 0 0 5.33 0"/><path d="M5.5 11.5V20h13v-8.5M10 20v-4.5h4V20"/></svg>Sucursales</label>
                                 <div class="flex gap-2"><button type="button" id="retSucTodas" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-md border border-slate-200">Todas</button><button type="button" id="retSucLimpiar" class="text-xs bg-white hover:bg-rose-50 text-slate-700 hover:text-rose-700 px-3 py-1.5 rounded-md border border-slate-300">Limpiar</button></div></div>
                             <div id="retBranchButtons" class="filter-scroll flex flex-wrap content-start gap-1.5 p-2 border border-slate-200 rounded-lg bg-slate-50 min-h-[48px]"></div>
                         </div>
@@ -2571,7 +2700,7 @@ html[data-theme] .analysis-sidebar-scroll .filter-scroll,html[data-theme] .analy
                 </div>
             </details>
             <details class="filter-accordion">
-                <summary><span><span class="filter-summary-icon" aria-hidden="true">📅</span><span>Rango de fechas</span></span><span class="accordion-chevron">⌄</span></summary>
+                <summary><span><span class="filter-summary-icon" aria-hidden="true"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg></span><span>Rango de fechas</span></span><span class="accordion-chevron">⌄</span></summary>
                 <div class="filter-accordion-body">
                     <p class="text-xs text-slate-500 mb-2">Limita las devoluciones (y la venta usada para el %) a un rango de días.</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -2583,7 +2712,7 @@ html[data-theme] .analysis-sidebar-scroll .filter-scroll,html[data-theme] .analy
                 </div>
             </details>
             <details class="filter-accordion">
-                <summary><span><span class="filter-summary-icon" aria-hidden="true">🥐</span><span>Familias y productos</span></span><span class="accordion-chevron">⌄</span></summary>
+                <summary><span><span class="filter-summary-icon" aria-hidden="true"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 12.5 9 5 9-5"/></svg></span><span>Familias y productos</span></span><span class="accordion-chevron">⌄</span></summary>
                 <div class="filter-accordion-body">
                     <div class="flex items-center justify-between gap-2 mb-2"><p class="text-xs text-slate-500">Sin selección = todas las familias.</p><button type="button" id="retFamTodas" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-md border border-slate-200">Todas</button></div>
                     <div id="retFamilyButtons" class="filter-scroll flex flex-wrap content-start gap-1.5 p-2 border border-slate-200 rounded-lg bg-slate-50 min-h-[46px]"><span class="text-xs text-slate-400 p-2">Carga los datos para ver las familias.</span></div>
@@ -2597,21 +2726,21 @@ html[data-theme] .analysis-sidebar-scroll .filter-scroll,html[data-theme] .analy
 
     <div id="returnsPage" class="dashboard-shell-hidden max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
         <div class="analysis-toolbar">
-            <div class="toolbar-brand"><h1>↩️ Devoluciones</h1><p id="retPeriodLabel">Selecciona un periodo desde Filtros</p></div>
+            <div class="toolbar-brand"><h1><span class="nf-h1-ico"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></span>Devoluciones</h1><p id="retPeriodLabel">Selecciona un periodo desde Filtros</p></div>
             <div class="toolbar-actions"><button type="button" id="retToolbarHomeBtn" class="toolbar-button"><span class="toolbar-button-icon tbi-indigo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10v9a1 1 0 0 0 1 1H10v-5.5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1V20h3.5a1 1 0 0 0 1-1v-9"></path></svg></span><span>Inicio</span></button><button type="button" id="retToolbarAnalysisBtn" class="toolbar-button"><span class="toolbar-button-icon tbi-violet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V10"></path><path d="M10 19V5"></path><path d="M16 19v-7"></path><path d="M4 19h16"></path></svg></span><span>Análisis de venta</span></button><button type="button" id="retToolbarMetaBtn" class="toolbar-button"><span class="toolbar-button-icon tbi-violet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"></circle><circle cx="12" cy="12" r="4.5"></circle><circle cx="12" cy="12" r="1"></circle></svg></span><span>Avance de meta</span></button></div>
         </div>
         <div id="retEmptyState" class="dashboard-card bg-white rounded-xl shadow-sm border border-slate-200 p-10 text-center text-slate-500 mb-6">Cargando devoluciones...</div>
         <div id="retContent" class="dashboard-shell-hidden">
             <div class="dashboard-section-kicker">Resumen general</div>
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
-                <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-rose-500"><div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Total devuelto ($)</p><p class="text-2xl font-bold text-slate-800 mt-2 break-words" id="retKpiTotal">--</p></div><span class="kpi-icon bg-rose-50 text-rose-600">↩</span></div></div>
-                <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-amber-500"><div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Piezas devueltas</p><p class="text-2xl font-bold text-slate-800 mt-2 break-words" id="retKpiPiezas">--</p></div><span class="kpi-icon bg-amber-50 text-amber-600">📦</span></div></div>
-                <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-indigo-500"><div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Folios con devolución</p><p class="text-2xl font-bold text-slate-800 mt-2 break-words" id="retKpiFolios">--</p></div><span class="kpi-icon bg-indigo-50 text-indigo-600">🧾</span></div></div>
-                <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-purple-500"><div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">% de devolución sobre venta</p><p class="text-2xl font-bold text-slate-800 mt-2 break-words" id="retKpiPct">--</p><p id="retKpiPctSub" class="text-xs text-slate-500 mt-1">&nbsp;</p></div><span class="kpi-icon bg-purple-50 text-purple-600">%</span></div></div>
-                <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-cyan-500"><div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Devolución promedio por folio</p><p class="text-2xl font-bold text-slate-800 mt-2 break-words" id="retKpiProm">--</p></div><span class="kpi-icon bg-cyan-50 text-cyan-600">⚖</span></div></div>
-                <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-emerald-500"><div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Productos distintos devueltos</p><p class="text-2xl font-bold text-slate-800 mt-2 break-words" id="retKpiProductos">--</p></div><span class="kpi-icon bg-emerald-50 text-emerald-600">🥐</span></div></div>
-                <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-slate-400"><div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Sucursal con más devolución</p><p class="text-lg font-bold text-slate-800 mt-2 break-words" id="retKpiTopSuc">--</p><p id="retKpiTopSucSub" class="text-xs text-slate-500 mt-1">&nbsp;</p></div><span class="kpi-icon bg-slate-100 text-slate-500">🏪</span></div></div>
-                <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-slate-400"><div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Día con más devolución</p><p class="text-lg font-bold text-slate-800 mt-2 break-words" id="retKpiTopDia">--</p><p id="retKpiTopDiaSub" class="text-xs text-slate-500 mt-1">&nbsp;</p></div><span class="kpi-icon bg-slate-100 text-slate-500">📅</span></div></div>
+                <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-rose-500"><div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Total devuelto ($)</p><p class="text-2xl font-bold text-slate-800 mt-2 break-words" id="retKpiTotal">--</p></div><span class="kpi-icon bg-rose-50 text-rose-600"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></span></div></div>
+                <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-amber-500"><div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Piezas devueltas</p><p class="text-2xl font-bold text-slate-800 mt-2 break-words" id="retKpiPiezas">--</p></div><span class="kpi-icon bg-amber-50 text-amber-600"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 7.8 12 3 3.5 7.8v8.4L12 21l8.5-4.8z"/><path d="M3.5 7.8 12 12.6l8.5-4.8M12 12.6V21"/></svg></span></div></div>
+                <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-indigo-500"><div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Folios con devolución</p><p class="text-2xl font-bold text-slate-800 mt-2 break-words" id="retKpiFolios">--</p></div><span class="kpi-icon bg-indigo-50 text-indigo-600"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.5 3h13v18l-2.6-1.6-2.2 1.6-2.2-1.6-2.2 1.6-2.2-1.6-1.6 1.6z"/><path d="M9 8h6M9 12h6M9 16h3.5"/></svg></span></div></div>
+                <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-purple-500"><div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">% de devolución sobre venta</p><p class="text-2xl font-bold text-slate-800 mt-2 break-words" id="retKpiPct">--</p><p id="retKpiPctSub" class="text-xs text-slate-500 mt-1">&nbsp;</p></div><span class="kpi-icon bg-purple-50 text-purple-600"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18.5 5.5l-13 13"/><circle cx="7.5" cy="7.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/></svg></span></div></div>
+                <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-cyan-500"><div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Devolución promedio por folio</p><p class="text-2xl font-bold text-slate-800 mt-2 break-words" id="retKpiProm">--</p></div><span class="kpi-icon bg-cyan-50 text-cyan-600"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16M8 20h8M5 7.5h14"/><path d="M5 7.5 2.5 13.5a3 3 0 0 0 5 0zM19 7.5l-2.5 6a3 3 0 0 0 5 0z"/></svg></span></div></div>
+                <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-emerald-500"><div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Productos distintos devueltos</p><p class="text-2xl font-bold text-slate-800 mt-2 break-words" id="retKpiProductos">--</p></div><span class="kpi-icon bg-emerald-50 text-emerald-600"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 12.5 9 5 9-5"/></svg></span></div></div>
+                <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-slate-400"><div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Sucursal con más devolución</p><p class="text-lg font-bold text-slate-800 mt-2 break-words" id="retKpiTopSuc">--</p><p id="retKpiTopSucSub" class="text-xs text-slate-500 mt-1">&nbsp;</p></div><span class="kpi-icon bg-slate-100 text-slate-500"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5 5.5 4h13L20 9.5"/><path d="M4 9.5a2.67 2.67 0 0 0 5.33 0 2.67 2.67 0 0 0 5.34 0 2.67 2.67 0 0 0 5.33 0"/><path d="M5.5 11.5V20h13v-8.5M10 20v-4.5h4V20"/></svg></span></div></div>
+                <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-slate-400"><div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Día con más devolución</p><p class="text-lg font-bold text-slate-800 mt-2 break-words" id="retKpiTopDia">--</p><p id="retKpiTopDiaSub" class="text-xs text-slate-500 mt-1">&nbsp;</p></div><span class="kpi-icon bg-slate-100 text-slate-500"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg></span></div></div>
             </div>
             <div class="dashboard-section-kicker">Por sucursal</div>
             <section class="space-y-6 mb-6">
@@ -2662,10 +2791,10 @@ html[data-theme] .analysis-sidebar-scroll .filter-scroll,html[data-theme] .analy
                 <button type="button" id="metaClearFiltersBtn" class="sidebar-reset-button-inline">↺ Borrar filtros</button>
             </div>
             <details class="sidebar-filter-group">
-                <summary><span><span class="filter-summary-icon" aria-hidden="true">🗓️</span><span>Periodo de análisis</span></span><span class="accordion-chevron">⌄</span></summary>
+                <summary><span><span class="filter-summary-icon" aria-hidden="true"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg></span><span>Periodo de análisis</span></span><span class="accordion-chevron">⌄</span></summary>
                 <div class="sidebar-filter-group-body">
                     <div class="period-filter-block">
-                        <div class="period-filter-title"><span>🗓️</span><div><strong>Periodo de análisis</strong><small>Elige año y mes para cargar la información.</small></div></div>
+                        <div class="period-filter-title"><span class="nf-inline-ico"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg></span><div><strong>Periodo de análisis</strong><small>Elige año y mes para cargar la información.</small></div></div>
                         <div class="grid grid-cols-2 gap-3">
                             <div><label for="metaYearSelector" class="filter-label">Año</label><select id="metaYearSelector" class="entry-select compact-select"><option value="2026">2026</option><option value="2027">2027</option></select></div>
                             <div><label for="metaMonthSelector" class="filter-label">Mes</label><select id="metaMonthSelector" class="entry-select compact-select"><option value="Enero">Enero</option><option value="Febrero">Febrero</option><option value="Marzo">Marzo</option><option value="Abril">Abril</option><option value="Mayo">Mayo</option><option value="Junio">Junio</option><option value="Julio">Julio</option><option value="Agosto">Agosto</option><option value="Septiembre">Septiembre</option><option value="Octubre">Octubre</option><option value="Noviembre">Noviembre</option><option value="Diciembre">Diciembre</option></select></div>
@@ -2675,19 +2804,19 @@ html[data-theme] .analysis-sidebar-scroll .filter-scroll,html[data-theme] .analy
                 </div>
             </details>
             <details class="sidebar-filter-group">
-                <summary><span><span class="filter-summary-icon" aria-hidden="true">🏪</span><span>Sucursales</span></span><span class="accordion-chevron">⌄</span></summary>
+                <summary><span><span class="filter-summary-icon" aria-hidden="true"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5 5.5 4h13L20 9.5"/><path d="M4 9.5a2.67 2.67 0 0 0 5.33 0 2.67 2.67 0 0 0 5.34 0 2.67 2.67 0 0 0 5.33 0"/><path d="M5.5 11.5V20h13v-8.5M10 20v-4.5h4V20"/></svg></span><span>Sucursales</span></span><span class="accordion-chevron">⌄</span></summary>
                 <div class="sidebar-filter-group-body">
                     <div class="branch-filter-combined">
                         <div>
                             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-                                <label class="block text-sm font-medium text-slate-700">👥 Supervisores</label>
+                                <label class="block text-sm font-medium text-slate-700"><svg class="nf-ico nf-label-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.2a6.5 6.5 0 0 1 3.5 5.8"/></svg>Supervisores</label>
                                 <span class="text-xs text-slate-400">Haz clic para seleccionar/deseleccionar sus sucursales.</span>
                             </div>
                             <div id="metaSupervisorButtons" class="flex flex-wrap gap-1.5 min-h-[36px]"></div>
                         </div>
                         <div>
                             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-                                <label class="block text-sm font-medium text-slate-700">🏪 Sucursales</label>
+                                <label class="block text-sm font-medium text-slate-700"><svg class="nf-ico nf-label-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5 5.5 4h13L20 9.5"/><path d="M4 9.5a2.67 2.67 0 0 0 5.33 0 2.67 2.67 0 0 0 5.34 0 2.67 2.67 0 0 0 5.33 0"/><path d="M5.5 11.5V20h13v-8.5M10 20v-4.5h4V20"/></svg>Sucursales</label>
                                 <div class="flex gap-2"><button type="button" id="metaSucTodas" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-md border border-slate-200">Todas</button><button type="button" id="metaSucLimpiar" class="text-xs bg-white hover:bg-rose-50 text-slate-700 hover:text-rose-700 px-3 py-1.5 rounded-md border border-slate-300">Limpiar</button></div>
                             </div>
                             <div id="metaBranchButtons" class="filter-scroll flex flex-wrap content-start gap-1.5 p-2 border border-slate-200 rounded-lg bg-slate-50 min-h-[48px]"></div>
@@ -2696,7 +2825,7 @@ html[data-theme] .analysis-sidebar-scroll .filter-scroll,html[data-theme] .analy
                 </div>
             </details>
             <details class="filter-accordion">
-                <summary><span><span class="filter-summary-icon" aria-hidden="true">📅</span><span>Rango de fechas</span></span><span class="accordion-chevron">⌄</span></summary>
+                <summary><span><span class="filter-summary-icon" aria-hidden="true"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg></span><span>Rango de fechas</span></span><span class="accordion-chevron">⌄</span></summary>
                 <div class="filter-accordion-body">
                     <p class="text-xs text-slate-500 mb-2">Limita el cálculo de avance de meta a un rango de días dentro del mes cargado.</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -2716,7 +2845,7 @@ html[data-theme] .analysis-sidebar-scroll .filter-scroll,html[data-theme] .analy
                 </div>
             </details>
             <details class="filter-accordion">
-                <summary><span><span class="filter-summary-icon" aria-hidden="true">💳</span><span>Métodos de pago</span></span><span class="accordion-chevron">⌄</span></summary>
+                <summary><span><span class="filter-summary-icon" aria-hidden="true"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 15h3"/></svg></span><span>Métodos de pago</span></span><span class="accordion-chevron">⌄</span></summary>
                 <div class="filter-accordion-body">
                     <div class="flex flex-col gap-3">
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
@@ -2738,7 +2867,7 @@ html[data-theme] .analysis-sidebar-scroll .filter-scroll,html[data-theme] .analy
 
     <div id="metaProgressPage" class="dashboard-shell-hidden max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
         <div class="analysis-toolbar">
-            <div class="toolbar-brand"><h1>🎯 Avance de meta</h1><p id="metaPeriodLabel">Selecciona un periodo desde Filtros</p></div>
+            <div class="toolbar-brand"><h1><span class="nf-h1-ico"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg></span>Avance de meta</h1><p id="metaPeriodLabel">Selecciona un periodo desde Filtros</p></div>
             <div class="toolbar-actions"><button type="button" id="metaToolbarHomeBtn" class="toolbar-button"><span class="toolbar-button-icon tbi-indigo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10v9a1 1 0 0 0 1 1H10v-5.5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1V20h3.5a1 1 0 0 0 1-1v-9"></path></svg></span><span>Inicio</span></button><button type="button" id="metaToolbarAnalysisBtn" class="toolbar-button"><span class="toolbar-button-icon tbi-violet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V10"></path><path d="M10 19V5"></path><path d="M16 19v-7"></path><path d="M4 19h16"></path></svg></span><span>Análisis de venta</span></button><button type="button" id="metaToolbarReturnsBtn" class="toolbar-button"><span class="toolbar-button-icon tbi-rose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11.5h11.5a4.5 4.5 0 0 1 0 9H10"></path><path d="M8 7.5 4 11.5l4 4"></path></svg></span><span>Devoluciones</span></button></div>
         </div>
 
@@ -2757,56 +2886,56 @@ html[data-theme] .analysis-sidebar-scroll .filter-scroll,html[data-theme] .analy
                     <div class="flex items-start justify-between gap-3">
                         <div><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Meta del mes</p>
                         <p class="text-2xl font-bold text-slate-800 mt-2" id="metaKpiMetaMes">$0.00</p></div>
-                        <span class="kpi-icon bg-slate-100 text-slate-500">🎯</span>
+                        <span class="kpi-icon bg-slate-100 text-slate-500"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg></span>
                     </div>
                 </div>
                 <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-emerald-500">
                     <div class="flex items-start justify-between gap-3">
                         <div><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Total vendido</p>
                         <p class="text-2xl font-bold text-slate-800 mt-2" id="metaKpiVendido">$0.00</p></div>
-                        <span class="kpi-icon bg-emerald-50 text-emerald-600">↗</span>
+                        <span class="kpi-icon bg-emerald-50 text-emerald-600"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></span>
                     </div>
                 </div>
                 <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-amber-500">
                     <div class="flex items-start justify-between gap-3">
                         <div><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Restante de meta</p>
                         <p class="text-2xl font-bold text-slate-800 mt-2" id="metaKpiRestante">$0.00</p></div>
-                        <span class="kpi-icon bg-amber-50 text-amber-600">⏳</span>
+                        <span class="kpi-icon bg-amber-50 text-amber-600"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12M6 21h12"/><path d="M7.5 3v2.5a4.5 4.5 0 0 0 9 0V3"/><path d="M7.5 21v-2.5a4.5 4.5 0 0 1 9 0V21"/></svg></span>
                     </div>
                 </div>
                 <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-indigo-500">
                     <div class="flex items-start justify-between gap-3">
                         <div><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">% Avance del mes</p>
                         <p class="text-2xl font-bold text-slate-800 mt-2" id="metaKpiPct">0%</p></div>
-                        <span class="kpi-icon bg-indigo-50 text-indigo-600">%</span>
+                        <span class="kpi-icon bg-indigo-50 text-indigo-600"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18.5 5.5l-13 13"/><circle cx="7.5" cy="7.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/></svg></span>
                     </div>
                 </div>
                 <div class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-blue-500">
                     <div class="flex items-start justify-between gap-3">
                         <div><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Promedio diario vendido</p>
                         <p class="text-2xl font-bold text-slate-800 mt-2" id="metaKpiPromedioDiario">$0.00</p></div>
-                        <span class="kpi-icon bg-blue-50 text-blue-600">Σ</span>
+                        <span class="kpi-icon bg-blue-50 text-blue-600"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 17.3h.01M12 17.3h.01"/></svg></span>
                     </div>
                 </div>
                 <div id="metaKpiVentaNecesariaCard" class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-purple-500">
                     <div class="flex items-start justify-between gap-3">
                         <div><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Venta diaria necesaria</p>
                         <p class="text-2xl font-bold text-slate-800 mt-2" id="metaKpiVentaNecesaria">$0.00</p></div>
-                        <span class="kpi-icon bg-purple-50 text-purple-600">⚡</span>
+                        <span class="kpi-icon bg-purple-50 text-purple-600"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2.5 4.5 14H11l-1 7.5L18.5 10H12z"/></svg></span>
                     </div>
                 </div>
                 <div id="metaKpiPctEsperadoCard" class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-slate-300">
                     <div class="flex items-start justify-between gap-3">
                         <div><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">% Avance vs. esperado hoy</p>
                         <p class="text-2xl font-bold text-slate-800 mt-2" id="metaKpiPctEsperado">--</p></div>
-                        <span class="kpi-icon bg-slate-100 text-slate-500">⚖</span>
+                        <span class="kpi-icon bg-slate-100 text-slate-500"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16M8 20h8M5 7.5h14"/><path d="M5 7.5 2.5 13.5a3 3 0 0 0 5 0zM19 7.5l-2.5 6a3 3 0 0 0 5 0z"/></svg></span>
                     </div>
                 </div>
                 <div id="metaKpiProyeccionCard" class="kpi-card bg-white rounded-xl shadow-sm border border-slate-200 p-5 border-l-4 border-l-slate-300">
                     <div class="flex items-start justify-between gap-3">
                         <div><p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.12em]">Proyección de cierre</p>
                         <p class="text-2xl font-bold text-slate-800 mt-2" id="metaKpiProyeccion">$0.00</p></div>
-                        <span class="kpi-icon bg-cyan-50 text-cyan-600">📈</span>
+                        <span class="kpi-icon bg-cyan-50 text-cyan-600"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 3.5v17h17"/><path d="m7.5 15 3.5-4.5 3 3 5-6.5"/></svg></span>
                     </div>
                 </div>
             </div>
@@ -2977,6 +3106,9 @@ const TIPO_CORTESIA = 'MERMA COMANDA';
 const PROMOCION_VACIA = new Set(['','0','-','NA','N/A','NO','NINGUNA','NINGUNO',
   'SIN PROMOCION','SIN PROMOCIÓN','NO APLICA','NULL','NONE']);
 
+/* Íconos de trazo uniforme (sustituyen a los emojis de la interfaz). */
+const NF_ICON_PATHS={"trend":"<path d=\"M3 17l6-6 4 4 8-8\"/><path d=\"M14 7h7v7\"/>","receipt":"<path d=\"M5.5 3h13v18l-2.6-1.6-2.2 1.6-2.2-1.6-2.2 1.6-2.2-1.6-1.6 1.6z\"/><path d=\"M9 8h6M9 12h6M9 16h3.5\"/>","phone":"<path d=\"M5 4h3.5l2 5-2.4 1.5a11 11 0 0 0 5.4 5.4L15 13.5l5 2V19a2 2 0 0 1-2 2A15 15 0 0 1 3 6a2 2 0 0 1 2-2z\"/>","ticket":"<path d=\"M3 8.5V6.5A1.5 1.5 0 0 1 4.5 5h15A1.5 1.5 0 0 1 21 6.5v2a3.5 3.5 0 0 0 0 7v2a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5v-2a3.5 3.5 0 0 0 0-7z\"/><path d=\"M14 5v2.2M14 10.9v2.2M14 16.8V19\"/>","target":"<circle cx=\"12\" cy=\"12\" r=\"8.5\"/><circle cx=\"12\" cy=\"12\" r=\"4.5\"/><circle cx=\"12\" cy=\"12\" r=\"1\"/>","hourglass":"<path d=\"M6 3h12M6 21h12\"/><path d=\"M7.5 3v2.5a4.5 4.5 0 0 0 9 0V3\"/><path d=\"M7.5 21v-2.5a4.5 4.5 0 0 1 9 0V21\"/>","percent":"<path d=\"M18.5 5.5l-13 13\"/><circle cx=\"7.5\" cy=\"7.5\" r=\"2.5\"/><circle cx=\"16.5\" cy=\"16.5\" r=\"2.5\"/>","calendarDays":"<rect x=\"3.5\" y=\"5\" width=\"17\" height=\"15.5\" rx=\"2.5\"/><path d=\"M8 3v4M16 3v4M3.5 10h17\"/><path d=\"M8 14h.01M12 14h.01M16 14h.01M8 17.3h.01M12 17.3h.01\"/>","zap":"<path d=\"M13 2.5 4.5 14H11l-1 7.5L18.5 10H12z\"/>","scale":"<path d=\"M12 4v16M8 20h8M5 7.5h14\"/><path d=\"M5 7.5 2.5 13.5a3 3 0 0 0 5 0zM19 7.5l-2.5 6a3 3 0 0 0 5 0z\"/>","lineChart":"<path d=\"M3.5 3.5v17h17\"/><path d=\"m7.5 15 3.5-4.5 3 3 5-6.5\"/>","undo":"<path d=\"M9 14 4 9l5-5\"/><path d=\"M4 9h10.5a5.5 5.5 0 0 1 0 11H11\"/>","package":"<path d=\"M20.5 7.8 12 3 3.5 7.8v8.4L12 21l8.5-4.8z\"/><path d=\"M3.5 7.8 12 12.6l8.5-4.8M12 12.6V21\"/>","layers":"<path d=\"m12 3 9 5-9 5-9-5z\"/><path d=\"m3 12.5 9 5 9-5\"/>","store":"<path d=\"M4 9.5 5.5 4h13L20 9.5\"/><path d=\"M4 9.5a2.67 2.67 0 0 0 5.33 0 2.67 2.67 0 0 0 5.34 0 2.67 2.67 0 0 0 5.33 0\"/><path d=\"M5.5 11.5V20h13v-8.5M10 20v-4.5h4V20\"/>","calendar":"<rect x=\"3.5\" y=\"5\" width=\"17\" height=\"15.5\" rx=\"2.5\"/><path d=\"M8 3v4M16 3v4M3.5 10h17\"/>","tag":"<path d=\"M3.5 12.2V4.5a1 1 0 0 1 1-1h7.7l9 9-8.7 8.7z\"/><circle cx=\"8\" cy=\"8\" r=\"1.4\"/>","search":"<circle cx=\"11\" cy=\"11\" r=\"6.5\"/><path d=\"m20 20-4.4-4.4\"/>","clock":"<circle cx=\"12\" cy=\"12\" r=\"8.5\"/><path d=\"M12 7.5V12l3 2\"/>","card":"<rect x=\"3\" y=\"5.5\" width=\"18\" height=\"13\" rx=\"2.5\"/><path d=\"M3 10h18M7 15h3\"/>","users":"<circle cx=\"9\" cy=\"8\" r=\"3.5\"/><path d=\"M2.5 20a6.5 6.5 0 0 1 13 0\"/><path d=\"M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.2a6.5 6.5 0 0 1 3.5 5.8\"/>","sliders":"<path d=\"M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1\"/><circle cx=\"15\" cy=\"6\" r=\"2\"/><circle cx=\"9\" cy=\"12\" r=\"2\"/><circle cx=\"17\" cy=\"18\" r=\"2\"/>","bars":"<path d=\"M5 20v-8M10 20V5M15 20v-6M20 20V9\"/><path d=\"M3 20h18\" opacity=\".55\"/>"};
+const NF_ICON=n=>'<svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(NF_ICON_PATHS[n]||'')+'</svg>';
 const $ = id => document.getElementById(id);
 const fechaInicio = $('fechaInicio'), fechaFin = $('fechaFin');
 const btnTodoElMes = $('btnTodoElMes'), dateFilterStatus = $('dateFilterStatus');
@@ -3173,7 +3305,15 @@ function nombrePromocion(v){const t=repairText(String(v??'')).trim();
   return PROMOCION_VACIA.has(claveTexto(t))?'':t;}
 function money(v){return '$'+Number(v||0).toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2});}
 function num(v){const n=Number(v); return Number.isFinite(n)?n:0;}
+/* Las fechas se repiten muchísimo (~200 mil renglones, ~31 valores distintos): se memoizan. */
+const fechaNormalizadaCache=new Map();
 function normalizarFecha(valor){
+  const k=String(valor||'');
+  let r=fechaNormalizadaCache.get(k);
+  if(r===undefined){r=normalizarFechaBase(k);fechaNormalizadaCache.set(k,r);}
+  return r;
+}
+function normalizarFechaBase(valor){
   const t=String(valor||'').trim(); if(!t)return '';
   if(/^\d{4}-\d{2}-\d{2}/.test(t)) return t.slice(0,10);
   const m=t.match(/^(\d{1,2})[\\/.-](\d{1,2})[\\/.-](\d{4})$/);
@@ -3266,14 +3406,25 @@ async function cargarDesdeTurso(opts){
   const elapsed=()=>{const s=Math.floor((Date.now()-started)/1000);$('loadingElapsed').textContent=`${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`};
   timer=setInterval(elapsed,500); $('loadingElapsed').textContent='00:00'; startDataLoadingExperience(); $('loadingSpinner').classList.remove('hidden'); statusMsg.classList.remove('hidden'); btn.disabled=true;
   const sinDatosMsg=()=>`No se encontraron registros para ${mesSolicitado} ${anioSolicitado} ni en los ${MAX_MESES_ATRAS} meses anteriores.`;
+  let exito=false;
   try{
     const buscarEnCache=async(y,mn)=>{if(forzar)return null;const e=await cacheGet(cacheKey(mn,y));return cacheVigente(e,mn,y)?e:null;};
     const consultarMaestro=async(y,mn)=>supabaseRpc('get_maestro_periodo',{p_anio:y,p_mes:mn});
-    let maestroRows=[], pagosRows=[], metasRows=null;
+    /* Pagos y metas no dependen de MAESTRO: se piden en paralelo para no esperar las consultas una tras otra.
+       El .catch vacío sólo evita un "unhandled rejection" si MAESTRO falla primero; el error real se lanza al hacer await. */
+    const pedirComplementos=(y,mn)=>{
+      nfPaso('pagos','activo'); nfPaso('metas','activo');
+      const pagos=supabaseRpc('get_pagos_periodo',{p_anio:y,p_mes:mn}); pagos.then(()=>nfPaso('pagos','listo'),()=>{});
+      const metas=supabaseRpc('get_metas_periodo',{p_anio:y,p_mes:mn}).catch(errMetas=>{console.warn('[Neufeld] No se pudo cargar la tabla de metas:',errMetas.message||errMetas);return null;});
+      metas.then(()=>nfPaso('metas','listo'));
+      return {pagos,metas};
+    };
+    let maestroRows=[], pagosRows=[], metasRows=null, complementos=null;
     let datos=await buscarEnCache(year,monthNum);
     if(!datos){
       setStage(`Consultando base de datos · ${month} ${year}...`);
-      maestroRows=await consultarMaestro(year,monthNum);
+      complementos=pedirComplementos(year,monthNum); nfPaso('ventas','activo');
+      maestroRows=await consultarMaestro(year,monthNum); nfPaso('ventas','listo');
       if(!maestroRows.length){
         // Una sola consulta (con índice, una sola lectura) para hallar el periodo anterior más reciente con datos.
         setStage(`${month} ${year} sin datos. Buscando el periodo anterior con información...`);
@@ -3285,7 +3436,8 @@ async function cargarDesdeTurso(opts){
         datos=await buscarEnCache(year,monthNum);
         if(!datos){
           setStage(`Consultando base de datos · ${month} ${year}...`);
-          maestroRows=await consultarMaestro(year,monthNum);
+          complementos=pedirComplementos(year,monthNum); nfPaso('ventas','activo');
+          maestroRows=await consultarMaestro(year,monthNum); nfPaso('ventas','listo');
           if(!maestroRows.length)throw new Error(sinDatosMsg());
         }
       }
@@ -3296,33 +3448,31 @@ async function cargarDesdeTurso(opts){
     }
     if(datos){
       maestroRows=datos.maestroRows; pagosRows=datos.pagosRows; metasRows=datos.metasRows||null;
+      ['ventas','pagos','metas'].forEach(p=>nfPaso(p,'listo'));
       setStage(`Usando datos guardados (hace ${edadCache(Date.now()-datos.ts)}) · ${maestroRows.length.toLocaleString('es-MX')} renglones...`);
     }else{
-      setStage(`Encontrados ${maestroRows.length.toLocaleString('es-MX')} renglones. Consultando formas de pago...`);
-      pagosRows=await supabaseRpc('get_pagos_periodo',{p_anio:year,p_mes:monthNum});
-      try{
-        setStage(`Consultando metas del periodo...`);
-        metasRows=await supabaseRpc('get_metas_periodo',{p_anio:year,p_mes:monthNum});
-      }catch(errMetas){
-        console.warn('[Neufeld] No se pudo cargar la tabla de metas:',errMetas.message||errMetas);
-        metasRows=null;
-      }
+      setStage(`Encontrados ${maestroRows.length.toLocaleString('es-MX')} renglones. Consultando formas de pago y metas...`);
+      pagosRows=await complementos.pagos;
+      metasRows=await complementos.metas;
       // Sólo se guarda en caché si todo (incluidas las metas) se consultó bien.
       if(metasRows)cacheSet(cacheKey(monthNum,year),{ts:Date.now(),maestroRows,pagosRows,metasRows});
     }
     setStage(`Preparando ${pagosRows.length.toLocaleString('es-MX')} movimientos de pago...`);
+    // Se cede un instante al navegador para que pinte la etapa antes del cálculo pesado (bloquea ~1 s).
+    nfPaso('graficas','activo'); await new Promise(r=>setTimeout(r,40));
     normalizarDatos(maestroRows,pagosRows);
     loadedMonth=month; loadedYear=String(year); loadedMonthNum=monthNum; if(selectedMonthLabel) selectedMonthLabel.textContent=`${month} ${year}`;
     metasData=(metasRows||[]).map(r=>({codigo:repairText(String(r.nomenclatura??'').trim()),fecha:normalizarFecha(r.fecha),meta:(r.meta===null||r.meta===undefined||r.meta==='')?null:num(r.meta)}));
     prepararAvanceDeMeta();
     if(pendingModuleAfterLoad==='returns'){ activateReturnsModule(); } else if(pendingModuleAfterLoad==='meta'){ activateMetaModule(); } else { prepareDashboardForRendering(); showDashboardAfterLoad(); }
+    await nfCargaCompletar(); exito=true;
     statusMsg.innerText=datos?`Datos desde caché (hace ${edadCache(Date.now()-datos.ts)}). Pulsa «Actualizar periodo» de nuevo para consultar otra vez.`:'¡Datos cargados con éxito!';
     setTimeout(()=>statusMsg.classList.add('hidden'),datos?6000:3000);
   }catch(err){returnToEntryScreen(); alert('Error al consultar Supabase: '+err.message);}
-  finally{clearInterval(timer);$('loadingSpinner').classList.add('hidden');btn.disabled=false;stopDataLoadingExperience();}
+  finally{clearInterval(timer);$('loadingSpinner').classList.add('hidden');btn.disabled=false;stopDataLoadingExperience();if(exito)nfEntradaPaginaVisible();}
 }
 function normalizarDatos(maestroRows,pagosRows){
-  paymentByTicket=new Map();
+  paymentByTicket=new Map(); ticketInfoCache=new Map(); ticketInfoSelKey='';
   pagosRows.forEach(p=>{const t=repairText(String(p.ticket??'').trim()); if(!t)return; const formaPago=repairText(String(p.forma_pago??'').trim())||'Sin método'; if(!paymentByTicket.has(t))paymentByTicket.set(t,[]); paymentByTicket.get(t).push({formaPago,cobrado:num(p.cobrado),esCortesia:esFormaPagoCortesia(formaPago)});});
   const raw=[];
   maestroRows.forEach(r=>{
@@ -3339,6 +3489,7 @@ function normalizarDatos(maestroRows,pagosRows){
     console.warn(`[Neufeld] ${otros.length} renglones con tipo_operacion no reconocido y por lo tanto excluidos:`,tipos);}
   window.__NEUFELD_DEBUG__={renglonesTotales:raw.length,venta:mainData.length,cortesia:mermaData.length,otros:otros.length};
   mainRowsByTicket=ticketRowsMap(mainData); mermaRowsByTicket=ticketRowsMap(mermaData);
+  netoPorTicketMain=netoPorTicket(mainRowsByTicket); netoPorTicketMerma=netoPorTicket(mermaRowsByTicket);
   cargarFiltroSucursales(); seleccionarTodasSucursales(false); cargarFiltroSupervisores(); cargarFiltroProductos(); cargarFiltroFamilias(); cargarFiltroMetodosPago(); poblarFiltrosHora(); configurarRangoFechas(); resetSecondarySelections(); actualizarEstadosFiltros(); renderDashboard(obtenerDatosFiltrados());
 }
 function parseHora(v){const s=String(v??'').trim().toUpperCase(); if(!s)return 0; if(s.includes('T')){const d=new Date(v);return Number.isNaN(d.getTime())?0:d.getHours();} const m=s.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/); if(m){let h=Number(m[1]);if(m[3]==='AM'&&h===12)h=0;if(m[3]==='PM'&&h!==12)h+=12;return h;} const n=parseInt(s.split(':')[0],10);return Number.isFinite(n)?n:0;}
@@ -3347,20 +3498,35 @@ function resetSecondarySelections(){selectedFamilies=new Set();selectedProducts=
    de MAESTRO: NO son venta cobrada. Aquí se separan de una vez, de modo que
    `rows`, `total` y `selected` sólo contienen cobro real, y `cortesia` alimenta
    la sección de cortesías, donaciones y degustaciones. */
+/* Se llama cientos de miles de veces por render: la parte fija de cada ticket se calcula una
+   sola vez por carga, y `selected` se recalcula sólo cuando cambia la selección de métodos. */
+let ticketInfoCache=new Map(), ticketInfoSelKey='';
+function claveSeleccionPagos(){return selectedPaymentMethods.size?[...selectedPaymentMethods].sort().join('\u0001'):'';}
+function sincronizarCacheTickets(){const k=claveSeleccionPagos();if(k!==ticketInfoSelKey){ticketInfoSelKey=k;ticketInfoCache.forEach(i=>{i.selected=undefined;});}}
 function getTicketInfo(ticket){
-  const todos=paymentByTicket.get(ticket)||[];
-  const rows=todos.filter(p=>!p.esCortesia);
-  const rowsCortesia=todos.filter(p=>p.esCortesia);
-  const total=rows.reduce((s,p)=>s+p.cobrado,0);
-  const cortesia=rowsCortesia.reduce((s,p)=>s+p.cobrado,0);
-  const methods=[...new Set(rows.map(p=>p.formaPago))];
-  let selected=total; if(selectedPaymentMethods.size){selected=rows.filter(p=>selectedPaymentMethods.has(p.formaPago)).reduce((s,p)=>s+p.cobrado,0);}
-  return {rows,rowsCortesia,todos,total,cortesia,methods,selected};
+  let info=ticketInfoCache.get(ticket);
+  if(!info){
+    const todos=paymentByTicket.get(ticket)||[];
+    const rows=todos.filter(p=>!p.esCortesia);
+    const rowsCortesia=todos.filter(p=>p.esCortesia);
+    const total=rows.reduce((s,p)=>s+p.cobrado,0);
+    const cortesia=rowsCortesia.reduce((s,p)=>s+p.cobrado,0);
+    const methods=[...new Set(rows.map(p=>p.formaPago))];
+    info={rows,rowsCortesia,todos,total,cortesia,methods,selected:undefined};
+    ticketInfoCache.set(ticket,info);
+  }
+  if(info.selected===undefined){info.selected=ticketInfoSelKey?info.rows.filter(p=>selectedPaymentMethods.has(p.formaPago)).reduce((s,p)=>s+p.cobrado,0):info.total;}
+  return info;
 }
+/* Suma de importe_neto de cada folio (para repartir lo cobrado entre sus renglones). */
+let netoPorTicketMain=new Map(), netoPorTicketMerma=new Map();
+function netoPorTicket(rowsByTicket){const m=new Map();rowsByTicket.forEach((rows,folio)=>m.set(folio,rows.reduce((s,x)=>s+x.importeNeto,0)));return m;}
 function ticketRowsMap(data){const m=new Map(); data.forEach(d=>{if(!m.has(d.folio))m.set(d.folio,[]);m.get(d.folio).push(d)});return m;}
+/* Métodos de pago (sin Cortesía) de los tickets de venta cargados: se recorre por ticket, no por renglón. */
+function metodosDePagoCargados(){const s=new Set();mainRowsByTicket.forEach((_,folio)=>getTicketInfo(folio).rows.forEach(p=>{if(p.formaPago)s.add(p.formaPago);}));return [...s];}
 function rowPassesBase(d,opciones){
   const esCortesia=!!(opciones&&opciones.cortesia);
-  const suc=String(d.sucursalNom||'').trim(); if(!selectedBranches.has(suc))return false;
+  const suc=d.sucursalNom; if(!selectedBranches.has(suc))return false;
   const f=normalizarFecha(d.fecha); if(selectedDateFrom&&f<selectedDateFrom)return false;if(selectedDateTo&&f>selectedDateTo)return false;
   const h=num(d.hora); if(selectedHourFrom!==''&&h<Number(selectedHourFrom))return false;if(selectedHourTo!==''&&h>Number(selectedHourTo))return false;
   // El filtro de métodos de pago no aplica a las cortesías: no tienen método real.
@@ -3368,9 +3534,10 @@ function rowPassesBase(d,opciones){
   return true;
 }
 function obtenerDatosFiltrados(){
+  sincronizarCacheTickets();
   const base=mainData.filter(d=>rowPassesBase(d)); const m=ticketRowsMap(base); const out=[];
   for(const [folio,rows] of m){
-    const allTicketRows=mainRowsByTicket.get(folio)||[]; const ticketNeto=allTicketRows.reduce((s,x)=>s+x.importeNeto,0);
+    const ticketNeto=netoPorTicketMain.get(folio)||0;
     const pay=getTicketInfo(folio); const cob=pay.selected;
     // Ticket pagado 100% con Cortesía: no es venta cobrada, se omite del total.
     if(pay.total===0&&pay.cortesia>0)continue;
@@ -3383,11 +3550,11 @@ function obtenerDatosFiltrados(){
 }
 function totalCobradoDeData(data){return data.reduce((s,d)=>s+num(d._cobradoAsignado),0);}
 function cargarFiltroSupervisores(){if(!supervisorButtons)return; const sups=[...new Set(sucursalesCatalogo.map(x=>x.supervisor).filter(x=>x&&x!=='NA'))].sort((a,b)=>a.localeCompare(b,'es')); supervisorButtons.innerHTML=''; sups.forEach(s=>{const b=document.createElement('button');b.type='button';b.dataset.supervisor=s;b.className='compact-filter-btn rounded-lg border bg-white border-slate-300 text-slate-700';b.textContent=s;b.onclick=()=>alternarSupervisor(s);supervisorButtons.appendChild(b);}); selectedSupervisors=new Set(sups); actualizarBotonesSupervisores();}
-function alternarSupervisor(s){if(selectedSupervisors.has(s))selectedSupervisors.delete(s);else selectedSupervisors.add(s); const allowed=new Set(selectedSupervisors.size? sucursalesCatalogo.filter(x=>selectedSupervisors.has(x.supervisor)).map(x=>x.nom):sucursalesCatalogo.map(x=>x.nom)); selectedBranches=selectedSupervisors.size?allowed:new Set(sucursalesCatalogo.map(x=>x.nom)); cargarFiltroSucursales(false); actualizarBotonesSupervisores(); renderDashboard(obtenerDatosFiltrados());}
+function alternarSupervisor(s){if(selectedSupervisors.has(s))selectedSupervisors.delete(s);else selectedSupervisors.add(s); const allowed=new Set(selectedSupervisors.size? sucursalesCatalogo.filter(x=>selectedSupervisors.has(x.supervisor)).map(x=>x.nom):sucursalesCatalogo.map(x=>x.nom)); selectedBranches=selectedSupervisors.size?allowed:new Set(sucursalesCatalogo.map(x=>x.nom)); cargarFiltroSucursales(false); actualizarBotonesSupervisores(); programarRenderDashboard();}
 function actualizarBotonesSupervisores(){document.querySelectorAll('#supervisorButtons button').forEach(b=>{const a=selectedSupervisors.has(b.dataset.supervisor);b.className=a?'compact-filter-btn rounded-lg border font-semibold bg-indigo-600 border-indigo-600 text-white':'compact-filter-btn rounded-lg border bg-white border-slate-300 text-slate-700';});}
 function cargarFiltroSucursales(){if(!branchButtons)return;const noms=[...new Set(mainData.map(d=>d.sucursalNom).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'));branchButtons.innerHTML='';noms.forEach(n=>{const b=document.createElement('button');b.type='button';b.dataset.sucursal=n;b.className='compact-filter-btn rounded-lg border bg-white border-slate-300 text-slate-700';b.textContent=catMap[n]?.sucursal||n;b.onclick=()=>alternarSucursal(n);branchButtons.appendChild(b);});actualizarBotonesSucursales();}
-function alternarSucursal(n){if(selectedBranches.has(n))selectedBranches.delete(n);else selectedBranches.add(n);selectedSupervisors.clear();actualizarBotonesSupervisores();actualizarBotonesSucursales();renderDashboard(obtenerDatosFiltrados());}
-function seleccionarTodasSucursales(render=true){selectedBranches=new Set([...new Set(mainData.map(d=>d.sucursalNom).filter(Boolean))]);selectedSupervisors=new Set(sucursalesCatalogo.map(x=>x.supervisor).filter(x=>x&&x!=='NA'));actualizarBotonesSupervisores();actualizarBotonesSucursales();if(render&&mainData.length)renderDashboard(obtenerDatosFiltrados());}
+function alternarSucursal(n){if(selectedBranches.has(n))selectedBranches.delete(n);else selectedBranches.add(n);selectedSupervisors.clear();actualizarBotonesSupervisores();actualizarBotonesSucursales();programarRenderDashboard();}
+function seleccionarTodasSucursales(render=true){selectedBranches=new Set([...new Set(mainData.map(d=>d.sucursalNom).filter(Boolean))]);selectedSupervisors=new Set(sucursalesCatalogo.map(x=>x.supervisor).filter(x=>x&&x!=='NA'));actualizarBotonesSupervisores();actualizarBotonesSucursales();if(render&&mainData.length)programarRenderDashboard();}
 
 /* ============ AVANCE DE META ============ */
 function diasEnMes(mes,anio){return new Date(Number(anio),Number(mes),0).getDate();}
@@ -3546,7 +3713,7 @@ function metaEsMembresias(m){return /^MEMBRESIAS?$/.test(String(m||'').normalize
 function metaMetodosPagoPorDefecto(){return new Set((metaAllPaymentMethods||[]).filter(m=>!metaEsMembresias(m)));}
 function cargarFiltroMetaMetodosPago(){
   const el=$('metaPaymentButtons'); if(!el)return;
-  const methods=[...new Set(mainData.flatMap(d=>(getTicketInfo(d.folio).rows||[]).map(p=>p.formaPago)).filter(Boolean))];
+  const methods=metodosDePagoCargados();
   const pref=['EFECTIVO','TARJETA DE CREDITO','TARJETA DEBITO','MEMBRESIAS','Desconocido'];
   metaAllPaymentMethods=methods.sort((a,b)=>{const ia=pref.findIndex(x=>x.toUpperCase()===a.toUpperCase()),ib=pref.findIndex(x=>x.toUpperCase()===b.toUpperCase());if(ia>=0&&ib<0)return-1;if(ib>=0&&ia<0)return 1;if(ia>=0&&ib>=0)return ia-ib;return a.localeCompare(b,'es')});
   el.innerHTML='';
@@ -3654,6 +3821,7 @@ function renderMetaProgress(){
   renderMetaTrendChart(codigos);
   poblarSelectorMetaDetalle(codigos);
   renderMetaDetalleDiario();
+  nfActualizarKpis($('metaProgressPage'));
 }
 function renderMetaTrendChart(codigos){
   const canvas=$('chartMetaTendencia'); if(!canvas||!window.Chart)return;
@@ -3682,7 +3850,7 @@ function renderMetaTrendChart(codigos){
     ]},
     options:{
       responsive:true,maintainAspectRatio:false,
-      animation:{duration:400,easing:'easeOutQuart'},
+      animation:NF_ANIM_RUTINA,
       interaction:{mode:'index',intersect:false},
       plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:12,usePointStyle:true,font:{size:12},color:lxTheme().tx}},tooltip:{backgroundColor:lxTheme().tipBg,titleColor:lxTheme().tipTx,bodyColor:lxTheme().tipTx,cornerRadius:10,padding:12,callbacks:{label:ctx=>`${ctx.dataset.label}: ${money(ctx.parsed.y)}`}}},
       scales:{y:{ticks:{color:lxTheme().tick,callback:v=>'$'+Number(v).toLocaleString('es-MX')},grid:{color:lxTheme().grid}},x:{ticks:{color:lxTheme().tick},grid:{color:lxTheme().grid},title:{display:true,text:'Día del mes',font:{size:11},color:lxTheme().tick}}}
@@ -3732,6 +3900,7 @@ function mostrarModulo(id){
   if(home)document.body.style.overflow='hidden'; else {document.body.style.overflowY='auto';document.body.style.overflowX='hidden';}
   syncFloatingFilterVisibility();
   if(id==='dashboardApp')etiquetaPeriodo('analysisPeriodLabel');
+  if(!home&&mainData.length&&!$('dataLoadingOverlay')?.classList.contains('show'))nfEntrada($(id));
 }
 const periodoCargado=()=>mainData.length>0&&String(loadedYear)===String($('yearSelector').value)&&loadedMonth===selectMes.value;
 /* Si el periodo elegido no es el cargado, lo carga y avisa qué módulo abrir al terminar. Devuelve true si inició la carga. */
@@ -3762,41 +3931,42 @@ function aplicarTema(dark,persist){
   apply();
 }
 /* ============ FIN AVANCE DE META ============ */
-function limpiarSucursales(){selectedBranches.clear();selectedSupervisors.clear();actualizarBotonesSupervisores();actualizarBotonesSucursales();if(mainData.length)renderDashboard(obtenerDatosFiltrados());}
+function limpiarSucursales(){selectedBranches.clear();selectedSupervisors.clear();actualizarBotonesSupervisores();actualizarBotonesSucursales();if(mainData.length)programarRenderDashboard();}
 window.seleccionarTodasSucursales=seleccionarTodasSucursales;window.limpiarSucursales=limpiarSucursales;
 function actualizarBotonesSucursales(){document.querySelectorAll('#branchButtons button').forEach(b=>{const a=selectedBranches.has(b.dataset.sucursal);b.className=a?'compact-filter-btn rounded-lg border font-semibold bg-emerald-600 border-emerald-600 text-white':'compact-filter-btn rounded-lg border bg-white border-slate-300 text-slate-700';});}
 function cargarFiltroProductos(){allProductNames=[...new Set(mainData.map(d=>d.descripcion).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'));allProductNames.length&&(productFilterStatus.textContent='Sin productos específicos seleccionados.');}
 function todasLasFamilias(){return new Set(mainData.map(d=>d.familia).filter(Boolean));}
 function cargarFiltroFamilias(){if(!familyButtons)return;familyButtons.innerHTML='';[...todasLasFamilias()].sort((a,b)=>a.localeCompare(b,'es')).forEach(f=>{const b=document.createElement('button');b.type='button';b.dataset.familia=f;b.className='compact-filter-btn rounded-lg border bg-white border-slate-300 text-slate-700';b.textContent=f;b.onclick=()=>alternarFamilia(f);familyButtons.appendChild(b);});actualizarBotonesFamilias();}
-function alternarFamilia(f){if(selectedFamilies.has(f))selectedFamilies.delete(f);else selectedFamilies.add(f);actualizarBotonesFamilias();actualizarEstadoFamilias();renderDashboard(obtenerDatosFiltrados());}
-function seleccionarTodasFamilias(){selectedFamilies=new Set(todasLasFamilias());actualizarBotonesFamilias();actualizarEstadoFamilias();renderDashboard(obtenerDatosFiltrados());}
-function limpiarFamilias(){selectedFamilies.clear();actualizarBotonesFamilias();actualizarEstadoFamilias();renderDashboard(obtenerDatosFiltrados());}
+function alternarFamilia(f){if(selectedFamilies.has(f))selectedFamilies.delete(f);else selectedFamilies.add(f);actualizarBotonesFamilias();actualizarEstadoFamilias();programarRenderDashboard();}
+function seleccionarTodasFamilias(){selectedFamilies=new Set(todasLasFamilias());actualizarBotonesFamilias();actualizarEstadoFamilias();programarRenderDashboard();}
+function limpiarFamilias(){selectedFamilies.clear();actualizarBotonesFamilias();actualizarEstadoFamilias();programarRenderDashboard();}
 function actualizarBotonesFamilias(){document.querySelectorAll('#familyButtons button').forEach(b=>{const a=selectedFamilies.has(b.dataset.familia);b.className=a?'compact-filter-btn rounded-lg border font-semibold bg-indigo-600 border-indigo-600 text-white':'compact-filter-btn rounded-lg border bg-white border-slate-300 text-slate-700';});}
 function actualizarEstadoFamilias(){if(!familyFilterStatus)return;const total=todasLasFamilias().size;familyFilterStatus.textContent=selectedFamilies.size?`${selectedFamilies.size} de ${total} familias seleccionadas`:`Sin selección específica · todas las familias (${total})`;}
 function productosDisponiblesParaBusqueda(){const q=String(productSearch.value||'').trim().toUpperCase();return allProductNames.filter(p=>!selectedProducts.has(p)&&(!q||p.toUpperCase().includes(q))&& (selectedFamilies.size===0||mainData.some(d=>d.descripcion===p&&selectedFamilies.has(d.familia))));}
 function actualizarSugerenciasProductos(){if(!productSuggestions)return;const q=String(productSearch.value||'').trim();if(!q){productSuggestions.classList.add('hidden');productSuggestions.innerHTML='';return;}const res=productosDisponiblesParaBusqueda().slice(0,30);productSuggestions.innerHTML=res.length?'':'<div class="p-3 text-sm text-slate-400">No se encontraron productos.</div>';res.forEach(p=>{const b=document.createElement('button');b.type='button';b.className='w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-indigo-50 border-b border-slate-100 last:border-b-0';b.textContent=p;b.onclick=()=>seleccionarProducto(p);productSuggestions.appendChild(b)});productSuggestions.classList.remove('hidden');}
-function seleccionarProducto(p){selectedProducts.add(p);productSearch.value='';productSuggestions.classList.add('hidden');actualizarEstadoProducto();renderDashboard(obtenerDatosFiltrados());}
+function seleccionarProducto(p){selectedProducts.add(p);productSearch.value='';productSuggestions.classList.add('hidden');actualizarEstadoProducto();programarRenderDashboard();}
 function limpiarBusquedaProducto(){productSearch.value='';productSuggestions.classList.add('hidden');}
-function limpiarProductosSeleccionados(){selectedProducts.clear();limpiarBusquedaProducto();actualizarEstadoProducto();renderDashboard(obtenerDatosFiltrados());}
-function quitarProducto(p){selectedProducts.delete(p);actualizarEstadoProducto();renderDashboard(obtenerDatosFiltrados());}
-function actualizarEstadoProducto(){if(!selectedProductChips)return;selectedProductChips.innerHTML='';selectedProducts.forEach(p=>{const s=document.createElement('span');s.className='inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 text-xs sm:text-sm';s.innerHTML=`<span>${escapeHtml(p)}</span><button type="button" class="font-bold text-indigo-500">×</button>`;s.querySelector('button').onclick=()=>quitarProducto(p);selectedProductChips.appendChild(s);});if(productFilterStatus)productFilterStatus.textContent=selectedProducts.size?`${selectedProducts.size} producto${selectedProducts.size===1?'':'s'} seleccionado${selectedProducts.size===1?'':'s'}.`:'Sin productos específicos seleccionados.';}
-function cargarFiltroMetodosPago(){const methods=[...new Set(mainData.flatMap(d=>(getTicketInfo(d.folio).rows||[]).map(p=>p.formaPago)).filter(Boolean))];const pref=['EFECTIVO','TARJETA DE CREDITO','TARJETA DEBITO','MEMBRESIAS','Desconocido'];allPaymentMethods=methods.sort((a,b)=>{const ia=pref.findIndex(x=>x.toUpperCase()===a.toUpperCase()),ib=pref.findIndex(x=>x.toUpperCase()===b.toUpperCase());if(ia>=0&&ib<0)return-1;if(ib>=0&&ia<0)return 1;if(ia>=0&&ib>=0)return ia-ib;return a.localeCompare(b,'es')});paymentButtons.innerHTML='';allPaymentMethods.forEach(m=>{const b=document.createElement('button');b.type='button';b.dataset.metodoPago=m;b.className='compact-filter-btn rounded-lg border bg-white border-slate-300 text-slate-700';b.textContent=m;b.onclick=()=>alternarMetodoPago(m);paymentButtons.appendChild(b)});selectedPaymentMethods=new Set();actualizarBotonesMetodosPago();actualizarEstadoMetodosPago();}
-function alternarMetodoPago(m){if(selectedPaymentMethods.has(m))selectedPaymentMethods.delete(m);else selectedPaymentMethods.add(m);actualizarBotonesMetodosPago();actualizarEstadoMetodosPago();renderDashboard(obtenerDatosFiltrados());}
+function limpiarProductosSeleccionados(){selectedProducts.clear();limpiarBusquedaProducto();actualizarEstadoProducto();programarRenderDashboard();}
+function quitarProducto(p){selectedProducts.delete(p);actualizarEstadoProducto();programarRenderDashboard();}
+function actualizarEstadoProducto(){if(!selectedProductChips)return;selectedProductChips.innerHTML='';selectedProducts.forEach(p=>{const s=document.createElement('span');s.className='inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 text-xs sm:text-sm';s.innerHTML=`<span>${escapeHtml(p)}</span><button type="button" class="font-bold text-indigo-500" aria-label="Quitar ${escapeHtml(p)}">×</button>`;s.querySelector('button').onclick=()=>quitarProducto(p);selectedProductChips.appendChild(s);});if(productFilterStatus)productFilterStatus.textContent=selectedProducts.size?`${selectedProducts.size} producto${selectedProducts.size===1?'':'s'} seleccionado${selectedProducts.size===1?'':'s'}.`:'Sin productos específicos seleccionados.';}
+function cargarFiltroMetodosPago(){const methods=metodosDePagoCargados();const pref=['EFECTIVO','TARJETA DE CREDITO','TARJETA DEBITO','MEMBRESIAS','Desconocido'];allPaymentMethods=methods.sort((a,b)=>{const ia=pref.findIndex(x=>x.toUpperCase()===a.toUpperCase()),ib=pref.findIndex(x=>x.toUpperCase()===b.toUpperCase());if(ia>=0&&ib<0)return-1;if(ib>=0&&ia<0)return 1;if(ia>=0&&ib>=0)return ia-ib;return a.localeCompare(b,'es')});paymentButtons.innerHTML='';allPaymentMethods.forEach(m=>{const b=document.createElement('button');b.type='button';b.dataset.metodoPago=m;b.className='compact-filter-btn rounded-lg border bg-white border-slate-300 text-slate-700';b.textContent=m;b.onclick=()=>alternarMetodoPago(m);paymentButtons.appendChild(b)});selectedPaymentMethods=new Set();actualizarBotonesMetodosPago();actualizarEstadoMetodosPago();}
+function alternarMetodoPago(m){if(selectedPaymentMethods.has(m))selectedPaymentMethods.delete(m);else selectedPaymentMethods.add(m);actualizarBotonesMetodosPago();actualizarEstadoMetodosPago();programarRenderDashboard();}
 function actualizarBotonesMetodosPago(){document.querySelectorAll('#paymentButtons button').forEach(b=>{const a=selectedPaymentMethods.has(b.dataset.metodoPago);b.className=a?'compact-filter-btn rounded-lg border font-semibold bg-emerald-600 border-emerald-600 text-white':'compact-filter-btn rounded-lg border bg-white border-slate-300 text-slate-700';});}
 function actualizarEstadoMetodosPago(){if(paymentFilterStatus)paymentFilterStatus.textContent=selectedPaymentMethods.size?`${selectedPaymentMethods.size} de ${allPaymentMethods.length} métodos seleccionados`:`Sin selección específica · todos los métodos (${allPaymentMethods.length})`;}
-function seleccionarTodosMetodosPago(){selectedPaymentMethods=new Set(allPaymentMethods);actualizarBotonesMetodosPago();actualizarEstadoMetodosPago();renderDashboard(obtenerDatosFiltrados());}
-function limpiarMetodosPago(){selectedPaymentMethods.clear();actualizarBotonesMetodosPago();actualizarEstadoMetodosPago();renderDashboard(obtenerDatosFiltrados());}
+function seleccionarTodosMetodosPago(){selectedPaymentMethods=new Set(allPaymentMethods);actualizarBotonesMetodosPago();actualizarEstadoMetodosPago();programarRenderDashboard();}
+function limpiarMetodosPago(){selectedPaymentMethods.clear();actualizarBotonesMetodosPago();actualizarEstadoMetodosPago();programarRenderDashboard();}
 
 function poblarFiltrosHora(){if(!horaInicioFiltro)return;horaInicioFiltro.innerHTML='<option value="">00:00</option>'+Array.from({length:24},(_,h)=>`<option value="${h}">${String(h).padStart(2,'0')}:00</option>`).join('');horaFinFiltro.innerHTML='<option value="">23:59</option>'+Array.from({length:24},(_,h)=>`<option value="${h}">${String(h).padStart(2,'0')}:59</option>`).join('');}
 function configurarRangoFechas(){const fs=mainData.map(d=>normalizarFecha(d.fecha)).filter(Boolean).sort();if(!fs.length)return;selectedDateFrom=fs[0];selectedDateTo=fs[fs.length-1];fechaInicio.value=fs[0];fechaFin.value=fs[fs.length-1];fechaInicio.min=fs[0];fechaInicio.max=fs[fs.length-1];fechaFin.min=fs[0];fechaFin.max=fs[fs.length-1];actualizarEstadoFiltro();}
-function aplicarFiltroFechas(){const a=normalizarFecha(fechaInicio.value),b=normalizarFecha(fechaFin.value);if(a>b)return alert('La fecha Desde no puede ser posterior a Hasta.');selectedDateFrom=a;selectedDateTo=b;actualizarEstadoFiltro();renderDashboard(obtenerDatosFiltrados());}
-function aplicarFiltroHorario(){if(selectedHourFrom!==''&&selectedHourTo!==''&&Number(selectedHourFrom)>Number(selectedHourTo))return alert('La hora Desde no puede ser posterior a Hasta.');selectedHourFrom=horaInicioFiltro.value;selectedHourTo=horaFinFiltro.value;actualizarEstadoFiltroHorario();renderDashboard(obtenerDatosFiltrados());}
+function aplicarFiltroFechas(){const a=normalizarFecha(fechaInicio.value),b=normalizarFecha(fechaFin.value);if(a&&b&&a>b){fechaInicio.value=selectedDateFrom;fechaFin.value=selectedDateTo;return alert('La fecha Desde no puede ser posterior a Hasta.');}selectedDateFrom=a;selectedDateTo=b;actualizarEstadoFiltro();programarRenderDashboard();}
+/* Se valida con los valores NUEVOS de los selectores; si el rango no es válido se restauran los anteriores. */
+function aplicarFiltroHorario(){const desde=horaInicioFiltro.value,hasta=horaFinFiltro.value;if(desde!==''&&hasta!==''&&Number(desde)>Number(hasta)){horaInicioFiltro.value=selectedHourFrom;horaFinFiltro.value=selectedHourTo;return alert('La hora Desde no puede ser posterior a Hasta.');}selectedHourFrom=desde;selectedHourTo=hasta;actualizarEstadoFiltroHorario();programarRenderDashboard();}
 function actualizarEstadoFiltroHorario(){if(!hourFilterStatus)return;hourFilterStatus.textContent=selectedHourFrom===''&&selectedHourTo===''?'Mostrando todo el día.':`Horario: ${String(selectedHourFrom||0).padStart(2,'0')}:00 a ${selectedHourTo===''?'23:59':String(Number(selectedHourTo)).padStart(2,'0')+':59'}`;}
 function actualizarEstadosFiltros(){actualizarEstadoFiltroHorario();actualizarEstadoFamilias();actualizarEstadoProducto();actualizarEstadoMetodosPago();actualizarEstadoExclusionPromedio();actualizarEstadoFiltro();}
 function actualizarEstadoFiltro(){if(!dateFilterStatus)return;dateFilterStatus.textContent=mainData.length?`Periodo: ${formatearFecha(selectedDateFrom)} al ${formatearFecha(selectedDateTo)} · ${obtenerDatosFiltrados().length.toLocaleString('es-MX')} renglones de producto.`:'Carga los datos para habilitar el rango.';}
-function calcularTicketsExcluidos(data){const by=new Map();data.forEach(d=>{if(!by.has(d.folio))by.set(d.folio,0);by.set(d.folio,by.get(d.folio)+d._cobradoAsignado);});const arr=[...by.entries()].sort((a,b)=>a[1]-b[1]);const n=Math.min(ticketsExcluirPromedio,Math.floor(arr.length/2));const out=new Set();for(let i=0;i<n;i++){out.add(arr[i][0]);out.add(arr[arr.length-1-i][0]);}return out;}
-function applyExclusion(){ticketsExcluirPromedio=Math.max(0,parseInt(ticketsExcluirPromedioInput.value||0,10)||0);actualizarEstadoExclusionPromedio();renderDashboard(obtenerDatosFiltrados());}
-function limpiarExclusion(){ticketsExcluirPromedio=0;ticketsExcluirPromedioInput.value='0';actualizarEstadoExclusionPromedio();renderDashboard(obtenerDatosFiltrados());}
+function calcularTicketsExcluidos(data){if(!(ticketsExcluirPromedio>0))return new Set();const by=new Map();data.forEach(d=>{if(!by.has(d.folio))by.set(d.folio,0);by.set(d.folio,by.get(d.folio)+d._cobradoAsignado);});const arr=[...by.entries()].sort((a,b)=>a[1]-b[1]);const n=Math.min(ticketsExcluirPromedio,Math.floor(arr.length/2));const out=new Set();for(let i=0;i<n;i++){out.add(arr[i][0]);out.add(arr[arr.length-1-i][0]);}return out;}
+function applyExclusion(){ticketsExcluirPromedio=Math.max(0,parseInt(ticketsExcluirPromedioInput.value||0,10)||0);actualizarEstadoExclusionPromedio();programarRenderDashboard();}
+function limpiarExclusion(){ticketsExcluirPromedio=0;ticketsExcluirPromedioInput.value='0';actualizarEstadoExclusionPromedio();programarRenderDashboard();}
 function actualizarEstadoExclusionPromedio(){
   const el=$('ticketExclusionStatus'); if(!el)return;
   const n=ticketsExcluirPromedio;
@@ -3814,21 +3984,198 @@ function renderDashboard(data){
   const ventas=totalCobradoDeData(data); document.querySelector('#kpiVentasTotales').textContent=money(ventas);document.querySelector('#kpiTickets').textContent=tickets.length.toLocaleString('es-MX');
   const cc=new Set(data.filter(d=>d.docBase&&d.docBase.startsWith('CCL')).map(d=>d.docBase)); $('kpiCallCenter').textContent=cc.size.toLocaleString('es-MX');
   excludedTicketFolios=calcularTicketsExcluidos(data); actualizarEstadoExclusionPromedio(); const tProm=[...new Set(data.filter(d=>!excludedTicketFolios.has(d.folio)).map(d=>d.folio))]; const avg=tProm.length?data.filter(d=>!excludedTicketFolios.has(d.folio)).reduce((s,d)=>s+d._cobradoAsignado,0)/tProm.length:0; $('kpiPromedio').textContent=money(avg);
-  buildCharts(data); {const _m=obtenerMermaFiltrada();renderMermaSection(_m);renderMermaSucursales(_m);} requestAnimationFrame(()=>document.querySelectorAll('.kpi-card,.chart-card-animate').forEach(el=>{el.classList.remove('kpi-animate');void el.offsetWidth;el.classList.add('kpi-animate')}));
+  buildCharts(data); {const _m=obtenerMermaFiltrada();renderMermaSection(_m);renderMermaSucursales(_m);} nfActualizarKpis(dashboardApp);
+}
+/* Recalcular ~200 mil renglones tarda ~1 s. Al cambiar un filtro primero se pinta el botón y un estado
+   "Actualizando…", y los clics rápidos seguidos se agrupan en un solo recálculo. */
+let renderPendiente=0;
+function programarRenderDashboard(){
+  if(renderPendiente)return;
+  document.body.classList.add('nf-recalculando');dashboardApp?.setAttribute('aria-busy','true');
+  /* rAF deja pintar el estado "Actualizando"; el setTimeout de respaldo cubre pestañas en segundo plano, donde rAF se pausa. */
+  renderPendiente=1; let lanzado=false;
+  const lanzar=()=>{if(lanzado)return;lanzado=true;setTimeout(ejecutar,0);};
+  requestAnimationFrame(lanzar); setTimeout(lanzar,60);
+  const ejecutar=()=>{
+    renderPendiente=0;
+    try{renderDashboard(obtenerDatosFiltrados());}finally{document.body.classList.remove('nf-recalculando');dashboardApp?.removeAttribute('aria-busy');}
+  };
+}
+/* ===== Carga con progreso por etapas =====
+   No hay forma de saber cuántos bytes faltan, así que cada etapa tiene un peso y, mientras está activa,
+   avanza de forma asintótica hacia su peso (nunca se "congela" ni llega al 100% antes de tiempo). */
+const NF_PASOS={ventas:{peso:66,tau:13000},pagos:{peso:16,tau:7000},metas:{peso:4,tau:1500},graficas:{peso:14,tau:900}};
+const nfCarga={estado:{},inicio:{},timer:0,pct:0};
+const nfMovimientoReducido=()=>!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
+function nfCargaIniciar(){
+  clearInterval(nfCarga.timer); nfCarga.pct=0;
+  Object.keys(NF_PASOS).forEach(p=>{nfCarga.estado[p]='pendiente';nfCarga.inicio[p]=0;});
+  document.querySelectorAll('#loadingSteps li').forEach(li=>li.dataset.estado='pendiente');
+  nfCargaPintar(0); nfCarga.timer=setInterval(nfCargaTick,120);
+}
+function nfPaso(p,estado){
+  if(!NF_PASOS[p]||nfCarga.estado[p]===estado)return;
+  if(estado==='activo'&&nfCarga.estado[p]==='listo')return;
+  nfCarga.estado[p]=estado; if(estado==='activo')nfCarga.inicio[p]=performance.now();
+  const li=document.querySelector(`#loadingSteps li[data-paso="${p}"]`); if(li)li.dataset.estado=estado;
+  nfCargaTick();
+}
+function nfCargaTick(){
+  const ahora=performance.now(); let p=0;
+  for(const k in NF_PASOS){const s=nfCarga.estado[k],w=NF_PASOS[k].peso;
+    if(s==='listo')p+=w; else if(s==='activo')p+=w*.94*(1-Math.exp(-(ahora-nfCarga.inicio[k])/NF_PASOS[k].tau));}
+  nfCarga.pct=Math.max(nfCarga.pct,Math.min(p,99.4)); nfCargaPintar(nfCarga.pct);
+}
+function nfCargaPintar(p){
+  const f=$('loadingProgressFill'); if(f)f.style.transform=`scaleX(${(p/100).toFixed(4)})`;
+  const t=$('loadingPct'); if(t)t.textContent=`${Math.floor(p)}%`;
+  $('loadingProgress')?.setAttribute('aria-valuenow',String(Math.floor(p)));
+}
+/* Llega al 100% y lo sostiene un instante para que se vea completo antes de cerrar. */
+function nfCargaCompletar(){
+  Object.keys(NF_PASOS).forEach(p=>nfPaso(p,'listo'));
+  clearInterval(nfCarga.timer); nfCarga.pct=100; nfCargaPintar(100);
+  return new Promise(r=>setTimeout(r,nfMovimientoReducido()?80:420));
+}
+function nfCargaDetener(){clearInterval(nfCarga.timer);}
+
+/* ===== Entrada de datos: KPIs que cuentan, gráficas que crecen y barras que se llenan =====
+   Se reproduce una vez por carga (o al entrar a un módulo), tarjeta por tarjeta cuando entra en pantalla.
+   Los cambios de filtro no repiten la entrada: las gráficas pasan del valor anterior al nuevo. */
+const NF_ANIM_RUTINA={duration:480,easing:'easeOutQuart'};
+function nfAnimEntrada(tipo){
+  const paso=tipo==='line'?16:tipo==='bar'?34:0;
+  return {duration:tipo==='line'?1150:tipo==='bar'?950:1100,easing:'easeOutQuart',
+    delay:ctx=>(paso&&ctx.type==='data'&&ctx.mode==='default')?Math.min(ctx.dataIndex*paso,520):0};
+}
+function nfReproducirGrafica(ch){
+  if(!ch||!ch.canvas||nfMovimientoReducido())return;
+  ch.options.animation=nfAnimEntrada(ch.config.type);
+  ch.reset(); ch.update();
+  clearTimeout(ch.$nfRestaurar); ch.$nfRestaurar=setTimeout(()=>{if(ch.options)ch.options.animation=NF_ANIM_RUTINA;},1800);
+}
+function nfNumeroDe(t){
+  t=String(t||''); if(t.includes('/'))return null; // fechas: no se animan
+  const m=t.match(/-?\d[\d,]*(?:\.\d+)?/); if(!m)return null;
+  return {txt:m[0],idx:m.index,val:parseFloat(m[0].replace(/,/g,'')),dec:(m[0].split('.')[1]||'').length};
+}
+/* Cuenta de `desde` al valor que ya tiene el elemento. Si otro código cambia el texto a medio camino, se detiene. */
+function nfContar(el,desde,ms){
+  if(!el||nfMovimientoReducido())return;
+  // Si hay otra cuenta en curso y nadie ha tocado el texto, el valor real es el final de esa cuenta.
+  const fin=(el.$nfUltimo!=null&&el.textContent===el.$nfUltimo)?el.$nfFinal:el.textContent, n=nfNumeroDe(fin);
+  cancelAnimationFrame(el.$nfRaf); clearTimeout(el.$nfSeguro);
+  if(!n||desde===n.val||document.hidden){el.textContent=fin;el.$nfUltimo=null;return;}
+  const fmt=v=>fin.slice(0,n.idx)+v.toLocaleString('es-MX',{minimumFractionDigits:n.dec,maximumFractionDigits:n.dec})+fin.slice(n.idx+n.txt.length);
+  const t0=performance.now(); el.$nfFinal=fin; el.textContent=el.$nfUltimo=fmt(desde);
+  const paso=ahora=>{
+    if(el.$nfUltimo!=null&&el.textContent!==el.$nfUltimo)return;
+    const k=Math.min(1,(ahora-t0)/ms), e=1-Math.pow(1-k,4);
+    el.textContent=el.$nfUltimo=k<1?fmt(desde+(n.val-desde)*e):fin;
+    if(k<1)el.$nfRaf=requestAnimationFrame(paso); else el.$nfUltimo=null;
+  };
+  el.$nfRaf=requestAnimationFrame(paso);
+  // Red de seguridad: si el navegador pausa rAF (pestaña en segundo plano), el valor final llega igual.
+  el.$nfSeguro=setTimeout(()=>{if(el.$nfUltimo!=null&&el.textContent===el.$nfUltimo){cancelAnimationFrame(el.$nfRaf);el.textContent=fin;el.$nfUltimo=null;}},ms+300);
+}
+const NF_SEL_KPI='.kpi-card p.text-2xl[id], .kpi-card p.text-lg[id], #metaProgressTotalPct';
+/* Tras un recálculo: los KPI ya visibles cuentan del valor anterior al nuevo. */
+function nfActualizarKpis(raiz){
+  if(!raiz)return;
+  raiz.querySelectorAll(NF_SEL_KPI).forEach(el=>{
+    const n=nfNumeroDe(el.textContent), prev=parseFloat(el.dataset.nfVal);
+    if(n)el.dataset.nfVal=String(n.val); else delete el.dataset.nfVal;
+    const card=el.closest('.kpi-card,.dashboard-card'), enEspera=raiz.classList.contains('nf-intro')&&card&&!card.classList.contains('nf-play');
+    if(n&&!enEspera&&Number.isFinite(prev))nfContar(el,prev,560);
+  });
+}
+function nfGaugeEntrada(){
+  const f=$('lxGaugeFill'), n=$('lxGaugeNeedle'); if(!f||nfMovimientoReducido())return;
+  const off=f.style.strokeDashoffset, rot=n?n.style.transform:'';
+  f.style.transition='none'; f.style.strokeDashoffset='314.16'; if(n){n.style.transition='none';n.style.transform='rotate(0deg)';}
+  f.getBoundingClientRect();
+  f.style.transition='stroke-dashoffset 1.4s cubic-bezier(.16,1,.3,1),stroke .4s'; if(n)n.style.transition='transform 1.4s cubic-bezier(.16,1,.3,1)';
+  f.style.strokeDashoffset=off; if(n)n.style.transform=rot;
+}
+/* La página se construye pieza por pieza conforme entra en pantalla: encabezados de sección,
+   tarjetas, y dentro de las tablas y listas, cada fila por separado (también dentro de las tablas
+   con scroll propio). Cada pieza se observa y se revela UNA vez; lo que ya se vio no se repite. */
+const NF_SEL_PIEZA='.analysis-toolbar, .dashboard-section-kicker, .kpi-card, .dashboard-card, #dashboardApp > .bg-white';
+const NF_SEL_FILA='.dashboard-card tbody tr, .dashboard-card ul > li';
+let nfObservador=null, nfMutaciones=null, nfPaginaActiva=null;
+function nfJugarTarjeta(card){
+  if(card.classList.contains('nf-play'))return;
+  card.classList.add('nf-play');
+  const cv=card.querySelector('canvas'); if(cv&&chartInstances[cv.id])nfReproducirGrafica(chartInstances[cv.id]);
+  card.querySelectorAll(NF_SEL_KPI).forEach(el=>nfContar(el,0,card.classList.contains('kpi-card')?950:1300));
+  if(card.querySelector('.lx-gauge'))nfGaugeEntrada();
+}
+function nfEsperar(el){el.classList.add('nf-wait');el.classList.remove('nf-in');nfObservador?.observe(el);}
+function nfRevelar(el,retraso){
+  el.style.setProperty('--nf-d',retraso+'ms');
+  el.classList.add('nf-in'); el.classList.remove('nf-wait');
+  // Cuando termina, se quitan las clases para que vuelvan las transiciones propias de la tarjeta (hover).
+  clearTimeout(el.$nfFin); el.$nfFin=setTimeout(()=>{el.classList.remove('nf-in');el.style.removeProperty('--nf-d');},retraso+1100);
+  if(el.matches('.kpi-card,.dashboard-card')){if(retraso)setTimeout(()=>nfJugarTarjeta(el),retraso);else nfJugarTarjeta(el);}
+}
+/* Lo que entra junto se escalona de arriba abajo; las filas con paso corto y tope, para no hacer esperar. */
+function nfAlEntrar(entradas){
+  nfCarga.ioVivo=true;
+  const vistas=entradas.filter(e=>e.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top||a.boundingClientRect.left-b.boundingClientRect.left);
+  let iP=0,iF=0;
+  vistas.forEach(e=>{const el=e.target; nfObservador.unobserve(el);
+    const fila=el.matches('tr,li');
+    nfRevelar(el,fila?Math.min(iF++*38,456):Math.min(iP++*75,450));});
+}
+/* Filas nuevas (re-render de una tabla): las que caen fuera de la vista esperan su turno;
+   las que ya están a la vista aparecen sin animación, para que filtrar no parpadee. */
+function nfFueraDeVista(el){
+  const r=el.getBoundingClientRect(); if(!r.height)return false;
+  const caja=el.closest('.overflow-y-auto,.overflow-auto'), limite=caja?Math.min(innerHeight,caja.getBoundingClientRect().bottom):innerHeight;
+  return r.top>limite-8;
+}
+function nfVigilarFilasNuevas(pagina){
+  nfMutaciones?.disconnect();
+  nfMutaciones=new MutationObserver(ms=>{
+    const nuevas=[]; ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1&&n.matches(NF_SEL_FILA))nuevas.push(n);}));
+    nuevas.forEach(n=>{if(nfFueraDeVista(n))nfEsperar(n);});
+  });
+  nfMutaciones.observe(pagina,{childList:true,subtree:true});
+}
+function nfEntrada(pagina){
+  if(!pagina)return;
+  nfObservador?.disconnect(); nfMutaciones?.disconnect();
+  document.querySelectorAll('.nf-wait,.nf-in').forEach(el=>el.classList.remove('nf-wait','nf-in'));
+  const cards=[...pagina.querySelectorAll('.kpi-card,.dashboard-card')];
+  cards.forEach(c=>c.classList.remove('nf-play'));
+  if(nfMovimientoReducido()||!('IntersectionObserver' in window)){pagina.classList.remove('nf-intro');cards.forEach(c=>c.classList.add('nf-play'));return;}
+  nfPaginaActiva=pagina; pagina.classList.add('nf-intro');
+  nfObservador=new IntersectionObserver(nfAlEntrar,{threshold:.06,rootMargin:'0px 0px -4% 0px'});
+  pagina.querySelectorAll(NF_SEL_PIEZA+','+NF_SEL_FILA).forEach(nfEsperar);
+  nfVigilarFilasNuevas(pagina);
+  /* Red de seguridad: si el observador no avisa nada en 2 s (navegador que no está pintando), se muestra todo
+     sin animación; nunca debe quedar la página en blanco. */
+  nfCarga.ioVivo=false; clearTimeout(nfCarga.vigia);
+  nfCarga.vigia=setTimeout(()=>{if(nfCarga.ioVivo||document.hidden)return;nfObservador?.disconnect();nfMutaciones?.disconnect();
+    document.querySelectorAll('.nf-wait').forEach(el=>el.classList.remove('nf-wait'));pagina.classList.remove('nf-intro');cards.forEach(c=>c.classList.add('nf-play'));},2000);
+}
+function nfEntradaPaginaVisible(){
+  const id=MODULOS_PAGINA.find(m=>m!=='homeScreen'&&$(m)&&!$(m).classList.contains('dashboard-shell-hidden'));
+  if(id)nfEntrada($(id));
 }
 function aggregateRows(data,keyFn){const out={};data.forEach(d=>{const k=keyFn(d)||'Sin dato';out[k]=(out[k]||0)+num(d._cobradoAsignado)});return out;}
 function buildCharts(data){
   const porSucursal=aggregateRows(data,d=>d.sucursalNombre),porDia=aggregateRows(data,d=>d.fecha),porHora=aggregateRows(data,d=>d.hora),porSupervisor=aggregateRows(data,d=>d.supervisor),porVendedor=aggregateRows(data,d=>d.vendedor);
   // Sólo promociones reales: los renglones sin promoción quedan fuera de la tabla.
-  const porPromocion={}; data.forEach(d=>{const p=nombrePromocion(d.promocion); if(p)porPromocion[p]=(porPromocion[p]||0)+num(d._cobradoAsignado);});
+  const porPromocion={}; data.forEach(d=>{const p=d.promocion; if(p)porPromocion[p]=(porPromocion[p]||0)+num(d._cobradoAsignado);});
   const porFamilia={}, porProducto={}; data.forEach(d=>{porFamilia[d.familia]=(porFamilia[d.familia]||0)+num(d.importeNeto); porProducto[d.descripcion]=(porProducto[d.descripcion]||0)+num(d.importeNeto);});
   const unidadesProducto={}; data.forEach(d=>unidadesProducto[d.descripcion]=(unidadesProducto[d.descripcion]||0)+d.cantidad);
   const productosResumen={};data.forEach(d=>{if(!productosResumen[d.descripcion])productosResumen[d.descripcion]={unidades:0,importe:0};productosResumen[d.descripcion].unidades+=d.cantidad;productosResumen[d.descripcion].importe+=num(d.importeNeto);});
-  const ticketSets={sucursal:{},vendedor:{},promocion:{}}; data.forEach(d=>{const a=d.sucursalNombre||'Sin Sucursal';(ticketSets.sucursal[a]??=new Set()).add(d.folio);const v=d.vendedor||'Sin Vendedor';(ticketSets.vendedor[v]??=new Set()).add(d.folio);const p=nombrePromocion(d.promocion); if(p)(ticketSets.promocion[p]??=new Set()).add(d.folio);});
-  const porMetodoPago={}; const seenPayShares=new Set(); data.forEach((d,rowIndex)=>{const info=getTicketInfo(d.folio); const ticketRows=mainRowsByTicket.get(d.folio)||[]; const neto=ticketRows.reduce((s,x)=>s+x.importeNeto,0); const share=neto?d.importeNeto/neto:1/ticketRows.length; const relevantRows=selectedPaymentMethods.size?info.rows.filter(p=>selectedPaymentMethods.has(p.formaPago)):info.rows; const relevantTotal=relevantRows.reduce((s,p)=>s+p.cobrado,0); relevantRows.forEach((p,idx)=>{const key=`${d.folio}|${rowIndex}|${idx}|${selectedFamilies.size?'f':''}|${selectedProducts.size?'p':''}|${selectedPaymentMethods.size?'pay':''}`;if(seenPayShares.has(key))return;seenPayShares.add(key);const amt=relevantTotal*share; if(amt)porMetodoPago[p.formaPago]=(porMetodoPago[p.formaPago]||0)+(relevantTotal?amt*(p.cobrado/relevantTotal):0);});});
+  const ticketSets={sucursal:{},vendedor:{},promocion:{}}; data.forEach(d=>{const a=d.sucursalNombre||'Sin Sucursal';(ticketSets.sucursal[a]??=new Set()).add(d.folio);const v=d.vendedor||'Sin Vendedor';(ticketSets.vendedor[v]??=new Set()).add(d.folio);const p=d.promocion; if(p)(ticketSets.promocion[p]??=new Set()).add(d.folio);});
+  const porMetodoPago={}; const filtraPago=selectedPaymentMethods.size>0; data.forEach(d=>{const info=getTicketInfo(d.folio); const neto=netoPorTicketMain.get(d.folio)||0; const share=neto?d.importeNeto/neto:1/Math.max(1,(mainRowsByTicket.get(d.folio)||[]).length); const relevantTotal=info.selected; if(!relevantTotal)return; const amt=relevantTotal*share; if(!amt)return; info.rows.forEach(p=>{if(filtraPago&&!selectedPaymentMethods.has(p.formaPago))return;porMetodoPago[p.formaPago]=(porMetodoPago[p.formaPago]||0)+amt*(p.cobrado/relevantTotal);});});
   const cliente={};data.forEach(d=>{const c=(d.cliente||'SIN CLIENTE DEFINITIVO').trim();const cu=c.toUpperCase();if(cu&&!cu.startsWith('PUBLICO EN GENERAL')&&!cu.startsWith('PUBLICO GENERAL'))cliente[c]=(cliente[c]||0)+d._cobradoAsignado;});
   const diasSemana={'Lunes':{total:0,unidades:0,fechas:new Set()},'Martes':{total:0,unidades:0,fechas:new Set()},'Miércoles':{total:0,unidades:0,fechas:new Set()},'Jueves':{total:0,unidades:0,fechas:new Set()},'Viernes':{total:0,unidades:0,fechas:new Set()},'Sábado':{total:0,unidades:0,fechas:new Set()},'Domingo':{total:0,unidades:0,fechas:new Set()}};
-  const porHoraUnidades={}; data.forEach(d=>{porHoraUnidades[d.hora]=(porHoraUnidades[d.hora]||0)+d.cantidad;const f=normalizarFecha(d.fecha);if(f){const o=new Date(f+'T12:00:00');const n=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'][o.getDay()];diasSemana[n].total+=d._cobradoAsignado;diasSemana[n].unidades+=d.cantidad;diasSemana[n].fechas.add(f);}});
+  const porHoraUnidades={}; data.forEach(d=>{porHoraUnidades[d.hora]=(porHoraUnidades[d.hora]||0)+d.cantidad;const f=normalizarFecha(d.fecha);if(f){const n=diaSemanaDeFecha(f);diasSemana[n].total+=d._cobradoAsignado;diasSemana[n].unidades+=d.cantidad;diasSemana[n].fechas.add(f);}});
   const sucKeys=Object.keys(porSucursal).sort((a,b)=>porSucursal[b]-porSucursal[a]);const sucLabels=sucKeys.map(x=>catMap[x]?.sucursal?.replace(/^\S+\s/,'')||x);
   const sucLabelDe=x=>catMap[x]?.sucursal?.replace(/^\S+\s/,'')||x;const sucKeysAlfa=[...sucKeys].sort((a,b)=>sucLabelDe(a).localeCompare(sucLabelDe(b),'es',{sensitivity:'base'}));const sucLabelsAlfa=sucKeysAlfa.map(sucLabelDe);
   createChart('chartFamilias','doughnut',sortObj(porFamilia).map(x=>x[0]),sortObj(porFamilia).map(x=>x[1]),'Ingresos ($)');
@@ -3842,7 +4189,8 @@ function buildCharts(data){
   window.__diasEvolucionData=Object.keys(porDia).sort().map(f=>[f,porDia[f]||0,0]);renderGraficaEvolucionTemporal();
   const ccDia={};data.forEach(d=>{if(!d.docBase||!d.docBase.startsWith('CCL')||!d.fecha)return;(ccDia[d.fecha]??={p:new Set(),i:0}).p.add(d.docBase);ccDia[d.fecha].i+=num(d._cobradoAsignado);});
   window.__ccDiasData=Object.keys(porDia).sort().map(f=>[f,ccDia[f]?ccDia[f].p.size:0,ccDia[f]?ccDia[f].i:0]);renderGraficaCCDias();
-  window.__horasData=Array.from({length:24},(_,h)=>[`${String(h).padStart(2,'0')}:00`,porHora[h]||0,porHoraUnidades[h]||0,new Set(data.filter(d=>d.hora===h).map(d=>normalizarFecha(d.fecha))).size]);renderGraficaHoras();
+  const fechasPorHora=Array.from({length:24},()=>new Set()); data.forEach(d=>{if(d.hora>=0&&d.hora<24)fechasPorHora[d.hora].add(normalizarFecha(d.fecha));});
+  window.__horasData=Array.from({length:24},(_,h)=>[`${String(h).padStart(2,'0')}:00`,porHora[h]||0,porHoraUnidades[h]||0,fechasPorHora[h].size]);renderGraficaHoras();
   window.__diasSemanaData=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'].map(d=>[d,diasSemana[d].total,diasSemana[d].unidades,diasSemana[d].fechas.size]);renderGraficaDiasSemana();
   const ccBy={};data.forEach(d=>{if(!d.docBase||!d.docBase.startsWith('CCL'))return;const s=d.sucursalNombre||d.sucursalNom;ccBy[s]??={pedidos:new Set(),ingresos:0};ccBy[s].pedidos.add(d.docBase);ccBy[s].ingresos+=d._cobradoAsignado;});const ccRows=Object.entries(ccBy).map(([s,x])=>({sucursal:s,pedidos:x.pedidos.size,ingresos:x.ingresos,promedio:x.pedidos.size?x.ingresos/x.pedidos.size:0})).sort((a,b)=>b.pedidos-a.pedidos||b.ingresos-a.ingresos);createChart('chartCallCenter','bar',ccRows.map(x=>x.sucursal.replace(/^\S+\s/,'')),ccRows.map(x=>x.pedidos),'Pedidos CCL');renderTablaCallCenter(ccRows,porSucursal);
   rankingProductos=sortObj(porProducto);rankingUnidadesProductos=Object.entries(productosResumen).map(([p,v])=>[p,v.unidades,v.importe]).sort((a,b)=>b[1]-a[1]);renderTopProductos();
@@ -3850,6 +4198,9 @@ function buildCharts(data){
   const promoRows=Object.entries(porPromocion).map(([promocion,ingresos])=>({promocion,ingresos,tickets:ticketSets.promocion[promocion]?.size||0})).sort((a,b)=>b.ingresos-a.ingresos);renderTablaPromociones(promoRows);
   window.__vendDataBase=data;window.__ventaPorSucursal=porSucursal;renderVendedoresDesdeData();
 }
+/* Nombre del día de la semana de una fecha ISO, memoizado (se consulta una vez por renglón). */
+const diaSemanaCache=new Map();
+function diaSemanaDeFecha(f){let n=diaSemanaCache.get(f);if(n===undefined){n=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'][new Date(f+'T12:00:00').getDay()];diaSemanaCache.set(f,n);}return n;}
 function sortObj(o){return Object.entries(o).sort((a,b)=>b[1]-a[1]);}
 function renderTopProductos(){const lim=Math.min(topProductosLimit,Math.max(rankingProductos.length,rankingUnidadesProductos.length));const p=rankingProductos.slice(0,lim),u=rankingUnidadesProductos.slice(0,lim);createChart('chartProductos','pie',p.map(x=>x[0].substring(0,24)),p.map(x=>x[1]),'Ingresos ($)');renderTablaUnidadesProductos(u);$('tituloUnidadesProductos').textContent=`Top ${lim} - Unidades Vendidas por Producto`;$('tituloTopProductos').textContent=`Top ${lim} - Productos con Mayor Ingreso`; }
 function renderTablaUnidadesProductos(items){const b=$('tablaUnidadesProductosBody');if(!b)return;b.innerHTML=items.map(([p,u,ing],i)=>`<tr><td class="py-3 px-3 text-center font-semibold text-slate-400">${i+1}</td><td class="py-3 px-3 font-medium text-slate-700">${escapeHtml(p)}</td><td class="py-3 px-3 text-right font-bold text-amber-600">${num(u).toLocaleString('es-MX',{maximumFractionDigits:2})}</td><td class="py-3 px-3 text-right font-bold text-indigo-600">${money(ing)}</td></tr>`).join('');}
@@ -3893,7 +4244,7 @@ function renderTopClientes(){
   const t=$('tituloTopClientes'); if(t)t.textContent=`Top ${topClientesLimit} Clientes`;
 }
 function renderList(id,items){const ul=$(id);if(!ul)return;ul.innerHTML=items.length?items.map(([name,v])=>`<li class="py-3 flex justify-between gap-3"><span class="font-medium truncate" title="${escapeHtml(name)}">${escapeHtml(name)}</span><span class="font-bold text-indigo-600 whitespace-nowrap">${money(v)}</span></li>`).join(''):'<li class="py-3 text-slate-400">Sin datos</li>';}
-function obtenerMermaFiltrada(){const base=mermaData.filter(d=>rowPassesBase(d,{cortesia:true}));const out=[];const m=ticketRowsMap(base);for(const [folio,rows] of m){const all=mermaRowsByTicket.get(folio)||[];const net=all.reduce((s,x)=>s+x.importeNeto,0);const cob=getTicketInfo(folio).cortesia;rows.filter(d=>(selectedFamilies.size===0||selectedFamilies.has(d.familia))&&(selectedProducts.size===0||selectedProducts.has(d.descripcion))).forEach(d=>{d._cobradoAsignado=net?cob*d.importeNeto/net:cob/Math.max(1,rows.length);out.push(d)});}return out;}
+function obtenerMermaFiltrada(){const base=mermaData.filter(d=>rowPassesBase(d,{cortesia:true}));const out=[];const m=ticketRowsMap(base);for(const [folio,rows] of m){const net=netoPorTicketMerma.get(folio)||0;const cob=getTicketInfo(folio).cortesia;rows.filter(d=>(selectedFamilies.size===0||selectedFamilies.has(d.familia))&&(selectedProducts.size===0||selectedProducts.has(d.descripcion))).forEach(d=>{d._cobradoAsignado=net?cob*d.importeNeto/net:cob/Math.max(1,rows.length);out.push(d)});}return out;}
 function renderMermaSucursales(data){
   const por={}; data.forEach(d=>{const k=d.sucursalNombre||d.sucursalNom||'Sin Sucursal';por[k]=(por[k]||0)+num(d.importeNeto);});
   const venta=window.__ventaPorSucursal||{};
@@ -3942,10 +4293,12 @@ const RET_LIMITE_PCT=3; // Máximo permitido de devolución sobre la venta (%)
 const LX_PAL={light:['#d9a21b','#2f6fed','#e0525e','#12a594','#8b5cf6','#f08c2e','#16a34a','#e5489b','#0ea5e9','#9aa82a','#6366f1','#ef6a3a'],dark:['#5b8cff','#b57bff','#22e0f0','#3ee0a0','#4fb0ff','#ffb454','#ff6b81','#8f8cff','#d28cff','#38c8ff','#ffd166','#ff7ad0']};
 function lxTheme(){return document.documentElement.getAttribute('data-theme')==='dark'?{pal:LX_PAL.dark,ac:'#4da3ff',acFill:'rgba(77,163,255,.22)',acTop:'rgba(77,163,255,.20)',acBot:'rgba(77,163,255,0)',barA:'40',pieA:'E6',pieB:'#14161d',limA:'44',glow:8,glowLine:7,glowArc:5,bad:'#ff6b81',good:'#3ee0a0',tx:'#e2e7f2',tick:'#c5cde0',grid:'rgba(255,255,255,.09)',pie:'#14161d',tipBg:'rgba(10,11,16,.94)',tipTx:'#eef0f5',tipBd:'rgba(124,156,255,.35)',gold:'#f0b86b'}:{pal:LX_PAL.light,ac:'#2f6fed',acFill:'rgba(47,111,237,.14)',acTop:'rgba(47,111,237,0)',acBot:'rgba(47,111,237,0)',barA:'EB',pieA:'FF',pieB:'#fbf9f4',limA:'D9',glow:0,bad:'#dc2626',good:'#10b981',tx:'#454a53',tick:'#666b75',grid:'rgba(110,92,52,.13)',pie:'#fbf9f4',tipBg:'rgba(29,32,36,.94)',tipTx:'#fff',tipBd:'rgba(184,146,74,.4)',gold:'#f08c2e'};}
 function lxA(c,a){const m=/^#([0-9a-f]{6})/i.exec(c||'');if(!m)return c;const n=parseInt(m[1],16);return 'rgba('+(n>>16)+','+((n>>8)&255)+','+(n&255)+','+a+')';}
+/* El brillo se dibuja con la posición del cuadro ACTUAL (getProps(...,false)); con true usaba la final
+   y, durante la animación, el contorno aparecía ya en su altura final mientras la barra aún subía. */
 const lxGlow={id:'lxGlow',
 afterDatasetDraw(ch,a){const t=ch.config.type,c=ch.ctx,T=lxTheme();if(!T.glow)return;const dpr=ch.currentDevicePixelRatio||window.devicePixelRatio||1,ds=ch.data.datasets[a.index];
 if(t==='line'){const col=typeof ds.borderColor==='string'?ds.borderColor:T.ac,w=ds.borderWidth||2.5;
-const pts=a.meta.data.map(p=>p.getProps(['x','y','cp1x','cp1y','cp2x','cp2y','skip'],true));
+const pts=a.meta.data.map(p=>p.getProps(['x','y','cp1x','cp1y','cp2x','cp2y','skip'],false));
 const path=()=>{c.beginPath();let pv=null;pts.forEach(p=>{if(p.skip){pv=null;return;}if(!pv)c.moveTo(p.x,p.y);else if(p.cp1x!==undefined&&!isNaN(p.cp1x)&&pv.cp2x!==undefined)c.bezierCurveTo(pv.cp2x,pv.cp2y,p.cp1x,p.cp1y,p.x,p.y);else c.lineTo(p.x,p.y);pv=p;});};
 c.save();c.setLineDash(ds.borderDash||[]);c.lineCap='round';c.lineJoin='round';c.strokeStyle=col;
 path();c.lineWidth=w;c.shadowColor=lxA(col,.6);c.shadowBlur=T.glowLine*dpr;c.stroke();
@@ -3953,8 +4306,8 @@ c.shadowColor='transparent';c.shadowBlur=0;c.globalAlpha=.28;path();c.lineWidth=
 c.globalAlpha=1;path();c.lineWidth=w;c.stroke();c.restore();return;}
 const bc=ds.borderColor;
 a.meta.data.forEach((el,i)=>{const col=Array.isArray(bc)?bc[i]:bc;if(!col)return;c.save();c.shadowColor=col;c.shadowBlur=T.glow*dpr;c.strokeStyle=col;c.lineWidth=1.5;c.beginPath();
-if(t==='bar'){const p=el.getProps(['x','y','base','width'],true),h=Math.abs(p.base-p.y);if(h<1){c.restore();return;}const l=p.x-p.width/2,tp=Math.min(p.y,p.base);if(c.roundRect)c.roundRect(l,tp,p.width,h,7);else c.rect(l,tp,p.width,h);}
-else{const p=el.getProps(['x','y','startAngle','endAngle','innerRadius','outerRadius'],true);c.lineWidth=2;c.shadowBlur=T.glowArc*dpr;c.arc(p.x,p.y,p.outerRadius-1,p.startAngle,p.endAngle);if(p.innerRadius>0){c.stroke();c.beginPath();c.arc(p.x,p.y,p.innerRadius+1,p.startAngle,p.endAngle);}}
+if(t==='bar'){const p=el.getProps(['x','y','base','width'],false),h=Math.abs(p.base-p.y);if(h<1){c.restore();return;}const l=p.x-p.width/2,tp=Math.min(p.y,p.base);if(c.roundRect)c.roundRect(l,tp,p.width,h,7);else c.rect(l,tp,p.width,h);}
+else{const p=el.getProps(['x','y','startAngle','endAngle','innerRadius','outerRadius'],false);c.lineWidth=2;c.shadowBlur=T.glowArc*dpr;c.arc(p.x,p.y,p.outerRadius-1,p.startAngle,p.endAngle);if(p.innerRadius>0){c.stroke();c.beginPath();c.arc(p.x,p.y,p.innerRadius+1,p.startAngle,p.endAngle);}}
 if(t==='bar'){c.shadowColor=lxA(col,.6);c.stroke();c.shadowColor='transparent';c.shadowBlur=0;c.globalAlpha=.28;c.lineWidth=3.5;c.stroke();c.globalAlpha=1;c.lineWidth=1.5;c.stroke();}else c.stroke();c.restore();});}};
 const chartLastArgs={};
 let ccDiasMetric='pedidos';
@@ -3984,7 +4337,6 @@ function createChart(id,type,labels,data,label,extra){
     asegurarBotonOrden(id);
   }
   const ctx=el.getContext('2d');
-  if(chartInstances[id])chartInstances[id].destroy();
   const LXT=lxTheme();const palette=LXT.pal;
   const colors=labels.map((_,i)=>palette[i%palette.length]);
   let backgroundColor=colors; let borderColor=colors; let borderWidth=1; let pointBackgroundColor=LXT.ac; let pointBorderColor=LXT.pie;
@@ -3993,13 +4345,22 @@ function createChart(id,type,labels,data,label,extra){
   if(type==='doughnut'||type==='pie'){backgroundColor=colors.map(c=>c+LXT.pieA);borderColor=LXT.pieB||colors;borderWidth=2;}
   const limite=(type==='bar'&&extra&&typeof extra.limit==='number')?extra.limit:null;
   if(limite!==null){backgroundColor=data.map(v=>(Number(v)>limite?LXT.bad:LXT.good)+LXT.limA);borderColor=data.map(v=>Number(v)>limite?LXT.bad:LXT.good);}
+  /* Con los mismos tipo y lienzo, se actualizan los datos y Chart.js anima del valor anterior al nuevo.
+     Se recrea cuando cambia el tema (Chart.defaults.animation===false) o hay línea de límite. */
+  const previa=chartInstances[id];
+  if(previa&&previa.config.type===type&&previa.canvas===el&&limite===null&&Chart.defaults.animation!==false){
+    previa.data.labels=labels; const ds=previa.data.datasets[0];
+    Object.assign(ds,{label,data,backgroundColor,borderColor});
+    previa.update(); chartExportData[id]={labels,data,label}; return;
+  }
+  if(previa)previa.destroy();
   chartInstances[id]=new Chart(ctx,{
     type,
     data:{labels,datasets:[{label,data,backgroundColor,borderColor,borderWidth,pointBackgroundColor,pointBorderColor,pointBorderWidth:2,borderRadius:type==='bar'?7:0,tension:type==='line'?.34:0,fill:type==='line'}]},
     plugins:[lxGlow].concat(limite!==null?[{id:'limiteMaximo',afterDatasetsDraw(chart){const sc=chart.scales.y;if(!sc)return;const y=sc.getPixelForValue(limite),a=chart.chartArea,c=chart.ctx;c.save();c.strokeStyle='#dc2626';c.lineWidth=1.5;c.setLineDash([6,4]);c.beginPath();c.moveTo(a.left,y);c.lineTo(a.right,y);c.stroke();c.setLineDash([]);c.fillStyle='#dc2626';c.font='bold 11px sans-serif';c.textAlign='right';c.fillText(extra.limitLabel||('Máx. '+limite+'%'),a.right-4,y-5);c.restore();}}]:[]),
     options:{
       responsive:true,maintainAspectRatio:false,
-      animation:{duration:400,easing:'easeOutQuart'},
+      animation:NF_ANIM_RUTINA,
       interaction:(type==='doughnut'||type==='pie')?{mode:'nearest',intersect:true}:{mode:'index',intersect:false},
       plugins:{
         legend:{display:type==='doughnut'||type==='pie',position:'bottom',labels:{color:LXT.tx,font:{weight:'700',size:11},padding:14,usePointStyle:true,pointStyle:'circle'}},
@@ -4081,27 +4442,27 @@ function enhancePrimaryFilterGroups(){
   const period=children[0], supervisor=children[1], branches=children[2];
   if(!period||!supervisor||!branches)return;
 
-  const periodGroup=makeSidebarGroup('Periodo de análisis','🗓️',period,false);
+  const periodGroup=makeSidebarGroup('Periodo de análisis',NF_ICON('calendar'),period,false);
   const branchContent=document.createElement('div');
   branchContent.className='branch-filter-combined';
 
   branchContent.appendChild(supervisor);
   branchContent.appendChild(branches);
 
-  const branchGroup=makeSidebarGroup('Sucursales','🏪',branchContent,false);
+  const branchGroup=makeSidebarGroup('Sucursales',NF_ICON('store'),branchContent,false);
   stack.replaceChildren(periodGroup,branchGroup);
   stack.dataset.groupsReady='1';
   bindExclusiveSidebarAccordions();
 }
 function iconForFilterTitle(title){
   const t=String(title||'').toLowerCase();
-  if(t.includes('rango')) return '📅';
-  if(t.includes('famil')) return '🏷️';
-  if(t.includes('producto')) return '🔎';
-  if(t.includes('horario')) return '🕒';
-  if(t.includes('método')||t.includes('metodo')) return '💳';
-  if(t.includes('pico')) return '📈';
-  return '⚙️';
+  if(t.includes('rango')) return NF_ICON('calendar');
+  if(t.includes('famil')) return NF_ICON('tag');
+  if(t.includes('producto')) return NF_ICON('search');
+  if(t.includes('horario')) return NF_ICON('clock');
+  if(t.includes('método')||t.includes('metodo')) return NF_ICON('card');
+  if(t.includes('pico')) return NF_ICON('lineChart');
+  return NF_ICON('sliders');
 }
 function bindExclusiveSidebarAccordions(){
   const details=[...document.querySelectorAll('#sidebarMount details.sidebar-filter-group, #sidebarMount details.filter-accordion, #metaSidebarMount details.sidebar-filter-group, #metaSidebarMount details.filter-accordion, #returnsSidebarMount details.sidebar-filter-group, #returnsSidebarMount details.filter-accordion')];
@@ -4382,6 +4743,7 @@ function renderDevoluciones(){
     return `<tr class="${pc!==null&&+pc.toFixed(2)>RET_LIMITE_PCT?'ret-row-excede':''}"><td class="${td} font-medium text-slate-700">${escapeHtml(x.label)}</td><td class="${td} text-slate-500">${escapeHtml(x.sup)}</td><td class="${td} text-center text-slate-500">${x.folios.size}</td><td class="${td} text-center font-semibold text-amber-600">${retNum(x.piezas)}</td><td class="${td} text-right font-bold text-indigo-600">${money(x.monto)}</td><td class="${td} text-right text-slate-500">${v>0?money(v):'--'}</td><td class="${td} text-right">${pillLimite(pc)}</td></tr>`;}).join(''),7);
   const ft=$('tablaRetSucursalFoot'); if(ft)ft.innerHTML=`<tr><td class="${td}">TOTAL</td><td></td><td class="${td} text-center">${folios.size}</td><td class="${td} text-center">${retNum(piezas)}</td><td class="${td} text-right">${money(total)}</td><td class="${td} text-right">${ventaTot>0?money(ventaTot):'--'}</td><td class="${td} text-right">${pillLimite(pctGlobal)}</td></tr>`;
   const topFol=[...folios.values()].sort((a,b)=>b.monto-a.monto).slice(0,15), maxFol=topFol[0]?topFol[0].monto:0;
+  nfActualizarKpis($('returnsPage'));
   setBody('tablaRetFoliosBody',topFol.map((f,i)=>
     `<tr><td class="${td} text-center">${rank(i)}</td><td class="${td} font-medium text-slate-700">${escapeHtml(f.folio)}</td><td class="${td} text-slate-600">${escapeHtml(f.suc)}</td><td class="${td} text-slate-500">${formatearFecha(f.fecha)}</td><td class="${td} text-center font-semibold text-amber-600">${retNum(f.piezas)}</td><td class="${td} text-center text-slate-500">${f.items.size}</td><td class="${td} text-right font-bold text-indigo-600">${money(f.monto)}${bar(f.monto,maxFol)}</td></tr>`).join(''),7);
 }
@@ -4475,7 +4837,7 @@ function resetAllFilters(){
   cargarFiltroProductos(); cargarFiltroMetodosPago(); poblarFiltrosHora(); configurarRangoFechas();
   actualizarEstadoFiltro(); actualizarEstadoFiltroHorario(); actualizarEstadoExclusionPromedio(); actualizarEstadoFamilias(); actualizarEstadoProducto?.(); actualizarEstadoMetodosPago();
   document.querySelectorAll('#sidebarMount details[open]').forEach(d=>d.open=false);
-  renderDashboard(obtenerDatosFiltrados());
+  programarRenderDashboard();
 }
 /* ===== Easter egg: 5 clics seguidos sobre el logo de la pantalla de inicio ===== */
 function setupEasterEgg(){
@@ -4492,6 +4854,7 @@ function setupEasterEgg(){
       reiniciar();
       overlay.classList.add('show');
       overlay.setAttribute('aria-hidden','false');
+      closeBtn?.focus();
     }
   });
   const cerrar=()=>{overlay.classList.remove('show');overlay.setAttribute('aria-hidden','true');};
@@ -4499,11 +4862,21 @@ function setupEasterEgg(){
   overlay.addEventListener('click',e=>{if(e.target===overlay)cerrar();});
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&overlay.classList.contains('show'))cerrar();});
 }
+/* Paneles de filtros: cerrados quedan inertes (fuera del orden de tabulación), al abrirse reciben
+   el foco y Escape los cierra devolviendo el foco al botón flotante que los abre. */
+function setupSidebarA11y(){
+  const paneles=[['analysisSidebar',closeAnalysisSidebar,'floatingFiltersButton'],['metaSidebar',closeMetaSidebar,'floatingMetaFiltersButton'],['returnsSidebar',closeReturnsSidebar,'floatingReturnsFiltersButton']];
+  paneles.forEach(([id])=>{const s=$(id);if(!s)return;
+    const sync=()=>{const abierto=s.classList.contains('open');s.inert=!abierto;if(abierto&&!s.contains(document.activeElement))s.querySelector('.sidebar-close')?.focus({preventScroll:true});};
+    new MutationObserver(sync).observe(s,{attributes:true,attributeFilter:['class']});sync();});
+  document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;
+    paneles.forEach(([id,cerrar,fab])=>{const s=$(id);if(s&&s.classList.contains('open')){cerrar();$(fab)?.focus({preventScroll:true});}});});
+}
 function setupListeners(){
-  setupEasterEgg();
+  setupEasterEgg(); setupSidebarA11y();
   btn?.addEventListener('click',()=>{pendingModuleAfterLoad='analysis';cargarDesdeTurso();}); $('changeMonthBtn')?.addEventListener('click',openAnalysisSidebar);
   fechaInicio?.addEventListener('change',aplicarFiltroFechas);fechaFin?.addEventListener('change',aplicarFiltroFechas);horaInicioFiltro?.addEventListener('change',aplicarFiltroHorario);horaFinFiltro?.addEventListener('change',aplicarFiltroHorario);
-  btnTodoElMes?.addEventListener('click',()=>{configurarRangoFechas();renderDashboard(obtenerDatosFiltrados())});btnTodoElDia?.addEventListener('click',()=>{selectedHourFrom='';selectedHourTo='';horaInicioFiltro.value='';horaFinFiltro.value='';actualizarEstadoFiltroHorario();renderDashboard(obtenerDatosFiltrados())});
+  btnTodoElMes?.addEventListener('click',()=>{configurarRangoFechas();programarRenderDashboard()});btnTodoElDia?.addEventListener('click',()=>{selectedHourFrom='';selectedHourTo='';horaInicioFiltro.value='';horaFinFiltro.value='';actualizarEstadoFiltroHorario();programarRenderDashboard()});
   btnTodasFamilias?.addEventListener('click',seleccionarTodasFamilias);btnLimpiarFamilias?.addEventListener('click',limpiarFamilias);btnClearProductSearch?.addEventListener('click',limpiarBusquedaProducto);btnClearSelectedProducts?.addEventListener('click',limpiarProductosSeleccionados);productSearch?.addEventListener('input',actualizarSugerenciasProductos);productSearch?.addEventListener('focus',actualizarSugerenciasProductos);btnTodosMetodosPago?.addEventListener('click',seleccionarTodosMetodosPago);btnLimpiarMetodosPago?.addEventListener('click',limpiarMetodosPago);
   ticketsExcluirPromedioInput?.addEventListener('keydown',e=>{if(e.key==='Enter')e.preventDefault();});$('btnAplicarExclusionPromedio')?.addEventListener('click',applyExclusion);$('btnLimpiarExclusionPromedio')?.addEventListener('click',limpiarExclusion);
   $('retSemanaModo')?.addEventListener('change',e=>{modoRetSemana=e.target.value;renderRetSemana();});$('vendedorCCToggle')?.addEventListener('click',()=>{vendedoresExcluirCC=!vendedoresExcluirCC;renderVendedoresDesdeData();});$('topClientesSelector')?.addEventListener('change',e=>{topClientesLimit=Number(e.target.value)||15;renderTopClientes();});$('topProductosSelector')?.addEventListener('change',e=>{topProductosLimit=Number(e.target.value)||10;renderTopProductos()});$('evolucionMetricaModo')?.addEventListener('change',e=>{metricaEvolucion=e.target.value==='unidades'?'unidades':'ingreso';renderGraficaEvolucionTemporal()});$('diaSemanaModo')?.addEventListener('change',e=>{modoDiaSemana=e.target.value==='promedio'?'promedio':'total';renderGraficaDiasSemana()});$('horaModo')?.addEventListener('change',e=>{modoHora=e.target.value==='promedio'?'promedio':'total';renderGraficaHoras()});
@@ -4538,6 +4911,7 @@ function downloadExcel(rows,name,sheetName){
     XLSX.writeFile(wb,name);
   }catch(err){
     console.error('Error exportando a Excel:',err);
+    alert('No se pudo generar el archivo de Excel. '+(window.XLSX?'':'La librería de exportación no cargó; revisa tu conexión y recarga la página.'));
   }
 }
 function ensureUniversalDownloadButtons(){
@@ -4591,8 +4965,8 @@ function updateDashboardStatus(ok){
 function prepareDashboardForRendering(){document.body.classList.remove('home-mode');document.body.classList.add('analysis-mode');dashboardApp?.classList.remove('dashboard-shell-hidden');dashboardApp?.classList.add('dashboard-shell-visible');$('homeScreen')?.classList.add('dashboard-shell-hidden');$('metaProgressPage')?.classList.add('dashboard-shell-hidden');closeMetaSidebar();syncFloatingFilterVisibility();}
 function showDashboardAfterLoad(){prepareDashboardForRendering();closeAnalysisSidebar();if($('analysisPeriodLabel'))$('analysisPeriodLabel').textContent=`${loadedMonth} ${loadedYear}`;}
 function returnToEntryScreen(){goHome();}
-function startDataLoadingExperience(){const o=$('dataLoadingOverlay');o?.classList.add('show');o?.setAttribute('aria-hidden','false');}
-function stopDataLoadingExperience(){const o=$('dataLoadingOverlay');o?.classList.remove('show');o?.setAttribute('aria-hidden','true');}
+function startDataLoadingExperience(){nfCargaIniciar();const o=$('dataLoadingOverlay');o?.classList.add('show');o?.setAttribute('aria-hidden','false');}
+function stopDataLoadingExperience(){nfCargaDetener();const o=$('dataLoadingOverlay');o?.classList.remove('show');o?.setAttribute('aria-hidden','true');}
 
 establecerPeriodoActual(); goHome(); setupSidebar(); enhancePrimaryFilterGroups(); enhanceFilterAccordions(); bindExclusiveSidebarAccordions(); syncFloatingFilterVisibility(); setupListeners(); poblarFiltrosHora(); cargarFiltroFamilias(); actualizarEstadoFamilias(); actualizarEstadoMetodosPago(); updateDashboardStatus(false);
 window.__NEUFELD_RULES__={
@@ -4638,6 +5012,12 @@ function sortTable(table,idx,dir){
   if(s&&s.obs)s.obs.observe(tb,{childList:true});
   return dir;
 }
+/* Encabezados accesibles con teclado: Tab para llegar, Enter o Espacio para ordenar. */
+function prepararEncabezados(){document.querySelectorAll('.dashboard-card thead th').forEach(th=>{if(th.colSpan>1||th.hasAttribute('tabindex'))return;th.tabIndex=0;if(!th.title)th.title='Ordenar por esta columna';});}
+prepararEncabezados();
+document.addEventListener('keydown',e=>{
+  if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('thead th[tabindex]')){e.preventDefault();e.target.click();}
+});
 document.addEventListener('click',e=>{
   const th=e.target.closest&&e.target.closest('thead th');if(!th||e.target.closest('button,a,input,select,label'))return;
   const thead=th.parentNode.parentNode,table=thead.parentNode;
