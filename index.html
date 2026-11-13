@@ -262,6 +262,22 @@
       position: relative;
     }
     .meta-progress-track.sm { height: 8px; min-width: 90px; }
+    /* Matriz diaria de avance de meta */
+    .meta-matriz { border-collapse: separate; border-spacing: 0; font-size: 12px; white-space: nowrap; }
+    .meta-matriz th, .meta-matriz td { padding: 6px 8px; border-bottom: 1px solid rgba(148,163,184,.25); }
+    .meta-matriz thead th { position: sticky; top: 0; z-index: 3; background: var(--thead, #f1f5f9); text-align: center; font-weight: 700; }
+    .meta-matriz thead th small { display:block; font-weight:500; opacity:.65; text-transform:lowercase; }
+    .meta-matriz .mm-suc { position: sticky; left: 0; z-index: 2; background: var(--solid, #fff); text-align: left; min-width: 150px; font-weight: 600; box-shadow: 1px 0 0 rgba(148,163,184,.35); }
+    .meta-matriz thead th.mm-suc { z-index: 4; background: var(--thead, #f1f5f9); }
+    .meta-matriz .mm-cell { text-align: right; min-width: 76px; line-height: 1.25; }
+    .meta-matriz .mm-cell .mm-m { display:block; font-size: 11px; font-weight: 500; opacity: .7; }
+    .meta-matriz .mm-cell .mm-v { display:block; font-weight: 600; }
+    .meta-matriz .mm-cell .mm-p { display:block; font-size: 11px; font-weight: 700; }
+    .meta-matriz .mm-tot { text-align: right; min-width: 92px; font-weight: 700; border-left: 2px solid rgba(148,163,184,.45); }
+    .meta-matriz tfoot td { position: sticky; bottom: 0; z-index: 3; background: var(--thead, #f1f5f9); font-weight: 700; border-top: 2px solid rgba(148,163,184,.5); }
+    .meta-matriz tfoot td.mm-suc { z-index: 5; }
+    .meta-matriz .mm-fut { opacity: .45; }
+    .meta-matriz-wrap { max-height: 70vh; overflow: auto; }
     .meta-progress-fill {
       height: 100%;
       border-radius: 999px;
@@ -3036,6 +3052,26 @@ html[data-theme] ::-webkit-scrollbar-thumb:hover{background-color:rgba(128,140,1
                     <tfoot id="tablaMetaDetalleFoot" class="sticky bottom-0 bg-slate-100 border-t-2 border-slate-300 font-bold text-slate-800"></tfoot>
                 </table>
             </div>
+
+            <div class="dashboard-section-kicker">Avance diario por sucursal</div>
+            <div class="chart-card-animate dashboard-card relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 mb-6">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-1 pr-10">
+                    <h3 class="text-lg font-semibold text-slate-800">Avance de meta por sucursal y día</h3>
+                    <select id="metaMatrizVista" class="border border-slate-300 rounded-lg shadow-sm py-2 px-3 bg-white text-sm focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="ambos">Meta, venta y % de cumplimiento</option>
+                        <option value="pct">Solo % de cumplimiento</option>
+                        <option value="venta">Meta y venta</option>
+                    </select>
+                </div>
+                <p class="text-sm text-slate-500 mb-4">Meta del día (arriba), venta y % de cumplimiento de cada sucursal. Verde ≥ 100%, ámbar ≥ 90%, rojo &lt; 90%. La última columna es el acumulado del periodo contra la meta del mes.</p>
+                <div class="meta-matriz-wrap">
+                    <table class="meta-matriz w-full text-slate-600" id="tablaMetaMatriz">
+                        <thead id="tablaMetaMatrizHead"></thead>
+                        <tbody id="tablaMetaMatrizBody"></tbody>
+                        <tfoot id="tablaMetaMatrizFoot"></tfoot>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -3915,7 +3951,52 @@ function renderMetaProgress(){
   renderMetaTrendChart(codigos);
   poblarSelectorMetaDetalle(codigos);
   renderMetaDetalleDiario();
+  renderMetaMatrizDiaria(codigos);
   nfActualizarKpis($('metaProgressPage'));
+}
+function renderMetaMatrizDiaria(codigos){
+  const head=$('tablaMetaMatrizHead'), body=$('tablaMetaMatrizBody'), foot=$('tablaMetaMatrizFoot');
+  if(!head||!body||!foot)return;
+  const vista=$('metaMatrizVista')?.value||'ambos';
+  const mesNum=loadedMonthNum||1, anio=Number(loadedYear)||new Date().getFullYear();
+  const totalDiasMes=diasEnMes(mesNum,anio);
+  const desde=metaFechaDesde||isoFecha(anio,mesNum,1);
+  const hasta=metaFechaHasta||isoFecha(anio,mesNum,totalDiasMes);
+  const dias=[];
+  for(let d=1;d<=totalDiasMes;d++){const f=isoFecha(anio,mesNum,d);if(f>=desde&&f<=hasta)dias.push({d,f});}
+  const nCols=dias.length+2;
+  if(!codigos.length||!dias.length){head.innerHTML='';foot.innerHTML='';body.innerHTML=`<tr><td colspan="${nCols}" class="py-4 px-3 text-center text-slate-400">Sin sucursales seleccionadas.</td></tr>`;return;}
+  const fmt=v=>'$'+Math.round(v||0).toLocaleString('es-MX');
+  const diasSem=['dom','lun','mar','mié','jue','vie','sáb'];
+  head.innerHTML='<tr><th class="mm-suc">Sucursal</th>'+dias.map(({d})=>`<th>${String(d).padStart(2,'0')}<small>${diasSem[new Date(anio,mesNum-1,d).getDay()]}</small></th>`).join('')+'<th class="mm-tot">Total periodo</th></tr>';
+  const celda=(v,m,futuro)=>{
+    const hayMeta=m>0, pct=hayMeta?v/m*100:null;
+    const mTxt=`<span class="mm-m text-slate-500" title="Meta del día">${hayMeta?fmt(m):'--'}</span>`;
+    if(futuro)return `<td class="mm-cell mm-fut text-slate-400">${vista==='pct'?'--':mTxt+'<span class="mm-v">--</span>'}</td>`;
+    if(!hayMeta&&v===0)return '<td class="mm-cell text-slate-400">--</td>';
+    const vTxt=`<span class="mm-v text-slate-700">${fmt(v)}</span>`;
+    const pTxt=hayMeta?`<span class="mm-p ${semaforoTexto(pct)}">${pct.toFixed(1)}%</span>`:'<span class="mm-p text-slate-400">s/meta</span>';
+    const tip=hayMeta?`Meta: ${money(m)} · Venta: ${money(v)}`:`Sin meta · Venta: ${money(v)}`;
+    return `<td class="mm-cell" title="${tip}">${vista==='pct'?(hayMeta?pTxt:vTxt):vista==='venta'?mTxt+vTxt:mTxt+vTxt+pTxt}</td>`;
+  };
+  const ordenados=codigos.slice().sort((a,b)=>(catMap[a]?.sucursal||a).localeCompare(catMap[b]?.sucursal||b,'es'));
+  const valDia=(cod,f)=>({v:(ventasPorSucursalFecha.get(cod)&&ventasPorSucursalFecha.get(cod).get(f))||0,m:(metasPorSucursalFecha.get(cod)&&metasPorSucursalFecha.get(cod).get(f))||0});
+  const celdaTotal=calc=>{
+    const hayMeta=calc.metaMes>0;
+    const mTxt=`<span class="mm-m text-slate-500" title="Meta del periodo">${hayMeta?fmt(calc.metaMes):'--'}</span>`;
+    const vTxt=`<span class="mm-v text-slate-700">${fmt(calc.vendido)}</span>`;
+    const pTxt=hayMeta?`<span class="mm-p ${semaforoTexto(calc.pctVsEsperado)}">${calc.pctAvance.toFixed(1)}%</span>`:'<span class="mm-p text-slate-400">s/meta</span>';
+    return `<td class="mm-tot" title="${hayMeta?`Meta del periodo: ${money(calc.metaMes)}`:'Sin meta'}">${vista==='pct'?(hayMeta?pTxt:vTxt):vista==='venta'?mTxt+vTxt:mTxt+vTxt+pTxt}</td>`;
+  };
+  body.innerHTML=ordenados.map(cod=>{
+    const celdas=dias.map(({f})=>{const {v,m}=valDia(cod,f);return celda(v,m,!!(ultimaFechaVenta&&f>ultimaFechaVenta));}).join('');
+    return `<tr><td class="mm-suc">${escapeHtml(catMap[cod]?.sucursal||cod)}</td>${celdas}${celdaTotal(calcularMeta([cod]))}</tr>`;
+  }).join('');
+  const celdasFoot=dias.map(({f})=>{
+    let v=0,m=0;codigos.forEach(cod=>{const x=valDia(cod,f);v+=x.v;m+=x.m;});
+    return celda(v,m,!!(ultimaFechaVenta&&f>ultimaFechaVenta));
+  }).join('');
+  foot.innerHTML=`<tr><td class="mm-suc">TOTAL</td>${celdasFoot}${celdaTotal(calcularMeta(codigos))}</tr>`;
 }
 function renderMetaTrendChart(codigos){
   const canvas=$('chartMetaTendencia'); if(!canvas||!window.Chart)return;
@@ -4611,6 +4692,7 @@ function setupSidebar(){
   $('metaSucTodas')?.addEventListener('click',metaSeleccionarTodo);
   $('metaSucLimpiar')?.addEventListener('click',metaLimpiarFiltros);
   $('metaDetalleSelect')?.addEventListener('change',renderMetaDetalleDiario);
+  $('metaMatrizVista')?.addEventListener('change',()=>renderMetaMatrizDiaria([...metaSelectedBranches]));
   $('metaFetchBtn')?.addEventListener('click',()=>{
     const y=$('metaYearSelector')?.value, m=$('metaMonthSelector')?.value;
     if(y)$('yearSelector').value=y; if(m&&selectMes)selectMes.value=m;
