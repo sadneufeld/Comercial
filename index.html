@@ -6,6 +6,10 @@
          'unsafe-inline' hace falta porque el código y varios onclick van dentro del HTML. frame-ancestors no
          funciona en <meta>: si se publica en un servidor, ponerlo allí como encabezado. -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.sheetjs.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src https://ntazemjwazyhzqkaaqwb.supabase.co; worker-src blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
+    <!-- Anti-clickjacking: GitHub Pages no deja mandar frame-ancestors. La página nace oculta y solo se muestra
+         si no está dentro de otro sitio; si lo está, intenta abrirse sola en la ventana completa. -->
+    <style id="nfAntiMarco">html{display:none!important}</style>
+    <script>if(window.self===window.top){document.getElementById('nfAntiMarco').remove();}else{try{window.top.location=window.self.location.href;}catch(e){}}</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="Icono%20comercial.png">
     <link rel="preconnect" href="https://ntazemjwazyhzqkaaqwb.supabase.co" crossorigin>
