@@ -2263,6 +2263,50 @@ html[data-theme] .dashboard-card h3 + p{text-wrap:pretty}
 html[data-theme] ::selection{background:color-mix(in srgb,var(--ac,#4f46e5) 32%,transparent);color:inherit}
 html[data-theme] :is(input,textarea){caret-color:var(--ac,#4f46e5)}
 </style>
+<style id="nf-cuenta-y-ajustes">
+/* Acceso: el botón de modo día/noche también está aquí */
+.nf-login-card{position:relative}
+/* Menú principal: el cuarto botón (administración) solo existe para el admin */
+.module-button[hidden]{display:none!important}
+/* Cuenta en el inicio: avatar junto al botón de tema, arriba a la derecha */
+.nf-cuenta-btn{position:absolute;top:18px;right:68px;z-index:5;width:40px;height:40px;padding:0;border:0;border-radius:50%;background:none;display:grid;place-items:center;cursor:pointer}
+.nf-cuenta-btn .nf-cuenta-avatar{width:36px;height:36px;font-size:15px;box-shadow:0 0 0 2px var(--solid,#fff),0 0 0 3px var(--bd,#e4e7ec);transition:box-shadow .2s ease}
+.nf-cuenta-btn:hover .nf-cuenta-avatar,.nf-cuenta-btn[aria-expanded="true"] .nf-cuenta-avatar{box-shadow:0 0 0 2px var(--solid,#fff),0 0 0 4px var(--ac,#6366f1)}
+.nf-cuenta-btn:active .nf-cuenta-avatar{transform:scale(.96)}
+.nf-cuenta-btn:focus-visible{outline:2px solid var(--ac,#6366f1);outline-offset:3px}
+html[data-theme="light"] .nf-cuenta-avatar{background:linear-gradient(135deg,#d2b06a,#8a6a2c);color:#fff}
+/* Cuenta en la barra de cada módulo */
+.nf-cuenta-toolbar .nf-cuenta-avatar{width:26px;height:26px;font-size:12px}
+.nf-cuenta-toolbar-nombre{max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nf-cuenta-chev{width:15px;height:15px;flex:none;opacity:.6;transition:transform .2s ease}
+.nf-cuenta-toolbar[aria-expanded="true"] .nf-cuenta-chev{transform:rotate(180deg)}
+@media (max-width:640px){.toolbar-actions .nf-cuenta-toolbar{grid-column:1/-1;justify-content:center!important}}
+/* Menú desplegable */
+.nf-cuenta-menu{position:fixed;z-index:1000;width:250px;max-width:calc(100vw - 16px);padding:6px;border-radius:16px;color:var(--tx,#101828);background:var(--solid,#fff);border:1px solid var(--bd,#e4e7ec);box-shadow:0 18px 44px -12px rgba(40,30,10,.28),0 2px 6px rgba(40,30,10,.08);transform-origin:top right;animation:nfCuentaMenuIn .16s cubic-bezier(.22,1,.36,1)}
+html[data-theme="dark"] .nf-cuenta-menu{box-shadow:0 22px 50px -12px rgba(0,0,0,.75),0 0 0 1px rgba(255,255,255,.03)}
+.nf-cuenta-menu[hidden]{display:none}
+@keyframes nfCuentaMenuIn{from{opacity:0;transform:translateY(-4px) scale(.97)}}
+.nf-cuenta-menu-head{display:flex;align-items:center;gap:10px;padding:10px 10px 12px;margin-bottom:4px;border-bottom:1px solid var(--bd,#eaecf0)}
+.nf-cuenta-menu-quien{min-width:0}
+.nf-cuenta-menu-quien strong{display:block;font-size:14px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nf-cuenta-menu-quien small{display:block;margin-top:1px;font-size:12px;color:var(--mu,#667085);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nf-cuenta-item{display:flex;align-items:center;gap:10px;width:100%;min-height:40px;padding:0 10px;border:0;border-radius:10px;font-size:13.5px;font-weight:650;text-align:left;color:var(--tx,#101828);background:none;cursor:pointer;transition:background-color .15s ease}
+.nf-cuenta-item[hidden]{display:none}
+.nf-cuenta-item svg{width:18px;height:18px;flex:none;color:var(--mu,#667085)}
+.nf-cuenta-item:hover,.nf-cuenta-item:focus-visible{outline:none;background:color-mix(in srgb,var(--ac,#6366f1) 13%,transparent)}
+.nf-cuenta-item:disabled{opacity:.55;cursor:progress}
+.nf-cuenta-salir,.nf-cuenta-salir svg{color:var(--bad,#b91c1c)}
+.nf-cuenta-salir:hover,.nf-cuenta-salir:focus-visible{background:color-mix(in srgb,var(--bad,#b91c1c) 10%,transparent)}
+.nf-cuenta-sep{height:1px;margin:4px 6px;background:var(--bd,#eaecf0)}
+@media (prefers-reduced-motion:reduce){.nf-cuenta-menu{animation:none}}
+/* Modo día: el relleno de los botones del menú principal usa los dorados y cremas del diseño claro
+   (el modo noche conserva sus azules y morados). */
+html[data-theme="light"] .module-button::before{background:linear-gradient(90deg,#fbf4e4 0%,#f1e2bf 38%,#e4cd9a 72%,#d3b374 100%)}
+html[data-theme="light"] .module-button:hover{border-color:rgba(184,146,74,.55)!important;box-shadow:inset 0 1px 0 var(--hl),0 14px 28px -12px rgba(140,104,40,.38)!important}
+html[data-theme="light"] .module-button:hover,html[data-theme="light"] .module-button:hover :is(strong,.module-arrow){color:#2a2112!important}
+html[data-theme="light"] .module-button:hover small{color:#5f4c27!important}
+html[data-theme="light"] .module-button:hover .module-icon{background:rgba(255,255,255,.6)!important;color:#76581f!important}
+</style>
 </head>
 <body class="text-slate-800 home-mode nf-bloqueado">
     <div id="scrollProgress" class="scroll-progress" aria-hidden="true"></div>
@@ -2277,6 +2321,7 @@ html[data-theme] :is(input,textarea){caret-color:var(--ac,#4f46e5)}
 
     <section id="loginScreen" class="home-screen nf-login" aria-labelledby="loginTitle">
         <div class="home-card nf-login-card">
+            <button type="button" id="loginThemeToggleBtn" class="theme-toggle-btn" aria-label="Cambiar entre modo día y modo noche" title="Modo día / noche"><svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"></circle><path d="M12 3v2.2M12 18.8V21M4.9 4.9l1.55 1.55M17.55 17.55l1.55 1.55M3 12h2.2M18.8 12H21M4.9 19.1l1.55-1.55M17.55 6.45l1.55-1.55"></path></svg><svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.6 6.6 0 0 0 10.5 10.5Z"></path></svg></button>
             <div class="home-brand"><img src="Logo Pasteleria Neufeld.png" alt="Pastelería Neufeld" class="home-logo"></div>
             <h1 id="loginTitle" class="nf-login-title">Inicia sesión</h1>
             <p class="nf-login-sub">Ingresa con el usuario y la contraseña que te dio el administrador.</p>
@@ -2339,6 +2384,7 @@ html[data-theme] :is(input,textarea){caret-color:var(--ac,#4f46e5)}
 
     <section id="homeScreen" class="home-screen" aria-labelledby="homeTitle">
         <div class="home-card">
+            <button type="button" id="homeCuentaBtn" class="nf-cuenta-btn nf-cuenta-trigger" aria-haspopup="menu" aria-expanded="false" aria-controls="nfCuentaMenu" aria-label="Mi cuenta" title="Mi cuenta"><span class="nf-cuenta-avatar" data-cuenta-inicial aria-hidden="true"></span></button>
             <button type="button" id="themeToggleBtn" class="theme-toggle-btn" aria-label="Cambiar entre modo día y modo noche" title="Modo día / noche">
                 <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"></circle><path d="M12 3v2.2M12 18.8V21M4.9 4.9l1.55 1.55M17.55 17.55l1.55 1.55M3 12h2.2M18.8 12H21M4.9 19.1l1.55-1.55M17.55 6.45l1.55-1.55"></path></svg>
                 <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.6 6.6 0 0 0 10.5 10.5Z"></path></svg>
@@ -2358,17 +2404,19 @@ html[data-theme] :is(input,textarea){caret-color:var(--ac,#4f46e5)}
                 <button type="button" class="module-button" data-module="meta"><span class="module-icon"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg></span><span><strong>Avance de meta</strong><small>Cumplimiento diario por sucursal</small></span><span class="module-arrow">›</span></button>
                 <button type="button" class="module-button module-primary" data-module="analysis"><span class="module-icon"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20v-8M10 20V5M15 20v-6M20 20V9"/><path d="M3 20h18" opacity=".55"/></svg></span><span><strong>Análisis de venta</strong><small>Ventas, productos y cobros</small></span><span class="module-arrow">›</span></button>
                 <button type="button" class="module-button" data-module="returns"><span class="module-icon"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></span><span><strong>Devoluciones</strong><small>Por sucursal, producto y % de venta</small></span><span class="module-arrow">›</span></button>
+                <button type="button" id="homeAdminModuloBtn" class="module-button nf-admin-modulo" hidden><span class="module-icon"><svg class="nf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8"/><path d="M18 14.3a6.5 6.5 0 0 1 3.5 5.7"/></svg></span><span><strong>Administrar usuarios</strong><small>Crear cuentas, roles y accesos</small></span><span class="module-arrow">›</span></button>
             </nav>
-            <div id="homeCuenta" class="nf-cuenta" hidden>
-                <span class="nf-cuenta-quien"><span class="nf-cuenta-avatar" id="homeCuentaInicial" aria-hidden="true"></span><span><strong id="homeCuentaNombre"></strong><small id="homeCuentaRol"></small></span></span>
-                <span class="nf-cuenta-acciones">
-                    <button type="button" id="homeAdminUsuariosBtn" class="nf-btn nf-btn-chico" hidden>Usuarios</button>
-                    <button type="button" id="homeCambiarClaveBtn" class="nf-btn nf-btn-chico">Contraseña</button>
-                    <button type="button" id="homeCerrarSesionBtn" class="nf-btn nf-btn-chico">Cerrar sesión</button>
-                </span>
-            </div>
         </div>
     </section>
+
+    <!-- Menú de la cuenta: se abre desde el avatar del inicio o desde "Mi cuenta" en la barra de cada módulo. -->
+    <div id="nfCuentaMenu" class="nf-cuenta-menu" role="menu" aria-label="Mi cuenta" hidden>
+        <div class="nf-cuenta-menu-head"><span class="nf-cuenta-avatar" data-cuenta-inicial aria-hidden="true"></span><span class="nf-cuenta-menu-quien"><strong id="homeCuentaNombre"></strong><small id="homeCuentaRol"></small></span></div>
+        <button type="button" role="menuitem" id="homeAdminUsuariosBtn" class="nf-cuenta-item" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8"/><path d="M18 14.3a6.5 6.5 0 0 1 3.5 5.7"/></svg>Administrar usuarios</button>
+        <button type="button" role="menuitem" id="homeCambiarClaveBtn" class="nf-cuenta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>Cambiar contraseña</button>
+        <div class="nf-cuenta-sep" role="separator"></div>
+        <button type="button" role="menuitem" id="homeCerrarSesionBtn" class="nf-cuenta-item nf-cuenta-salir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4.5h3.5a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H14"/><path d="M10 16.5 5.5 12 10 7.5"/><path d="M5.5 12H15"/></svg>Cerrar sesión</button>
+    </div>
 
 
     <div id="dataLoadingOverlay" class="data-loading-overlay" aria-hidden="true">
@@ -3727,13 +3775,48 @@ function nfMostrarLogin(mensaje){
   const err=$('loginError'); err.hidden=!mensaje; err.textContent=mensaje||'';
   setTimeout(()=>$('loginUsuario')?.focus(),50);
 }
+/* Rellena el avatar y el nombre de todos los botones de cuenta, y muestra lo de administración solo al admin. */
+function nfCuentaPintar(){
+  const p=nfSesion?.perfil; if(!p)return;
+  const nombre=String(p.nombre||p.usuario).trim(), esAdmin=p.rol==='admin';
+  document.querySelectorAll('[data-cuenta-inicial]').forEach(e=>e.textContent=nombre.charAt(0).toUpperCase());
+  document.querySelectorAll('[data-cuenta-nombre]').forEach(e=>e.textContent=nombre.split(/\s+/)[0]);
+  document.querySelectorAll('.nf-cuenta-trigger').forEach(b=>b.setAttribute('aria-label','Mi cuenta: '+nombre));
+  $('homeAdminUsuariosBtn').hidden=!esAdmin;
+  $('homeAdminModuloBtn').hidden=!esAdmin;
+}
+/* Menú desplegable de la cuenta (posición fija junto al botón que lo abrió). */
+function nfCuentaMenuIniciar(){
+  const menu=$('nfCuentaMenu'); let origen=null;
+  const items=()=>[...menu.querySelectorAll('.nf-cuenta-item:not([hidden])')];
+  const cerrar=foco=>{if(menu.hidden)return;menu.hidden=true;origen?.setAttribute('aria-expanded','false');if(foco)origen?.focus();origen=null;};
+  const abrir=b=>{
+    origen=b; menu.hidden=false; b.setAttribute('aria-expanded','true');
+    const r=b.getBoundingClientRect(), w=menu.offsetWidth, h=menu.offsetHeight;
+    let top=r.bottom+8; if(top+h>innerHeight-8&&r.top-h-8>=8)top=r.top-h-8;
+    menu.style.left=Math.max(8,Math.min(r.right-w,innerWidth-w-8))+'px';
+    menu.style.top=Math.max(8,top)+'px';
+    items()[0]?.focus({preventScroll:true});
+  };
+  document.addEventListener('click',e=>{
+    const b=e.target.closest('.nf-cuenta-trigger');
+    if(b){const era=origen===b;cerrar();if(!era)abrir(b);return;}
+    if(!menu.hidden&&(!menu.contains(e.target)||e.target.closest('.nf-cuenta-item')))cerrar();
+  });
+  document.addEventListener('keydown',e=>{
+    if(menu.hidden)return;
+    if(e.key==='Escape'){e.preventDefault();cerrar(true);}
+    else if(e.key==='Tab')cerrar();
+    else if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();const l=items(),i=l.indexOf(document.activeElement);l[(i+(e.key==='ArrowDown'?1:-1)+l.length)%l.length]?.focus();}
+  });
+  addEventListener('resize',()=>cerrar());
+  addEventListener('scroll',e=>{if(!menu.contains(e.target))cerrar();},{passive:true,capture:true});
+}
 function nfDesbloquear(){
   const p=nfSesion.perfil, nombre=p.nombre||p.usuario;
   $('homeCuentaNombre').textContent=nombre;
   $('homeCuentaRol').textContent=`${p.usuario} · ${p.rol==='admin'?'Administrador':'Usuario'}`;
-  $('homeCuentaInicial').textContent=String(nombre).trim().charAt(0).toUpperCase();
-  $('homeAdminUsuariosBtn').hidden=p.rol!=='admin';
-  $('homeCuenta').hidden=false;
+  nfCuentaPintar();
   document.body.classList.remove('nf-bloqueado');
 }
 /* La sesión dejó de servir a media consulta (expiró o desactivaron la cuenta): se pide entrar otra vez
@@ -3879,6 +3962,8 @@ function nfConfigurarSesion(){
   $('homeCambiarClaveBtn').addEventListener('click',()=>{$('cambiarClaveForm').reset();nfMostrarError('cambiarClaveError','');$('cambiarClaveDialog').showModal();});
   $('cambiarClaveForm').addEventListener('submit',nfCambiarClave);
   $('homeAdminUsuariosBtn').addEventListener('click',abrirAdminUsuarios);
+  $('homeAdminModuloBtn').addEventListener('click',abrirAdminUsuarios);
+  nfCuentaMenuIniciar();
   $('adminCrearForm').addEventListener('submit',crearUsuario);
   $('adminEditarForm').addEventListener('submit',guardarUsuario);
   $('adminEliminarBtn').addEventListener('click',eliminarUsuario);
@@ -5062,7 +5147,7 @@ function asegurarBotonOrden(id){
   b.textContent='⇅ Orden: '+chartSortLabel(id,mode);
   b.title='Clic para cambiar el orden de la gráfica';
 }
-const RET_LIMITE_PCT=3; // Máximo permitido de devolución sobre la venta (%)
+const RET_LIMITE_PCT=2; // Máximo permitido de devolución sobre la venta (%)
 const LX_PAL={light:['#d9a21b','#2f6fed','#e0525e','#12a594','#8b5cf6','#f08c2e','#16a34a','#e5489b','#0ea5e9','#9aa82a','#6366f1','#ef6a3a'],dark:['#5b8cff','#b57bff','#22e0f0','#3ee0a0','#4fb0ff','#ffb454','#ff6b81','#8f8cff','#d28cff','#38c8ff','#ffd166','#ff7ad0']};
 function lxTheme(){return document.documentElement.getAttribute('data-theme')==='dark'?{pal:LX_PAL.dark,ac:'#4da3ff',acFill:'rgba(77,163,255,.22)',acTop:'rgba(77,163,255,.20)',acBot:'rgba(77,163,255,0)',barA:'40',pieA:'E6',pieB:'#14161d',limA:'44',glow:8,glowLine:7,glowArc:5,bad:'#ff6b81',good:'#3ee0a0',tx:'#e2e7f2',tick:'#c5cde0',grid:'rgba(255,255,255,.09)',pie:'#14161d',tipBg:'rgba(10,11,16,.94)',tipTx:'#eef0f5',tipBd:'rgba(124,156,255,.35)',gold:'#f0b86b'}:{pal:LX_PAL.light,ac:'#2f6fed',acFill:'rgba(47,111,237,.14)',acTop:'rgba(47,111,237,0)',acBot:'rgba(47,111,237,0)',barA:'EB',pieA:'FF',pieB:'#fbf9f4',limA:'D9',glow:0,bad:'#dc2626',good:'#10b981',tx:'#454a53',tick:'#666b75',grid:'rgba(110,92,52,.13)',pie:'#fbf9f4',tipBg:'rgba(29,32,36,.94)',tipTx:'#fff',tipBd:'rgba(184,146,74,.4)',gold:'#f08c2e'};}
 function lxA(c,a){const m=/^#([0-9a-f]{6})/i.exec(c||'');if(!m)return c;const n=parseInt(m[1],16);return 'rgba('+(n>>16)+','+((n>>8)&255)+','+(n&255)+','+a+')';}
@@ -5218,9 +5303,9 @@ function setupSidebar(){
   $('metaClearFiltersBtn')?.addEventListener('click',metaResetAllFilters);
   $('metaBtnTodosMetodosPago')?.addEventListener('click',metaSeleccionarTodosMetodosPago);
   $('metaBtnLimpiarMetodosPago')?.addEventListener('click',metaLimpiarMetodosPago);
-  $('themeToggleBtn')?.addEventListener('click',()=>{const isDark=document.documentElement.getAttribute('data-theme')==='dark';aplicarTema(!isDark);});
+  document.querySelectorAll('.theme-toggle-btn').forEach(b=>b.addEventListener('click',()=>{const isDark=document.documentElement.getAttribute('data-theme')==='dark';aplicarTema(!isDark);}));
   initDevoluciones();
-  document.querySelectorAll('.module-button').forEach(b=>b.addEventListener('click',()=>irAModulo(b.dataset.module)));ensureUniversalDownloadButtons();
+  document.querySelectorAll('.module-button[data-module]').forEach(b=>b.addEventListener('click',()=>irAModulo(b.dataset.module)));ensureUniversalDownloadButtons();
 }
 function makeSidebarGroup(title,icon,content,open=false){
   const detail=document.createElement('details'); detail.className='sidebar-filter-group'; if(open) detail.open=true;
@@ -5684,6 +5769,8 @@ function setupListeners(){
   aplicarTema(document.documentElement.getAttribute('data-theme')==='dark',false);
   try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',e=>{let g=null;try{g=localStorage.getItem('nf-theme');}catch(_){}if(g!=='dark'&&g!=='light')aplicarTema(e.matches,false);});}catch(_){}
   document.querySelectorAll('.toolbar-actions').forEach(a=>{if(a.querySelector('.lx-theme-btn'))return;const b=document.createElement('button');b.type='button';b.className='toolbar-button lx-theme-btn';b.title='Modo claro / oscuro';b.setAttribute('aria-label','Cambiar entre modo claro y oscuro');b.innerHTML='<svg class="lx-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 3v2.2M12 18.8V21M3 12h2.2M18.8 12H21M4.9 4.9l1.55 1.55M17.55 17.55l1.55 1.55M4.9 19.1l1.55-1.55M17.55 6.45l1.55-1.55"/></svg><svg class="lx-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.6 6.6 0 0 0 10.5 10.5Z"/></svg>';b.onclick=()=>aplicarTema(document.documentElement.getAttribute('data-theme')!=='dark');a.appendChild(b);});
+  document.querySelectorAll('.toolbar-actions').forEach(a=>{if(a.querySelector('.nf-cuenta-toolbar'))return;const b=document.createElement('button');b.type='button';b.className='toolbar-button nf-cuenta-trigger nf-cuenta-toolbar';b.title='Mi cuenta';b.setAttribute('aria-haspopup','menu');b.setAttribute('aria-expanded','false');b.setAttribute('aria-controls','nfCuentaMenu');b.setAttribute('aria-label','Mi cuenta');b.innerHTML='<span class="nf-cuenta-avatar" data-cuenta-inicial aria-hidden="true"></span><span class="nf-cuenta-toolbar-nombre" data-cuenta-nombre>Mi cuenta</span><svg class="nf-cuenta-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';a.appendChild(b);});
+  nfCuentaPintar();
   ensureUniversalDownloadButtons();
 }
 function downloadList(id){const ul=$(id);if(!ul)return;const rows=[['Nombre','Ingresos'],...[...ul.children].map(li=>{const s=li.querySelectorAll('span');return[s[0]?.innerText||'',s[1]?.innerText||'']})];downloadExcel(rows,`${id}.xlsx`);}
