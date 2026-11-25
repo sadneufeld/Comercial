@@ -2,6 +2,10 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <!-- Política de seguridad: la página solo carga código de los dos CDN y solo se conecta a Supabase.
+         'unsafe-inline' hace falta porque el código y varios onclick van dentro del HTML. frame-ancestors no
+         funciona en <meta>: si se publica en un servidor, ponerlo allí como encabezado. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.sheetjs.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src https://ntazemjwazyhzqkaaqwb.supabase.co; worker-src blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="Icono%20comercial.png">
     <link rel="preconnect" href="https://ntazemjwazyhzqkaaqwb.supabase.co" crossorigin>
@@ -3653,6 +3657,29 @@ async function supabaseRpc(nombreFuncion,parametros){
    protección: sin sesión válida, Supabase no entrega nada. */
 const AUTH_DOMINIO_USUARIOS='usuarios.neufeld.invalid';
 const AUTH_CLAVE_SESION='nf-sesion';
+/* Cierre por inactividad: si nadie toca el dashboard en 8 h (en ninguna pestaña), la sesión se cierra y se borra
+   la caché local. La última actividad se guarda en localStorage para que cuente aunque se cierre el navegador. */
+const AUTH_CLAVE_ACTIVIDAD='nf-actividad', AUTH_CLAVE_AVISO='nf-aviso', AUTH_INACTIVIDAD_MS=8*60*60*1000;
+let nfUltimaMarca=0;
+function nfMarcarActividad(forzar){
+  const ahora=Date.now(); if(!forzar&&ahora-nfUltimaMarca<60000)return; nfUltimaMarca=ahora;
+  try{localStorage.setItem(AUTH_CLAVE_ACTIVIDAD,String(ahora));}catch(_){}
+}
+function nfInactivoDemasiado(){
+  let t=0; try{t=Number(localStorage.getItem(AUTH_CLAVE_ACTIVIDAD))||0;}catch(_){}
+  return t>0&&Date.now()-t>AUTH_INACTIVIDAD_MS; // sin marca (sesiones de antes de este cambio): no se corta
+}
+/* Vacía la caché local de ventas. Se vacía el almacén en lugar de borrar la base, porque borrarla se queda
+   esperando mientras haya conexiones abiertas. */
+async function nfBorrarCacheLocal(){
+  try{const db=await cacheOpenDB();await new Promise(r=>{const tx=db.transaction(CACHE_STORE,'readwrite');tx.objectStore(CACHE_STORE).clear();tx.oncomplete=tx.onerror=tx.onabort=()=>r();});db.close();}catch(_){}
+}
+async function nfCerrarPorInactividad(){
+  if(!nfSesion)return;
+  await nfCerrarSesionServidor(); olvidarSesion(); await nfBorrarCacheLocal();
+  try{sessionStorage.setItem(AUTH_CLAVE_AVISO,'Tu sesión se cerró por inactividad. Vuelve a iniciar sesión.');}catch(_){}
+  location.reload();
+}
 const ADMIN_USUARIOS_URL=`${SUPABASE_URL}/functions/v1/admin-usuarios`;
 let nfSesion=null, nfRefrescando=null;
 const correoDeUsuario=u=>{u=String(u||'').trim().toLowerCase();return u.includes('@')?u:`${u}@${AUTH_DOMINIO_USUARIOS}`;};
@@ -3707,7 +3734,7 @@ function nfDesbloquear(){
 }
 /* La sesión dejó de servir a media consulta (expiró o desactivaron la cuenta): se pide entrar otra vez
    sin recargar, para que al volver a entrar siga donde estaba. */
-function nfSesionTerminada(mensaje){if(!nfSesion)return;olvidarSesion();nfMostrarLogin(mensaje);}
+function nfSesionTerminada(mensaje){if(!nfSesion)return;olvidarSesion();nfBorrarCacheLocal();nfMostrarLogin(mensaje);}
 async function nfIniciarSesion(e){
   e.preventDefault();
   const usuario=$('loginUsuario').value.trim(), clave=$('loginClave').value, btn=$('loginBtn'), err=$('loginError');
@@ -3717,6 +3744,7 @@ async function nfIniciarSesion(e){
     guardarSesion(await authPedir('token?grant_type=password',{email:correoDeUsuario(usuario),password:clave}));
     await nfCargarPerfil();
     $('loginClave').value='';
+    nfMarcarActividad(true);
     nfDesbloquear();
   }catch(ex){
     if(ex.sinAcceso)await nfCerrarSesionServidor();
@@ -3727,23 +3755,30 @@ async function nfCerrarSesionServidor(){try{if(nfSesion)await authPedir('logout?
 /* Al cerrar sesión se borra la caché local de ventas de este navegador y se recarga la página en blanco. */
 async function nfCerrarSesion(){
   $('homeCerrarSesionBtn').disabled=true;
-  await nfCerrarSesionServidor(); olvidarSesion();
-  await new Promise(r=>{try{const q=indexedDB.deleteDatabase(CACHE_DB_NAME);q.onsuccess=q.onerror=q.onblocked=()=>r();}catch(_){r();}setTimeout(r,1500);});
+  await nfCerrarSesionServidor(); olvidarSesion(); await nfBorrarCacheLocal();
   location.reload();
 }
 /* Al abrir la página: si hay una sesión guardada se renueva y se valida el perfil; si no, se muestra el acceso. */
 async function nfAuthIniciar(){
-  let guardada=null; try{guardada=JSON.parse(localStorage.getItem(AUTH_CLAVE_SESION)||'null');}catch(_){}
-  if(!guardada?.refresh_token)return nfMostrarLogin();
+  let guardada=null, aviso=null; try{guardada=JSON.parse(localStorage.getItem(AUTH_CLAVE_SESION)||'null');}catch(_){}
+  try{aviso=sessionStorage.getItem(AUTH_CLAVE_AVISO);sessionStorage.removeItem(AUTH_CLAVE_AVISO);}catch(_){}
+  if(!guardada?.refresh_token)return nfMostrarLogin(aviso);
   $('loginForm').hidden=true; $('loginRevisando').hidden=false;
+  if(nfInactivoDemasiado()){
+    // La sesión guardada lleva más de 8 h sin uso: se cierra también en el servidor y no se renueva.
+    try{const d=await authPedir('token?grant_type=refresh_token',{refresh_token:guardada.refresh_token});await authPedir('logout?scope=local',null,{token:d.access_token});}catch(_){}
+    olvidarSesion(); await nfBorrarCacheLocal();
+    return nfMostrarLogin('Tu sesión se cerró por inactividad. Vuelve a iniciar sesión.');
+  }
   try{
     guardarSesion(await authPedir('token?grant_type=refresh_token',{refresh_token:guardada.refresh_token}));
     await nfCargarPerfil();
+    nfMarcarActividad(true);
     nfDesbloquear();
   }catch(ex){
     if(ex.sinAcceso)await nfCerrarSesionServidor();
     const mensaje=ex.sinAcceso?ex.message:(ex.status&&ex.status<500?'Tu sesión expiró. Vuelve a iniciar sesión.':ex.message);
-    olvidarSesion(); nfMostrarLogin(mensaje);
+    olvidarSesion(); if(ex.sinAcceso||(ex.status&&ex.status<500))await nfBorrarCacheLocal(); nfMostrarLogin(mensaje);
   }
 }
 function nfMostrarError(id,mensaje){const el=$(id);el.textContent=mensaje||'';el.hidden=!mensaje;}
@@ -3848,6 +3883,12 @@ function nfConfigurarSesion(){
     const c=e.target.closest('[data-cerrar-dialogo]'); if(c)c.closest('dialog')?.close();
     const v=e.target.closest('[data-ver-clave]'); if(v){const i=$(v.dataset.verClave),ver=i.type==='password';i.type=ver?'text':'password';v.textContent=ver?'Ocultar':'Ver';v.setAttribute('aria-pressed',String(ver));v.setAttribute('aria-label',ver?'Ocultar contraseña':'Mostrar contraseña');}
   });
+  // Actividad: cualquier clic, tecla, desplazamiento o toque mientras hay sesión. Se revisa cada minuto
+  // y al volver a la pestaña (por ejemplo, al abrir la laptop después de horas).
+  ['pointerdown','keydown','wheel','touchstart'].forEach(ev=>document.addEventListener(ev,()=>{if(nfSesion)nfMarcarActividad();},{passive:true,capture:true}));
+  const revisar=()=>{if(nfSesion&&nfInactivoDemasiado())nfCerrarPorInactividad();};
+  setInterval(revisar,60000);
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')revisar();});
   nfAuthIniciar();
 }
 /* ===== Consultas a Supabase por periodo + caché local =====
