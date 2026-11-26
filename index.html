@@ -4637,23 +4637,35 @@ function renderMetaSucursalDia(codigos){
   if(!ordenados.length||!dias.length){
     body.innerHTML=`<tr><td colspan="${dias.length+2}" class="py-4 px-3 text-center text-slate-400">Sin sucursales con meta en el periodo.</td></tr>`;foot.innerHTML='';metaSucursalDiaExport=[];return;
   }
-  const exp=[['Sucursal','Fecha','Meta','Vendido','% Cumplimiento']];
+  /* Excel con la misma forma que la tabla: una fila por sucursal y, por cada columna (Acumulado y cada día),
+     tres celdas: % de cumplimiento, vendido y meta. Los textos ("--", "Sin venta aún", "sin meta") son los de la tabla. */
+  const xPct=p=>({v:Math.round(p*10)/1000,t:'n',z:'0.0%'}), xPesos=v=>({v:Math.round(v),t:'n',z:'"$"#,##0'});
+  const xCelda=(m,v,fut)=>fut?['--','Sin venta aún',m>0?xPesos(m):'sin meta']:!(m>0)?['--',xPesos(v),'sin meta']:[xPct(v/m*100),xPesos(v),xPesos(m)];
+  const etiquetaDiaTxt=f=>{const d=new Date(f+'T12:00:00');return `${['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'][d.getDay()]} ${f.slice(8)}/${f.slice(5,7)}`;};
+  const grupos=['Acumulado',...dias.map(etiquetaDiaTxt)];
+  const exp=[['Sucursal',...grupos.flatMap(g=>[g,'',''])],['',...grupos.flatMap(()=>['% Cumplimiento','Vendido','Meta'])]];
   const totDiaM=dias.map(()=>0), totDiaV=dias.map(()=>0);
   let totM=0,totV=0;
   body.innerHTML=ordenados.map(cod=>{
     const mMap=metasPorSucursalFecha.get(cod), vMap=ventasPorSucursalFecha.get(cod);
-    let sM=0,sV=0;
+    let sM=0,sV=0; const filaX=[];
     const tds=dias.map((f,i)=>{
       const m=(mMap&&mMap.get(f))||0, fut=futuro(f), v=fut?0:((vMap&&vMap.get(f))||0);
       totDiaM[i]+=m; totDiaV[i]+=v;
       if(!fut){sM+=m;sV+=v;}
-      exp.push([nombre(cod),formatearFecha(f),m>0?Math.round(m*100)/100:'',fut?'':Math.round(v*100)/100,(m>0&&!fut)?Math.round(v/m*1000)/10:'']);
+      filaX.push(...xCelda(m,v,fut));
       return celda(m,v,fut);
     }).join('');
     totM+=sM; totV+=sV;
+    exp.push([nombre(cod),...xCelda(sM,sV,false),...filaX]);
     return `<tr><th scope="row" class="meta-sd-fija">${escapeHtml(nombre(cod))}</th>${celda(sM,sV,false,'meta-sd-total')}${tds}</tr>`;
   }).join('');
   foot.innerHTML=`<tr><th scope="row" class="meta-sd-fija">TOTAL</th>${celda(totM,totV,false,'meta-sd-total')}${dias.map((f,i)=>celda(totDiaM[i],totDiaV[i],futuro(f))).join('')}</tr>`;
+  exp.push(['TOTAL',...xCelda(totM,totV,false),...dias.flatMap((f,i)=>xCelda(totDiaM[i],totDiaV[i],futuro(f)))]);
+  exp.opciones={
+    merges:[{s:{r:0,c:0},e:{r:1,c:0}},...grupos.map((_,g)=>({s:{r:0,c:1+g*3},e:{r:0,c:3+g*3}}))],
+    cols:[{wch:26},...grupos.flatMap(()=>[{wch:15},{wch:13},{wch:13}])]
+  };
   metaSucursalDiaExport=exp;
 }
 /* ===== Navegación entre módulos ===== */
@@ -5290,7 +5302,7 @@ function setupSidebar(){
   $('metaSucTodas')?.addEventListener('click',metaSeleccionarTodo);
   $('metaSucLimpiar')?.addEventListener('click',metaLimpiarFiltros);
   $('metaDetalleSelect')?.addEventListener('change',renderMetaDetalleDiario);
-  $('metaSucursalDiaDescarga')?.addEventListener('click',()=>{if(metaSucursalDiaExport.length>1)downloadExcel(metaSucursalDiaExport,`detalle-sucursales-por-dia-${slugifyFilename(`${loadedMonth} ${loadedYear}`)}.xlsx`,'Sucursales por día');});
+  $('metaSucursalDiaDescarga')?.addEventListener('click',()=>{if(metaSucursalDiaExport.length>1)downloadExcel(metaSucursalDiaExport,`detalle-sucursales-por-dia-${slugifyFilename(`${loadedMonth} ${loadedYear}`)}.xlsx`,'Sucursales por día',metaSucursalDiaExport.opciones);});
   $('metaFetchBtn')?.addEventListener('click',()=>{
     const y=$('metaYearSelector')?.value, m=$('metaMonthSelector')?.value;
     if(y)$('yearSelector').value=y; if(m&&selectMes)selectMes.value=m;
@@ -5783,9 +5795,11 @@ function downloadTable(id){
   if(!rows.length)return;
   downloadExcel(rows,`${nombre}.xlsx`,nombre);
 }
-function downloadExcel(rows,name,sheetName){
+function downloadExcel(rows,name,sheetName,opciones){
   try{
     const ws=XLSX.utils.aoa_to_sheet(rows);
+    if(opciones?.merges)ws['!merges']=opciones.merges;
+    if(opciones?.cols)ws['!cols']=opciones.cols;
     const wb=XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb,ws,(sheetName||'Datos').substring(0,31));
     XLSX.writeFile(wb,name);
